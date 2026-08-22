@@ -148,6 +148,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="QL_CuaHangDaQuy_PNJDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -173,13 +178,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <EntityDeploy Include="Model1.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model1.Designer.cs</LastGenOutput>
@@ -223,6 +224,19 @@
       <DependentUpon>Model1.edmx</DependentUpon>
       <LastGenOutput>Model1.cs</LastGenOutput>
     </Content>
+    <None Include="Resources\Background.jpeg" />
+    <None Include="Resources\a71.png" />
+    <None Include="Resources\a7.jpg" />
+    <None Include="Resources\a6.jpg" />
+    <None Include="Resources\a7.png" />
+    <None Include="Resources\99.jpg" />
+    <None Include="Resources\ok3.jpg" />
+    <None Include="Resources\ok2.jpg" />
+    <None Include="Resources\ok1.jpg" />
+    <None Include="Resources\ok.jpg" />
+    <None Include="Resources\ok%281%29.jpg" />
+    <None Include="Resources\tải xuống1.png" />
+    <None Include="Resources\tải xuống.png" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

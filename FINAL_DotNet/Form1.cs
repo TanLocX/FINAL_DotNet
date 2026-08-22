@@ -17,18 +17,18 @@ namespace FINAL_DotNet
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            lbThongBaoLoi.Text = "";
+            label1.Text = "";
         }
 
         private void btnDangNhap_Click(object sender, EventArgs e)
         {
-            lbThongBaoLoi.Text = "";
+            label1.Text = "";
             string username = txtTenDangNhap.Text.Trim();
             string password = txtMatKhau.Text.Trim();
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                lbThongBaoLoi.Text = "* Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!";
+                label1.Text = "* Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!";
                 return;
             }
 
@@ -54,30 +54,61 @@ namespace FINAL_DotNet
                     else
                     {
                         // Sai mật khẩu
-                        lbThongBaoLoi.Text = "* Tên đăng nhập hoặc mật khẩu không chính xác!";
+                        label1.Text = "* Tên đăng nhập hoặc mật khẩu không chính xác!";
                     }
                 }
                 else
                 {
                     // Không tìm thấy tên đăng nhập hoặc tài khoản bị khóa
-                    lbThongBaoLoi.Text = "* Tên đăng nhập hoặc mật khẩu không chính xác!";
+                    label1.Text = "* Tên đăng nhập hoặc mật khẩu không chính xác!";
                 }
             }
             catch (Exception ex)
             {
-                lbThongBaoLoi.Text = "* Lỗi kết nối CSDL: " + ex.Message;
+                label1.Text = "* Lỗi kết nối CSDL: " + ex.Message;
             }
         }
 
         private void txt_TextChanged(object sender, EventArgs e)
         {
-            lbThongBaoLoi.Text = "";
+            label1.Text = "";
         }
 
         private void btnChuyenDangKy_Click(object sender, EventArgs e)
         {
             FormDangKy frm = new FormDangKy();
             frm.ShowDialog();
+        }
+
+        private void btnTogglePassword_Click(object sender, EventArgs e)
+        {
+            if (txtMatKhau.PasswordChar == '*')
+            {
+                // Đang ẩn → hiện mật khẩu
+                txtMatKhau.PasswordChar = '\0';
+                btnTogglePassword.ForeColor = System.Drawing.Color.FromArgb(94, 148, 255); // xanh = đang hiện
+            }
+            else
+            {
+                // Đang hiện → ẩn mật khẩu
+                txtMatKhau.PasswordChar = '*';
+                btnTogglePassword.ForeColor = System.Drawing.Color.FromArgb(125, 137, 149); // xám = đang ẩn
+            }
+        }
+
+        private void guna2Panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void guna2Panel6_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
