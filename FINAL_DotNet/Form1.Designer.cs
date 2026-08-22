@@ -38,6 +38,7 @@ namespace FINAL_DotNet
             this.label4 = new System.Windows.Forms.Label();
             this.guna2Panel4 = new Guna.UI2.WinForms.Guna2Panel();
             this.label8 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.pnlNen.SuspendLayout();
             this.pnlDangNhap.SuspendLayout();
             this.guna2Panel2.SuspendLayout();
@@ -60,7 +61,7 @@ namespace FINAL_DotNet
             this.pnlNen.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlNen.Location = new System.Drawing.Point(0, 0);
             this.pnlNen.Name = "pnlNen";
-            this.pnlNen.Size = new System.Drawing.Size(1264, 706);
+            this.pnlNen.Size = new System.Drawing.Size(1263, 705);
             this.pnlNen.TabIndex = 0;
             // 
             // guna2Panel1
@@ -68,9 +69,9 @@ namespace FINAL_DotNet
             this.guna2Panel1.BackColor = System.Drawing.Color.Transparent;
             this.guna2Panel1.BackgroundImage = global::FINAL_DotNet.Properties.Resources.a72;
             this.guna2Panel1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.guna2Panel1.Location = new System.Drawing.Point(1157, 66);
+            this.guna2Panel1.Location = new System.Drawing.Point(924, 12);
             this.guna2Panel1.Name = "guna2Panel1";
-            this.guna2Panel1.Size = new System.Drawing.Size(88, 81);
+            this.guna2Panel1.Size = new System.Drawing.Size(71, 57);
             this.guna2Panel1.TabIndex = 16;
             // 
             // pnlDangNhap
@@ -79,6 +80,7 @@ namespace FINAL_DotNet
             this.pnlDangNhap.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
             this.pnlDangNhap.BorderRadius = 20;
             this.pnlDangNhap.BorderThickness = 2;
+            this.pnlDangNhap.Controls.Add(this.button1);
             this.pnlDangNhap.Controls.Add(this.btnChuyenDangKy);
             this.pnlDangNhap.Controls.Add(this.btnDangNhap);
             this.pnlDangNhap.Controls.Add(this.label1);
@@ -89,11 +91,11 @@ namespace FINAL_DotNet
             this.pnlDangNhap.Controls.Add(this.txtMatKhau);
             this.pnlDangNhap.Controls.Add(this.label3);
             this.pnlDangNhap.Controls.Add(this.label2);
-            this.pnlDangNhap.FillColor = System.Drawing.Color.White;
+            this.pnlDangNhap.FillColor = System.Drawing.Color.Transparent;
             this.pnlDangNhap.ForeColor = System.Drawing.Color.Transparent;
-            this.pnlDangNhap.Location = new System.Drawing.Point(792, 184);
+            this.pnlDangNhap.Location = new System.Drawing.Point(792, 187);
             this.pnlDangNhap.Name = "pnlDangNhap";
-            this.pnlDangNhap.Size = new System.Drawing.Size(346, 432);
+            this.pnlDangNhap.Size = new System.Drawing.Size(346, 464);
             this.pnlDangNhap.TabIndex = 4;
             this.pnlDangNhap.Paint += new System.Windows.Forms.PaintEventHandler(this.guna2Panel6_Paint);
             // 
@@ -103,11 +105,12 @@ namespace FINAL_DotNet
             this.btnChuyenDangKy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnChuyenDangKy.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnChuyenDangKy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
-            this.btnChuyenDangKy.Location = new System.Drawing.Point(24, 352);
+            this.btnChuyenDangKy.Location = new System.Drawing.Point(25, 407);
             this.btnChuyenDangKy.Name = "btnChuyenDangKy";
             this.btnChuyenDangKy.Size = new System.Drawing.Size(180, 30);
             this.btnChuyenDangKy.TabIndex = 6;
             this.btnChuyenDangKy.Text = "Chưa có tài khoản? Đăng ký";
+            this.btnChuyenDangKy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnChuyenDangKy.UseVisualStyleBackColor = true;
             this.btnChuyenDangKy.Click += new System.EventHandler(this.btnChuyenDangKy_Click);
             // 
@@ -117,7 +120,7 @@ namespace FINAL_DotNet
             this.btnDangNhap.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
             this.btnDangNhap.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDangNhap.ForeColor = System.Drawing.Color.White;
-            this.btnDangNhap.Location = new System.Drawing.Point(24, 272);
+            this.btnDangNhap.Location = new System.Drawing.Point(24, 318);
             this.btnDangNhap.Name = "btnDangNhap";
             this.btnDangNhap.ShadowDecoration.BorderRadius = 10;
             this.btnDangNhap.ShadowDecoration.CustomizableEdges.TopLeft = false;
@@ -133,7 +136,7 @@ namespace FINAL_DotNet
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Red;
-            this.label1.Location = new System.Drawing.Point(32, 239);
+            this.label1.Location = new System.Drawing.Point(32, 285);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(10, 15);
             this.label1.TabIndex = 5;
@@ -141,14 +144,14 @@ namespace FINAL_DotNet
             // 
             // btnTogglePassword
             // 
-            this.btnTogglePassword.BackColor = System.Drawing.Color.White;
+            this.btnTogglePassword.BackColor = System.Drawing.Color.Transparent;
             this.btnTogglePassword.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnTogglePassword.FlatAppearance.BorderSize = 0;
             this.btnTogglePassword.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(230)))), ((int)(((byte)(236)))), ((int)(((byte)(255)))));
             this.btnTogglePassword.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnTogglePassword.Font = new System.Drawing.Font("Segoe UI", 13F);
-            this.btnTogglePassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
-            this.btnTogglePassword.Location = new System.Drawing.Point(287, 169);
+            this.btnTogglePassword.ForeColor = System.Drawing.Color.Transparent;
+            this.btnTogglePassword.Location = new System.Drawing.Point(287, 186);
             this.btnTogglePassword.Name = "btnTogglePassword";
             this.btnTogglePassword.Size = new System.Drawing.Size(32, 32);
             this.btnTogglePassword.TabIndex = 9;
@@ -162,8 +165,9 @@ namespace FINAL_DotNet
             this.txtTenDangNhap.BorderRadius = 8;
             this.txtTenDangNhap.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtTenDangNhap.DefaultText = "";
+            this.txtTenDangNhap.FillColor = System.Drawing.Color.Transparent;
             this.txtTenDangNhap.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtTenDangNhap.Location = new System.Drawing.Point(24, 86);
+            this.txtTenDangNhap.Location = new System.Drawing.Point(24, 103);
             this.txtTenDangNhap.Name = "txtTenDangNhap";
             this.txtTenDangNhap.PlaceholderText = "Tên đăng nhập";
             this.txtTenDangNhap.SelectedText = "";
@@ -188,7 +192,7 @@ namespace FINAL_DotNet
             this.labelTitle.AutoSize = true;
             this.labelTitle.BackColor = System.Drawing.Color.Transparent;
             this.labelTitle.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
+            this.labelTitle.ForeColor = System.Drawing.Color.White;
             this.labelTitle.Location = new System.Drawing.Point(20, 22);
             this.labelTitle.Name = "labelTitle";
             this.labelTitle.Size = new System.Drawing.Size(128, 25);
@@ -200,8 +204,9 @@ namespace FINAL_DotNet
             this.txtMatKhau.BorderRadius = 8;
             this.txtMatKhau.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtMatKhau.DefaultText = "";
+            this.txtMatKhau.FillColor = System.Drawing.Color.Transparent;
             this.txtMatKhau.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtMatKhau.Location = new System.Drawing.Point(24, 165);
+            this.txtMatKhau.Location = new System.Drawing.Point(24, 182);
             this.txtMatKhau.Name = "txtMatKhau";
             this.txtMatKhau.PasswordChar = '*';
             this.txtMatKhau.PlaceholderText = "Mật khẩu";
@@ -215,8 +220,8 @@ namespace FINAL_DotNet
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.label3.Location = new System.Drawing.Point(21, 147);
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(21, 164);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(59, 15);
             this.label3.TabIndex = 10;
@@ -227,8 +232,8 @@ namespace FINAL_DotNet
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(28)))), ((int)(((byte)(28)))), ((int)(((byte)(28)))));
-            this.label2.Location = new System.Drawing.Point(21, 68);
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(21, 85);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(59, 15);
             this.label2.TabIndex = 10;
@@ -338,12 +343,27 @@ namespace FINAL_DotNet
             this.label8.Size = new System.Drawing.Size(0, 37);
             this.label8.TabIndex = 0;
             // 
+            // button1
+            // 
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
+            this.button1.Location = new System.Drawing.Point(23, 227);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(180, 30);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "Quên mật khẩu";
+            this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.btnChuyenDangKy_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
-            this.ClientSize = new System.Drawing.Size(1264, 706);
+            this.ClientSize = new System.Drawing.Size(1263, 705);
             this.Controls.Add(this.pnlNen);
             this.Name = "Form1";
             this.RightToLeftLayout = true;
@@ -385,5 +405,6 @@ namespace FINAL_DotNet
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label9;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
+        private System.Windows.Forms.Button button1;
     }
 }
