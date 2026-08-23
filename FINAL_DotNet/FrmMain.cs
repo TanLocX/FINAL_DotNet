@@ -162,6 +162,12 @@ namespace FINAL_DotNet
                 return;
             }
 
+            if (menu.TieuDeTrang == "Nhập hàng")
+            {
+                MoFormCon(new FrmNhapHang(), menu.TieuDeTrang, false);
+                return;
+            }
+
             if (menu.TieuDeTrang == "Quản lý tài khoản và phân quyền")
             {
                 MoFormCon(new FrmTaiKhoan(), menu.TieuDeTrang, true);

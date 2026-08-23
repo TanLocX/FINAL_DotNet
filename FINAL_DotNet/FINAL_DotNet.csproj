@@ -145,6 +145,12 @@
     <Compile Include="FrmNhaCungCap.Designer.cs">
       <DependentUpon>FrmNhaCungCap.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmNhapHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmNhapHang.Designer.cs">
+      <DependentUpon>FrmNhapHang.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmSanPham.cs">
       <SubType>Form</SubType>
     </Compile>
