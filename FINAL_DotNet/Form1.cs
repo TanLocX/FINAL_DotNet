@@ -32,6 +32,8 @@ namespace FINAL_DotNet
                 return;
             }
 
+            btnDangNhap.Enabled = false;
+
             try
             {
                 using (var db = DatabaseConnection.CreateContext())
@@ -61,18 +63,56 @@ namespace FINAL_DotNet
                         }
                     }
 
-                    MessageBox.Show(
-                        $"Đăng nhập thành công!\nChào mừng {taiKhoan.NhanVien.HoTen} (Vai trò: {taiKhoan.VaiTro})",
-                        "Thành công",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-
-                    // TODO: Mở form chính và truyền thông tin phiên đăng nhập.
+                    CurrentUserSession.BatDau(
+                        taiKhoan.TaiKhoanId,
+                        taiKhoan.NhanVienId,
+                        taiKhoan.TenDangNhap,
+                        taiKhoan.NhanVien.HoTen,
+                        taiKhoan.VaiTro);
                 }
             }
             catch (Exception)
             {
                 lbThongBaoLoi.Text = "* Không thể kết nối CSDL. Hãy kiểm tra Radmin VPN và cấu hình kết nối.";
+                return;
+            }
+            finally
+            {
+                btnDangNhap.Enabled = true;
+            }
+
+            MoManHinhChinh();
+        }
+
+        private void MoManHinhChinh()
+        {
+            Hide();
+
+            bool dangXuat = false;
+            try
+            {
+                using (var formChinh = new FrmMain())
+                {
+                    formChinh.ShowDialog();
+                    dangXuat = formChinh.DaYeuCauDangXuat;
+                }
+            }
+            finally
+            {
+                CurrentUserSession.KetThuc();
+                txtMatKhau.Clear();
+            }
+
+            if (dangXuat)
+            {
+                lbThongBaoLoi.Text = string.Empty;
+                Show();
+                Activate();
+                txtTenDangNhap.Focus();
+            }
+            else
+            {
+                Close();
             }
         }
 
