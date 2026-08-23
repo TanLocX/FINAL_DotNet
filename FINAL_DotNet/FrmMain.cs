@@ -54,7 +54,9 @@ namespace FINAL_DotNet
             ThemTieuDeNhom("QUẢN TRỊ", true);
             ThemNutMenu("Nhân viên", "Quản lý nhân viên", true);
             ThemNutMenu("Tài khoản", "Quản lý tài khoản và phân quyền", true);
-            ThemNutMenu("Danh mục hệ thống", "Quản lý danh mục hệ thống", true);
+            ThemNutMenu("Danh mục sản phẩm", "Quản lý danh mục sản phẩm", true);
+            ThemNutMenu("Chất liệu", "Quản lý chất liệu và giá tham khảo", true);
+            ThemNutMenu("Nhà cung cấp", "Quản lý nhà cung cấp", true);
             ThemNutMenu("Sao lưu / Phục hồi", "Sao lưu và phục hồi CSDL", true);
         }
 
@@ -157,6 +159,24 @@ namespace FINAL_DotNet
             if (menu.TieuDeTrang == "Quản lý tài khoản và phân quyền")
             {
                 MoFormCon(new FrmTaiKhoan(), menu.TieuDeTrang, true);
+                return;
+            }
+
+            if (menu.TieuDeTrang == "Quản lý danh mục sản phẩm")
+            {
+                MoFormCon(new FrmDanhMuc(), menu.TieuDeTrang, true);
+                return;
+            }
+
+            if (menu.TieuDeTrang == "Quản lý chất liệu và giá tham khảo")
+            {
+                MoFormCon(new FrmChatLieu(), menu.TieuDeTrang, true);
+                return;
+            }
+
+            if (menu.TieuDeTrang == "Quản lý nhà cung cấp")
+            {
+                MoFormCon(new FrmNhaCungCap(), menu.TieuDeTrang, true);
                 return;
             }
 

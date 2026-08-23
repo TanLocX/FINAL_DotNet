@@ -50,7 +50,7 @@ namespace FINAL_DotNet
                 InitialCatalog = database,
                 TrustServerCertificate = true,
                 MultipleActiveResultSets = true,
-                ConnectTimeout = 5,
+                ConnectTimeout = 15,
                 ApplicationName = "FINAL_DotNet"
             };
 
