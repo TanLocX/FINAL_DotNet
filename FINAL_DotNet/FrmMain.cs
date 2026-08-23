@@ -22,10 +22,12 @@ namespace FINAL_DotNet
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
-            lblHoTen.Text = phienDangNhap.HoTen;
+            string tenHienThi = phienDangNhap.LaQuanTriVien ? "Admin" : phienDangNhap.HoTen;
+
+            lblHoTen.Text = tenHienThi;
             lblTenDangNhap.Text = "@" + phienDangNhap.TenDangNhap;
             lblVaiTro.Text = phienDangNhap.LaQuanTriVien ? "QUẢN TRỊ VIÊN" : "NHÂN VIÊN";
-            lblChaoMung.Text = "Xin chào, " + phienDangNhap.HoTen;
+            lblChaoMung.Text = "Xin chào, " + tenHienThi;
 
             TaoMenu();
             ApDungPhanQuyen();
