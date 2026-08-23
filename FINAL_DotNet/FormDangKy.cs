@@ -1,14 +1,11 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using BCrypt.Net;
 
 namespace FINAL_DotNet
 {
     public partial class FormDangKy : Form
     {
-        QL_CuaHangDaQuy_PNJEntities db = new QL_CuaHangDaQuy_PNJEntities();
-
         public FormDangKy()
         {
             InitializeComponent();
@@ -16,88 +13,115 @@ namespace FINAL_DotNet
 
         private void FormDangKy_Load(object sender, EventArgs e)
         {
-            lbThongBaoLoi.Text = "";
+            lbThongBaoLoi.Text = string.Empty;
         }
 
         private void btnDangKy_Click(object sender, EventArgs e)
         {
-            lbThongBaoLoi.Text = "";
-            string username = txtTenDangNhap.Text.Trim();
-            string password = txtMatKhau.Text.Trim();
-            string confirmPassword = txtNhapLaiMatKhau.Text.Trim();
+            lbThongBaoLoi.Text = string.Empty;
+            string tenDangNhap = txtTenDangNhap.Text.Trim();
+            string matKhau = txtMatKhau.Text;
+            string nhapLaiMatKhau = txtNhapLaiMatKhau.Text;
             string maNhanVien = txtMaNhanVien.Text.Trim();
 
-            // 1. Kiểm tra đầu vào
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(confirmPassword) || string.IsNullOrEmpty(maNhanVien))
+            if (string.IsNullOrWhiteSpace(tenDangNhap) ||
+                string.IsNullOrEmpty(matKhau) ||
+                string.IsNullOrEmpty(nhapLaiMatKhau) ||
+                string.IsNullOrWhiteSpace(maNhanVien))
             {
                 lbThongBaoLoi.Text = "* Vui lòng điền đầy đủ tất cả các trường!";
                 return;
             }
 
-            if (password != confirmPassword)
+            if (matKhau.Length < 8)
+            {
+                lbThongBaoLoi.Text = "* Mật khẩu phải có ít nhất 8 ký tự!";
+                return;
+            }
+
+            if (matKhau != nhapLaiMatKhau)
             {
                 lbThongBaoLoi.Text = "* Mật khẩu nhập lại không khớp!";
                 return;
             }
 
+            int nhanVienId;
+            if (!ThuChuyenNhanVienId(maNhanVien, out nhanVienId))
+            {
+                lbThongBaoLoi.Text = "* Mã nhân viên không hợp lệ (ví dụ: NV000001)!";
+                return;
+            }
+
             try
             {
-                // 2. Kiểm tra trùng tên đăng nhập
-                bool isExist = db.TaiKhoans.Any(tk => tk.TenDangNhap == username);
-                if (isExist)
+                using (var db = DatabaseConnection.CreateContext())
                 {
-                    lbThongBaoLoi.Text = "* Tên đăng nhập này đã tồn tại!";
-                    return;
+                    if (db.TaiKhoans.Any(tk => tk.TenDangNhap == tenDangNhap))
+                    {
+                        lbThongBaoLoi.Text = "* Tên đăng nhập này đã tồn tại!";
+                        return;
+                    }
+
+                    var nhanVien = db.NhanViens.FirstOrDefault(nv =>
+                        nv.NhanVienId == nhanVienId && nv.DangLamViec);
+
+                    if (nhanVien == null)
+                    {
+                        lbThongBaoLoi.Text = "* Không tìm thấy nhân viên đang làm việc!";
+                        return;
+                    }
+
+                    if (db.TaiKhoans.Any(tk => tk.NhanVienId == nhanVienId))
+                    {
+                        lbThongBaoLoi.Text = "* Nhân viên này đã được cấp tài khoản!";
+                        return;
+                    }
+
+                    db.TaiKhoans.Add(new TaiKhoan
+                    {
+                        NhanVienId = nhanVienId,
+                        TenDangNhap = tenDangNhap,
+                        MatKhauHash = BCrypt.Net.BCrypt.HashPassword(matKhau),
+                        VaiTro = "NHANVIEN",
+                        PhaiDoiMatKhau = true,
+                        DangHoatDong = true
+                    });
+
+                    db.SaveChanges();
                 }
 
-                // 3. Kiểm tra Mã nhân viên có tồn tại trong bảng NhanVien chưa
-                bool nVienExist = db.NhanViens.Any(nv => nv.MaNhanVien == maNhanVien);
-                if (!nVienExist)
-                {
-                    lbThongBaoLoi.Text = "* Mã nhân viên không tồn tại trong hệ thống!";
-                    return;
-                }
-
-                // Kiểm tra xem Nhân viên này đã có tài khoản chưa (mỗi NV 1 tài khoản)
-                bool tkNhanVienExist = db.TaiKhoans.Any(tk => tk.MaNhanVien == maNhanVien);
-                if (tkNhanVienExist)
-                {
-                    lbThongBaoLoi.Text = "* Nhân viên này đã được cấp tài khoản!";
-                    return;
-                }
-
-                // 4. Mã hóa mật khẩu và tạo tài khoản
-                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
-
-                TaiKhoan taiKhoanMoi = new TaiKhoan()
-                {
-                    TenDangNhap = username,
-                    MatKhau = hashedPassword,
-                    MaNhanVien = maNhanVien,
-                    Quyen = "User", // Quyền mặc định
-                    TrangThai = true // Kích hoạt ngay
-                };
-
-                db.TaiKhoans.Add(taiKhoanMoi);
-                db.SaveChanges();
-
-                MessageBox.Show("Đăng ký tài khoản thành công!", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.Close(); // Đóng form đăng ký, tự động trở về form đăng nhập
+                MessageBox.Show(
+                    "Cấp tài khoản thành công. Nhân viên phải đổi mật khẩu ở lần đăng nhập đầu tiên.",
+                    "Thành công",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                Close();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                lbThongBaoLoi.Text = "* Lỗi kết nối CSDL: " + ex.Message;
+                lbThongBaoLoi.Text = "* Không thể kết nối CSDL. Hãy kiểm tra cấu hình kết nối.";
             }
+        }
+
+        private static bool ThuChuyenNhanVienId(string maNhanVien, out int nhanVienId)
+        {
+            string giaTri = maNhanVien.Trim();
+            if (giaTri.StartsWith("NV", StringComparison.OrdinalIgnoreCase))
+            {
+                giaTri = giaTri.Substring(2);
+            }
+
+            return int.TryParse(giaTri, out nhanVienId) && nhanVienId > 0;
         }
 
         private void btnQuayLai_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
 
         private void txt_TextChanged(object sender, EventArgs e)
         {
-            lbThongBaoLoi.Text = "";
+            lbThongBaoLoi.Text = string.Empty;
         }
 
         private void guna2Panel1_Paint(object sender, PaintEventArgs e)

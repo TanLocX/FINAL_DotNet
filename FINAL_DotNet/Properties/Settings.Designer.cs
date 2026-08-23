@@ -23,15 +23,5 @@ namespace FINAL_DotNet.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=localhost;Initial Catalog=QL_CuaHangDaQuy_PNJ;Integrated Security=Tru" +
-            "e;TrustServerCertificate=True")]
-        public string QL_CuaHangDaQuy_PNJConnectionString {
-            get {
-                return ((string)(this["QL_CuaHangDaQuy_PNJConnectionString"]));
-            }
-        }
     }
 }

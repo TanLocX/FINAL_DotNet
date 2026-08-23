@@ -7,21 +7,18 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FINAL_DotNet
+using System;
+using System.Collections.Generic;
+
+public partial class ChiTietPhieuNhap
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class ChiTietPhieuNhap
-    {
-        public string MaChiTietNhap { get; set; }
-        public string MaPhieuNhap { get; set; }
-        public string MaSanPham { get; set; }
-        public int SoLuong { get; set; }
-        public Nullable<decimal> GiaNhap { get; set; }
-        public Nullable<decimal> ThanhTien { get; set; }
-    
-        public virtual PhieuNhap PhieuNhap { get; set; }
-        public virtual SanPham SanPham { get; set; }
-    }
+    public int ChiTietPhieuNhapId { get; set; }
+    public int PhieuNhapId { get; set; }
+    public int SanPhamId { get; set; }
+    public int SoLuong { get; set; }
+    public decimal DonGiaNhap { get; set; }
+    public Nullable<decimal> ThanhTien { get; set; }
+
+    public virtual PhieuNhap PhieuNhap { get; set; }
+    public virtual SanPham SanPham { get; set; }
 }

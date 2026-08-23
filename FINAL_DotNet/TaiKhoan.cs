@@ -7,19 +7,29 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FINAL_DotNet
+using System;
+using System.Collections.Generic;
+
+public partial class TaiKhoan
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class TaiKhoan
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public TaiKhoan()
     {
-        public string TenDangNhap { get; set; }
-        public string MatKhau { get; set; }
-        public string MaNhanVien { get; set; }
-        public string Quyen { get; set; }
-        public Nullable<bool> TrangThai { get; set; }
-    
-        public virtual NhanVien NhanVien { get; set; }
+        this.MauEmails = new HashSet<MauEmail>();
+        this.NhatKyGuiEmails = new HashSet<NhatKyGuiEmail>();
     }
+
+    public int TaiKhoanId { get; set; }
+    public int NhanVienId { get; set; }
+    public string TenDangNhap { get; set; }
+    public string MatKhauHash { get; set; }
+    public string VaiTro { get; set; }
+    public bool PhaiDoiMatKhau { get; set; }
+    public bool DangHoatDong { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<MauEmail> MauEmails { get; set; }
+    public virtual NhanVien NhanVien { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<NhatKyGuiEmail> NhatKyGuiEmails { get; set; }
 }

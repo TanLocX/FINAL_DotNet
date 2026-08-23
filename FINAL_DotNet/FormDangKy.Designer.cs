@@ -144,7 +144,7 @@ namespace FINAL_DotNet
             this.labelTitle.Name = "labelTitle";
             this.labelTitle.Size = new System.Drawing.Size(205, 25);
             this.labelTitle.TabIndex = 0;
-            this.labelTitle.Text = "ĐĂNG KÝ TÀI KHOẢN";
+            this.labelTitle.Text = "CẤP TÀI KHOẢN";
             // 
             // btnQuayLai
             // 
@@ -156,7 +156,7 @@ namespace FINAL_DotNet
             this.btnQuayLai.Name = "btnQuayLai";
             this.btnQuayLai.Size = new System.Drawing.Size(120, 30);
             this.btnQuayLai.TabIndex = 7;
-            this.btnQuayLai.Text = "Quay lại đăng nhập";
+            this.btnQuayLai.Text = "Quay lại";
             this.btnQuayLai.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnQuayLai.UseVisualStyleBackColor = true;
             this.btnQuayLai.Click += new System.EventHandler(this.btnQuayLai_Click);
@@ -213,7 +213,7 @@ namespace FINAL_DotNet
             this.btnDangKy.Name = "btnDangKy";
             this.btnDangKy.Size = new System.Drawing.Size(300, 45);
             this.btnDangKy.TabIndex = 6;
-            this.btnDangKy.Text = "Đăng Ký";
+            this.btnDangKy.Text = "Cấp tài khoản";
             this.btnDangKy.Click += new System.EventHandler(this.btnDangKy_Click);
             // 
             // txtNhapLaiMatKhau
@@ -241,7 +241,7 @@ namespace FINAL_DotNet
             this.txtMaNhanVien.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.txtMaNhanVien.Location = new System.Drawing.Point(25, 293);
             this.txtMaNhanVien.Name = "txtMaNhanVien";
-            this.txtMaNhanVien.PlaceholderText = "Mã nhân viên (VD: NV001)";
+            this.txtMaNhanVien.PlaceholderText = "Mã nhân viên (VD: NV000001)";
             this.txtMaNhanVien.SelectedText = "";
             this.txtMaNhanVien.Size = new System.Drawing.Size(300, 40);
             this.txtMaNhanVien.TabIndex = 4;
@@ -366,7 +366,7 @@ namespace FINAL_DotNet
             this.Controls.Add(this.guna2Panel1);
             this.Name = "FormDangKy";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Đăng Ký - Hệ thống PNJ";
+            this.Text = "Cấp tài khoản - Hệ thống PNJ";
             this.Load += new System.EventHandler(this.FormDangKy_Load);
             this.guna2Panel1.ResumeLayout(false);
             this.guna2Panel1.PerformLayout();

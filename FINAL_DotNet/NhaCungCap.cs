@@ -7,25 +7,25 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FINAL_DotNet
+using System;
+using System.Collections.Generic;
+
+public partial class NhaCungCap
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class NhaCungCap
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public NhaCungCap()
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public NhaCungCap()
-        {
-            this.PhieuNhaps = new HashSet<PhieuNhap>();
-        }
-    
-        public string MaNCC { get; set; }
-        public string TenNCC { get; set; }
-        public string SoDienThoai { get; set; }
-        public string DiaChi { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PhieuNhap> PhieuNhaps { get; set; }
+        this.PhieuNhaps = new HashSet<PhieuNhap>();
     }
+
+    public int NhaCungCapId { get; set; }
+    public string TenNhaCungCap { get; set; }
+    public string NguoiLienHe { get; set; }
+    public string SoDienThoai { get; set; }
+    public string Email { get; set; }
+    public string DiaChi { get; set; }
+    public bool DangHoatDong { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<PhieuNhap> PhieuNhaps { get; set; }
 }

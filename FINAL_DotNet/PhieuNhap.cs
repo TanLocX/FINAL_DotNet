@@ -7,28 +7,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FINAL_DotNet
+using System;
+using System.Collections.Generic;
+
+public partial class PhieuNhap
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class PhieuNhap
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public PhieuNhap()
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PhieuNhap()
-        {
-            this.ChiTietPhieuNhaps = new HashSet<ChiTietPhieuNhap>();
-        }
-    
-        public string MaPhieuNhap { get; set; }
-        public string MaNhanVien { get; set; }
-        public string MaNCC { get; set; }
-        public Nullable<System.DateTime> NgayNhap { get; set; }
-        public Nullable<decimal> TongTienNhap { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
-        public virtual NhaCungCap NhaCungCap { get; set; }
-        public virtual NhanVien NhanVien { get; set; }
+        this.ChiTietPhieuNhaps = new HashSet<ChiTietPhieuNhap>();
     }
+
+    public int PhieuNhapId { get; set; }
+    public int NhanVienId { get; set; }
+    public int NhaCungCapId { get; set; }
+    public System.DateTime NgayNhap { get; set; }
+    public decimal TongTienNhap { get; set; }
+    public string TrangThai { get; set; }
+    public string GhiChu { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
+    public virtual NhaCungCap NhaCungCap { get; set; }
+    public virtual NhanVien NhanVien { get; set; }
 }

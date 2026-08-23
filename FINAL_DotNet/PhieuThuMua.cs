@@ -7,28 +7,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FINAL_DotNet
+using System;
+using System.Collections.Generic;
+
+public partial class PhieuThuMua
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class PhieuThuMua
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public PhieuThuMua()
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public PhieuThuMua()
-        {
-            this.ChiTietPhieuThuMuas = new HashSet<ChiTietPhieuThuMua>();
-        }
-    
-        public string MaPhieuThu { get; set; }
-        public string MaNhanVien { get; set; }
-        public string MaKhachHang { get; set; }
-        public Nullable<System.DateTime> NgayThuMua { get; set; }
-        public Nullable<decimal> TongTienThu { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ChiTietPhieuThuMua> ChiTietPhieuThuMuas { get; set; }
-        public virtual KhachHang KhachHang { get; set; }
-        public virtual NhanVien NhanVien { get; set; }
+        this.ChiTietPhieuThuMuas = new HashSet<ChiTietPhieuThuMua>();
     }
+
+    public int PhieuThuMuaId { get; set; }
+    public int NhanVienId { get; set; }
+    public int KhachHangId { get; set; }
+    public System.DateTime NgayThuMua { get; set; }
+    public decimal TongTienThuMua { get; set; }
+    public string TrangThai { get; set; }
+    public string GhiChu { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ChiTietPhieuThuMua> ChiTietPhieuThuMuas { get; set; }
+    public virtual KhachHang KhachHang { get; set; }
+    public virtual NhanVien NhanVien { get; set; }
 }

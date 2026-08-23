@@ -7,29 +7,27 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FINAL_DotNet
+using System;
+using System.Collections.Generic;
+
+public partial class ChiTietHoaDon
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class ChiTietHoaDon
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public ChiTietHoaDon()
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public ChiTietHoaDon()
-        {
-            this.PhieuBaoHanhs = new HashSet<PhieuBaoHanh>();
-        }
-    
-        public string MaChiTiet { get; set; }
-        public string MaHoaDon { get; set; }
-        public string MaSanPham { get; set; }
-        public int SoLuong { get; set; }
-        public Nullable<decimal> DonGia { get; set; }
-        public Nullable<decimal> TongCong { get; set; }
-    
-        public virtual HoaDon HoaDon { get; set; }
-        public virtual SanPham SanPham { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<PhieuBaoHanh> PhieuBaoHanhs { get; set; }
+        this.PhieuBaoHanhs = new HashSet<PhieuBaoHanh>();
     }
+
+    public int ChiTietHoaDonId { get; set; }
+    public int HoaDonId { get; set; }
+    public int SanPhamId { get; set; }
+    public int SoLuong { get; set; }
+    public decimal DonGiaBan { get; set; }
+    public Nullable<decimal> ThanhTien { get; set; }
+    public Nullable<System.DateTime> HanBaoHanh { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<PhieuBaoHanh> PhieuBaoHanhs { get; set; }
+    public virtual HoaDon HoaDon { get; set; }
+    public virtual SanPham SanPham { get; set; }
 }

@@ -1,15 +1,12 @@
 using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Windows.Forms;
-// Thêm thư viện BCrypt vào đây:
-using BCrypt.Net;
 
 namespace FINAL_DotNet
 {
     public partial class Form1 : Form
     {
-        QL_CuaHangDaQuy_PNJEntities db = new QL_CuaHangDaQuy_PNJEntities();
-
         public Form1()
         {
             InitializeComponent();
@@ -17,16 +14,19 @@ namespace FINAL_DotNet
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            lbThongBaoLoi.Text = "";
+            lbThongBaoLoi.Text = string.Empty;
+
+            // Tài khoản chỉ do quản trị viên cấp, không đăng ký công khai.
+            btnChuyenDangKy.Visible = false;
         }
 
         private void btnDangNhap_Click(object sender, EventArgs e)
         {
-            lbThongBaoLoi.Text = "";
-            string username = txtTenDangNhap.Text.Trim();
-            string password = txtMatKhau.Text.Trim();
+            lbThongBaoLoi.Text = string.Empty;
+            string tenDangNhap = txtTenDangNhap.Text.Trim();
+            string matKhau = txtMatKhau.Text;
 
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+            if (string.IsNullOrWhiteSpace(tenDangNhap) || string.IsNullOrEmpty(matKhau))
             {
                 lbThongBaoLoi.Text = "* Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!";
                 return;
@@ -34,83 +34,111 @@ namespace FINAL_DotNet
 
             try
             {
-                // BƯỚC A: CHỈ TÌM TÀI KHOẢN THEO TÊN ĐĂNG NHẬP
-
-                var taiKhoan = db.TaiKhoans.FirstOrDefault(tk => tk.TenDangNhap == username && tk.TrangThai == true);
-
-                if (taiKhoan != null)
+                using (var db = DatabaseConnection.CreateContext())
                 {
-                    // BƯỚC B: SỬ DỤNG BCRYPT ĐỂ XÁC THỰC MẬT KHẨU
-                    bool isPasswordCorrect = BCrypt.Net.BCrypt.Verify(password, taiKhoan.MatKhau);
+                    var taiKhoan = db.TaiKhoans
+                        .Include(tk => tk.NhanVien)
+                        .FirstOrDefault(tk =>
+                            tk.TenDangNhap == tenDangNhap &&
+                            tk.DangHoatDong &&
+                            tk.NhanVien.DangLamViec);
 
-                    if (isPasswordCorrect)
+                    if (taiKhoan == null || !KiemTraMatKhau(matKhau, taiKhoan.MatKhauHash))
                     {
-                        string tenNhanVien = taiKhoan.NhanVien.HoTen;
-                        MessageBox.Show($"Đăng nhập thành công!\nChào mừng {tenNhanVien} (Quyền: {taiKhoan.Quyen})",
-                                        "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                        // TODO: Mở form chính ở đây
-                    }
-                    else
-                    {
-                        // Sai mật khẩu
                         lbThongBaoLoi.Text = "* Tên đăng nhập hoặc mật khẩu không chính xác!";
+                        return;
                     }
-                }
-                else
-                {
-                    // Không tìm thấy tên đăng nhập hoặc tài khoản bị khóa
-                    lbThongBaoLoi.Text = "* Tên đăng nhập hoặc mật khẩu không chính xác!";
+
+                    if (taiKhoan.PhaiDoiMatKhau)
+                    {
+                        using (var formDoiMatKhau = new FormDoiMatKhau(taiKhoan.TaiKhoanId))
+                        {
+                            if (formDoiMatKhau.ShowDialog(this) != DialogResult.OK)
+                            {
+                                lbThongBaoLoi.Text = "* Bạn cần đổi mật khẩu trước khi tiếp tục.";
+                                return;
+                            }
+                        }
+                    }
+
+                    MessageBox.Show(
+                        $"Đăng nhập thành công!\nChào mừng {taiKhoan.NhanVien.HoTen} (Vai trò: {taiKhoan.VaiTro})",
+                        "Thành công",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+
+                    // TODO: Mở form chính và truyền thông tin phiên đăng nhập.
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                lbThongBaoLoi.Text = "* Lỗi kết nối CSDL: " + ex.Message;
+                lbThongBaoLoi.Text = "* Không thể kết nối CSDL. Hãy kiểm tra Radmin VPN và cấu hình kết nối.";
+            }
+        }
+
+        private static bool KiemTraMatKhau(string matKhau, string matKhauHash)
+        {
+            if (string.IsNullOrWhiteSpace(matKhauHash))
+            {
+                return false;
+            }
+
+            try
+            {
+                return BCrypt.Net.BCrypt.Verify(matKhau, matKhauHash);
+            }
+            catch
+            {
+                return false;
             }
         }
 
         private void txt_TextChanged(object sender, EventArgs e)
         {
-            lbThongBaoLoi.Text = "";
+            lbThongBaoLoi.Text = string.Empty;
         }
 
         private void btnChuyenDangKy_Click(object sender, EventArgs e)
         {
-            FormDangKy frm = new FormDangKy();
-            this.Hide();
-            frm.ShowDialog();
-            this.Show();
+            using (var formDangKy = new FormDangKy())
+            {
+                formDangKy.ShowDialog(this);
+            }
+        }
+
+        private void btnQuenMatKhau_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "Vui lòng liên hệ quản trị viên để được đặt lại mật khẩu.",
+                "Quên mật khẩu",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
         }
 
         private void btnTogglePassword_Click(object sender, EventArgs e)
         {
             if (txtMatKhau.PasswordChar == '*')
             {
-                // Đang ẩn → hiện mật khẩu
                 txtMatKhau.PasswordChar = '\0';
-                btnTogglePassword.ForeColor = System.Drawing.Color.FromArgb(94, 148, 255); // xanh = đang hiện
+                btnTogglePassword.ForeColor = System.Drawing.Color.FromArgb(94, 148, 255);
             }
             else
             {
-                // Đang hiện → ẩn mật khẩu
                 txtMatKhau.PasswordChar = '*';
-                btnTogglePassword.ForeColor = System.Drawing.Color.FromArgb(125, 137, 149); // xám = đang ẩn
+                btnTogglePassword.ForeColor = System.Drawing.Color.FromArgb(125, 137, 149);
             }
         }
 
         private void guna2Panel2_Paint(object sender, PaintEventArgs e)
         {
-
         }
 
         private void label4_Click(object sender, EventArgs e)
         {
-
         }
 
         private void guna2Panel6_Paint(object sender, PaintEventArgs e)
         {
-
         }
     }
 }

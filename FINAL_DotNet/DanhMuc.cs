@@ -7,24 +7,22 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FINAL_DotNet
+using System;
+using System.Collections.Generic;
+
+public partial class DanhMuc
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class DanhMuc
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public DanhMuc()
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public DanhMuc()
-        {
-            this.SanPhams = new HashSet<SanPham>();
-        }
-    
-        public string MaDanhMuc { get; set; }
-        public string TenDanhMuc { get; set; }
-        public string MoTa { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<SanPham> SanPhams { get; set; }
+        this.SanPhams = new HashSet<SanPham>();
     }
+
+    public int DanhMucId { get; set; }
+    public string TenDanhMuc { get; set; }
+    public string MoTa { get; set; }
+    public bool DangHoatDong { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<SanPham> SanPhams { get; set; }
 }

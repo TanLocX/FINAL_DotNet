@@ -7,39 +7,36 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FINAL_DotNet
+using System;
+using System.Collections.Generic;
+
+public partial class SanPham
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class SanPham
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+    public SanPham()
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public SanPham()
-        {
-            this.ChiTietChatLieux = new HashSet<ChiTietChatLieu>();
-            this.ChiTietHoaDons = new HashSet<ChiTietHoaDon>();
-            this.ChiTietPhieuNhaps = new HashSet<ChiTietPhieuNhap>();
-            this.ChiTietPhieuThuMuas = new HashSet<ChiTietPhieuThuMua>();
-        }
-    
-        public string MaSanPham { get; set; }
-        public string MaDanhMuc { get; set; }
-        public string TenSanPham { get; set; }
-        public string MaQR { get; set; }
-        public Nullable<decimal> GiaVon { get; set; }
-        public Nullable<decimal> GiaBan { get; set; }
-        public Nullable<int> SoLuongTon { get; set; }
-        public string DuongDanAnh { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ChiTietChatLieu> ChiTietChatLieux { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ChiTietHoaDon> ChiTietHoaDons { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ChiTietPhieuThuMua> ChiTietPhieuThuMuas { get; set; }
-        public virtual DanhMuc DanhMuc { get; set; }
+        this.ChiTietChatLieux = new HashSet<ChiTietChatLieu>();
+        this.ChiTietHoaDons = new HashSet<ChiTietHoaDon>();
+        this.ChiTietPhieuNhaps = new HashSet<ChiTietPhieuNhap>();
+        this.ChiTietPhieuThuMuas = new HashSet<ChiTietPhieuThuMua>();
     }
+
+    public int SanPhamId { get; set; }
+    public int DanhMucId { get; set; }
+    public string TenSanPham { get; set; }
+    public decimal GiaVon { get; set; }
+    public decimal GiaBan { get; set; }
+    public int SoLuongTon { get; set; }
+    public string DuongDanAnh { get; set; }
+    public bool DangKinhDoanh { get; set; }
+
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ChiTietChatLieu> ChiTietChatLieux { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ChiTietHoaDon> ChiTietHoaDons { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+    public virtual ICollection<ChiTietPhieuThuMua> ChiTietPhieuThuMuas { get; set; }
+    public virtual DanhMuc DanhMuc { get; set; }
 }

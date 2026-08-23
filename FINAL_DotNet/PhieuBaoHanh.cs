@@ -7,19 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FINAL_DotNet
+using System;
+using System.Collections.Generic;
+
+public partial class PhieuBaoHanh
 {
-    using System;
-    using System.Collections.Generic;
-    
-    public partial class PhieuBaoHanh
-    {
-        public string MaPhieuBH { get; set; }
-        public string MaChiTiet { get; set; }
-        public Nullable<System.DateTime> NgayTiepNhan { get; set; }
-        public string NoiDungBaoHanh { get; set; }
-        public string TrangThai { get; set; }
-    
-        public virtual ChiTietHoaDon ChiTietHoaDon { get; set; }
-    }
+    public int PhieuBaoHanhId { get; set; }
+    public int ChiTietHoaDonId { get; set; }
+    public System.DateTime NgayTiepNhan { get; set; }
+    public string NoiDungBaoHanh { get; set; }
+    public string TrangThai { get; set; }
+    public Nullable<System.DateTime> NgayTraDuKien { get; set; }
+    public Nullable<System.DateTime> NgayTraThucTe { get; set; }
+    public string GhiChu { get; set; }
+
+    public virtual ChiTietHoaDon ChiTietHoaDon { get; set; }
 }
