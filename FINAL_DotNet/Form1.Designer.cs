@@ -1,4 +1,4 @@
-namespace FINAL_DotNet
+﻿namespace FINAL_DotNet
 {
     partial class Form1
     {
@@ -20,9 +20,10 @@ namespace FINAL_DotNet
             this.pnlNen = new Guna.UI2.WinForms.Guna2Panel();
             this.guna2Panel1 = new Guna.UI2.WinForms.Guna2Panel();
             this.pnlDangNhap = new Guna.UI2.WinForms.Guna2Panel();
+            this.button1 = new System.Windows.Forms.Button();
             this.btnChuyenDangKy = new System.Windows.Forms.Button();
             this.btnDangNhap = new Guna.UI2.WinForms.Guna2Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lbThongBaoLoi = new System.Windows.Forms.Label();
             this.btnTogglePassword = new System.Windows.Forms.Button();
             this.txtTenDangNhap = new Guna.UI2.WinForms.Guna2TextBox();
             this.label10 = new System.Windows.Forms.Label();
@@ -38,7 +39,6 @@ namespace FINAL_DotNet
             this.label4 = new System.Windows.Forms.Label();
             this.guna2Panel4 = new Guna.UI2.WinForms.Guna2Panel();
             this.label8 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.pnlNen.SuspendLayout();
             this.pnlDangNhap.SuspendLayout();
             this.guna2Panel2.SuspendLayout();
@@ -83,7 +83,7 @@ namespace FINAL_DotNet
             this.pnlDangNhap.Controls.Add(this.button1);
             this.pnlDangNhap.Controls.Add(this.btnChuyenDangKy);
             this.pnlDangNhap.Controls.Add(this.btnDangNhap);
-            this.pnlDangNhap.Controls.Add(this.label1);
+            this.pnlDangNhap.Controls.Add(this.lbThongBaoLoi);
             this.pnlDangNhap.Controls.Add(this.btnTogglePassword);
             this.pnlDangNhap.Controls.Add(this.txtTenDangNhap);
             this.pnlDangNhap.Controls.Add(this.label10);
@@ -98,6 +98,21 @@ namespace FINAL_DotNet
             this.pnlDangNhap.Size = new System.Drawing.Size(346, 464);
             this.pnlDangNhap.TabIndex = 4;
             this.pnlDangNhap.Paint += new System.Windows.Forms.PaintEventHandler(this.guna2Panel6_Paint);
+            // 
+            // button1
+            // 
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
+            this.button1.Location = new System.Drawing.Point(23, 227);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(180, 30);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "Quên mật khẩu";
+            this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.btnChuyenDangKy_Click);
             // 
             // btnChuyenDangKy
             // 
@@ -131,16 +146,16 @@ namespace FINAL_DotNet
             this.btnDangNhap.Text = "Đăng Nhập";
             this.btnDangNhap.Click += new System.EventHandler(this.btnDangNhap_Click);
             // 
-            // label1
+            // lbThongBaoLoi
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Red;
-            this.label1.Location = new System.Drawing.Point(32, 285);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(10, 15);
-            this.label1.TabIndex = 5;
-            this.label1.Text = ".";
+            this.lbThongBaoLoi.AutoSize = true;
+            this.lbThongBaoLoi.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbThongBaoLoi.ForeColor = System.Drawing.Color.Red;
+            this.lbThongBaoLoi.Location = new System.Drawing.Point(32, 285);
+            this.lbThongBaoLoi.Name = "lbThongBaoLoi";
+            this.lbThongBaoLoi.Size = new System.Drawing.Size(10, 15);
+            this.lbThongBaoLoi.TabIndex = 5;
+            this.lbThongBaoLoi.Text = ".";
             // 
             // btnTogglePassword
             // 
@@ -343,21 +358,6 @@ namespace FINAL_DotNet
             this.label8.Size = new System.Drawing.Size(0, 37);
             this.label8.TabIndex = 0;
             // 
-            // button1
-            // 
-            this.button1.FlatAppearance.BorderSize = 0;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
-            this.button1.Location = new System.Drawing.Point(23, 227);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(180, 30);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Quên mật khẩu";
-            this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.btnChuyenDangKy_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -389,7 +389,7 @@ namespace FINAL_DotNet
         private System.Windows.Forms.Label labelTitle;
         private Guna.UI2.WinForms.Guna2TextBox txtTenDangNhap;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lbThongBaoLoi;
         private Guna.UI2.WinForms.Guna2Button btnDangNhap;
         private Guna.UI2.WinForms.Guna2TextBox txtMatKhau;
         private System.Windows.Forms.Button btnChuyenDangKy;

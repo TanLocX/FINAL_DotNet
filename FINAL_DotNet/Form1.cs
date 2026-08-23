@@ -17,18 +17,18 @@ namespace FINAL_DotNet
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            label1.Text = "";
+            lbThongBaoLoi.Text = "";
         }
 
         private void btnDangNhap_Click(object sender, EventArgs e)
         {
-            label1.Text = "";
+            lbThongBaoLoi.Text = "";
             string username = txtTenDangNhap.Text.Trim();
             string password = txtMatKhau.Text.Trim();
 
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
             {
-                label1.Text = "* Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!";
+                lbThongBaoLoi.Text = "* Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!";
                 return;
             }
 
@@ -54,30 +54,32 @@ namespace FINAL_DotNet
                     else
                     {
                         // Sai mật khẩu
-                        label1.Text = "* Tên đăng nhập hoặc mật khẩu không chính xác!";
+                        lbThongBaoLoi.Text = "* Tên đăng nhập hoặc mật khẩu không chính xác!";
                     }
                 }
                 else
                 {
                     // Không tìm thấy tên đăng nhập hoặc tài khoản bị khóa
-                    label1.Text = "* Tên đăng nhập hoặc mật khẩu không chính xác!";
+                    lbThongBaoLoi.Text = "* Tên đăng nhập hoặc mật khẩu không chính xác!";
                 }
             }
             catch (Exception ex)
             {
-                label1.Text = "* Lỗi kết nối CSDL: " + ex.Message;
+                lbThongBaoLoi.Text = "* Lỗi kết nối CSDL: " + ex.Message;
             }
         }
 
         private void txt_TextChanged(object sender, EventArgs e)
         {
-            label1.Text = "";
+            lbThongBaoLoi.Text = "";
         }
 
         private void btnChuyenDangKy_Click(object sender, EventArgs e)
         {
             FormDangKy frm = new FormDangKy();
+            this.Hide();
             frm.ShowDialog();
+            this.Show();
         }
 
         private void btnTogglePassword_Click(object sender, EventArgs e)
