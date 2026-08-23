@@ -142,6 +142,12 @@ namespace FINAL_DotNet
                 return;
             }
 
+            if (menu.TieuDeTrang == "Quản lý nhân viên")
+            {
+                MoFormCon(new FrmNhanVien(), menu.TieuDeTrang, true);
+                return;
+            }
+
             DongFormConHienTai();
             pnlChaoMung.Visible = true;
             lblTieuDeTrang.Text = menu.TieuDeTrang;
