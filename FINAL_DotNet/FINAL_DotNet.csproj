@@ -127,6 +127,15 @@
     <Compile Include="FrmKhachHang.Designer.cs">
       <DependentUpon>FrmKhachHang.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmBanHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBanHang.Designer.cs">
+      <DependentUpon>FrmBanHang.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmHoaDon.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FrmDanhMuc.cs">
       <SubType>Form</SubType>
     </Compile>
