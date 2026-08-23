@@ -135,7 +135,7 @@ IF EXISTS
 )
     THROW 50017, N'Khách lẻ không được xuất hiện trong nhật ký gửi email.', 1;
 
-IF (SELECT COUNT(*) FROM dbo.SanPham WHERE DuongDanAnh LIKE N'Resources\%.png') <> 10
+IF (SELECT COUNT(*) FROM dbo.SanPham WHERE DuongDanAnh LIKE N'Resources\%.png') < 10
     THROW 50018, N'Chưa có đủ 10 đường dẫn ảnh sản phẩm mẫu.', 1;
 
 IF NOT EXISTS (SELECT 1 FROM dbo.TaiKhoan WHERE DangHoatDong = 0)

@@ -6,6 +6,13 @@ Chạy các script bằng SQL Server Management Studio theo đúng thứ tự:
 2. `02_SeedData.sql`: thêm dữ liệu mẫu cho toàn bộ bảng.
 3. `03_VerifyDatabase.sql`: kiểm tra số dòng, tổng tiền và các trạng thái demo.
 
+Nếu database đang dùng schema cũ có khóa `MaNhanVien`, `MaSanPham` dạng chuỗi:
+
+1. Tạo và xác minh file backup `.bak`.
+2. Chạy `04_MigrateLegacyToV2.sql` để chuyển schema và giữ dữ liệu cũ.
+3. Chạy `05_CompleteSampleDataAfterMigration.sql` để bổ sung dữ liệu mẫu còn thiếu.
+4. Chạy `03_VerifyDatabase.sql` để xác nhận kết quả cuối cùng.
+
 Các script tạo/seed sẽ dừng nếu phát hiện bảng hoặc dữ liệu hiện có. Chúng không tự động xóa hay ghi đè CSDL cũ.
 
 ## Tài khoản demo
