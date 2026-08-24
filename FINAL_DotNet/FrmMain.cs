@@ -192,6 +192,12 @@ namespace FINAL_DotNet
                 return;
             }
 
+            if (menu.TieuDeTrang == "Thống kê")
+            {
+                MoFormCon(new FrmThongKe(true), menu.TieuDeTrang, false);
+                return;
+            }
+
             if (menu.TieuDeTrang == "Quản lý tài khoản và phân quyền")
             {
                 MoFormCon(new FrmTaiKhoan(), menu.TieuDeTrang, true);
@@ -263,13 +269,7 @@ namespace FINAL_DotNet
 
         private void HienThiTongQuan()
         {
-            DongFormConHienTai();
-            pnlChaoMung.Visible = true;
-            lblTieuDeTrang.Text = "Tổng quan hệ thống";
-            lblNoiDungChinh.Text = "HỆ THỐNG QUẢN LÝ CỬA HÀNG ĐÁ QUÝ PNJ";
-            lblMoTa.Text = phienDangNhap.LaQuanTriVien
-                ? "Bạn có quyền quản trị và sử dụng toàn bộ chức năng của hệ thống."
-                : "Bạn đang sử dụng nhóm chức năng nghiệp vụ dành cho nhân viên.";
+            MoFormCon(new FrmThongKe(false), "Tổng quan hệ thống", false);
         }
 
         private void btnDangXuat_Click(object sender, EventArgs e)
