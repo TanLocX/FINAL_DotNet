@@ -10,6 +10,7 @@
     <RootNamespace>FINAL_DotNet</RootNamespace>
     <AssemblyName>FINAL_DotNet</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
@@ -92,7 +93,8 @@
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Resources.Extensions, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Resources.Extensions.4.7.1\lib\net461\System.Resources.Extensions.dll</HintPath>
+      <HintPath Condition="Exists('..\packages\System.Resources.Extensions.4.7.1\lib\net461\System.Resources.Extensions.dll')">..\packages\System.Resources.Extensions.4.7.1\lib\net461\System.Resources.Extensions.dll</HintPath>
+      <HintPath Condition="!Exists('..\packages\System.Resources.Extensions.4.7.1\lib\net461\System.Resources.Extensions.dll')">$(UserProfile)\.nuget\packages\system.resources.extensions\4.7.1\lib\net461\System.Resources.Extensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Security" />

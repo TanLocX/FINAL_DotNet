@@ -16,7 +16,11 @@ namespace FINAL_DotNet
         private bool dangKhoiTao = true;
         private DuLieuThongKe duLieuHienTai;
 
-        public FrmThongKe(bool moTabPhanTich = false)
+        public FrmThongKe() : this(false)
+        {
+        }
+
+        public FrmThongKe(bool moTabPhanTich)
         {
             this.moTabPhanTich = moTabPhanTich;
             InitializeComponent();

@@ -7,7 +7,7 @@ namespace FINAL_DotNet
 {
     public partial class FrmMain : Form
     {
-        private readonly ThongTinPhienDangNhap phienDangNhap;
+        private ThongTinPhienDangNhap phienDangNhap;
         private readonly List<Control> mucQuanTri = new List<Control>();
         private Form formConHienTai;
         private bool dangXuat;
@@ -15,13 +15,20 @@ namespace FINAL_DotNet
         public FrmMain()
         {
             InitializeComponent();
-            phienDangNhap = CurrentUserSession.HienTai;
         }
 
         public bool DaYeuCauDangXuat => dangXuat;
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
+            if (!CurrentUserSession.DaDangNhap)
+            {
+                MessageBox.Show("Phiên đăng nhập đã kết thúc. Vui lòng đăng nhập lại.", "Chưa đăng nhập",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                BeginInvoke(new Action(Close));
+                return;
+            }
+            phienDangNhap = CurrentUserSession.HienTai;
             string tenHienThi = phienDangNhap.LaQuanTriVien ? "Admin" : phienDangNhap.HoTen;
 
             lblHoTen.Text = tenHienThi;
