@@ -29,7 +29,6 @@ namespace FINAL_DotNet
             this.colGiaMuaVao = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colGiaBanRa = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colSoSanPham = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colSoPhieuThuMua = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTrangThai = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pnlBieuMau = new System.Windows.Forms.Panel();
             this.lblTieuDeBieuMau = new System.Windows.Forms.Label();
@@ -134,7 +133,7 @@ namespace FINAL_DotNet
             headerStyle.SelectionBackColor = System.Drawing.Color.FromArgb(34, 45, 58);
             this.dgvChatLieu.ColumnHeadersDefaultCellStyle = headerStyle;
             this.dgvChatLieu.ColumnHeadersHeight = 38;
-            this.dgvChatLieu.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { this.colMaChatLieu, this.colTenChatLieu, this.colGiaMuaVao, this.colGiaBanRa, this.colSoSanPham, this.colSoPhieuThuMua, this.colTrangThai });
+            this.dgvChatLieu.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { this.colMaChatLieu, this.colTenChatLieu, this.colGiaMuaVao, this.colGiaBanRa, this.colSoSanPham, this.colTrangThai });
             this.dgvChatLieu.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvChatLieu.EnableHeadersVisualStyles = false;
             this.dgvChatLieu.MultiSelect = false;
@@ -162,9 +161,6 @@ namespace FINAL_DotNet
             this.colSoSanPham.DataPropertyName = "SoSanPham";
             this.colSoSanPham.HeaderText = "Sản phẩm";
             this.colSoSanPham.Width = 85;
-            this.colSoPhieuThuMua.DataPropertyName = "SoPhieuThuMua";
-            this.colSoPhieuThuMua.HeaderText = "Thu mua";
-            this.colSoPhieuThuMua.Width = 80;
             this.colTrangThai.DataPropertyName = "TrangThai";
             this.colTrangThai.HeaderText = "Trạng thái";
             this.colTrangThai.Width = 125;
@@ -334,7 +330,6 @@ namespace FINAL_DotNet
         private System.Windows.Forms.DataGridViewTextBoxColumn colGiaMuaVao;
         private System.Windows.Forms.DataGridViewTextBoxColumn colGiaBanRa;
         private System.Windows.Forms.DataGridViewTextBoxColumn colSoSanPham;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colSoPhieuThuMua;
         private System.Windows.Forms.DataGridViewTextBoxColumn colTrangThai;
         private System.Windows.Forms.Panel pnlBieuMau;
         private System.Windows.Forms.Label lblTieuDeBieuMau;

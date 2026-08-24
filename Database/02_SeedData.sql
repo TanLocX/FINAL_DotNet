@@ -277,20 +277,20 @@ BEGIN TRY
     ) totals ON totals.PhieuNhapId = pn.PhieuNhapId;
 
     INSERT dbo.PhieuThuMua
-        (NhanVienId, KhachHangId, NgayThuMua, TongTienThuMua, TrangThai, GhiChu)
-    SELECT nv.NhanVienId, kh.KhachHangId, seed.NgayThuMua, 0, seed.TrangThai, seed.GhiChu
+        (MaPhieuNguon, NhanVienId, KhachHangId, NgayThuMua, TongTienThuMua, TrangThai, GhiChu)
+    SELECT seed.MaPhieuNguon, nv.NhanVienId, kh.KhachHangId, seed.NgayThuMua, 0, seed.TrangThai, seed.GhiChu
     FROM
     (
         VALUES
-            ('0901000005', '0912000001', CONVERT(DATETIME2, '2026-05-07T09:20:00'), 'HOAN_THANH', N'Thu mua vàng cũ'),
-            ('0901000005', '0912000002', CONVERT(DATETIME2, '2026-05-16T14:10:00'), 'HOAN_THANH', N'Thu mua trang sức bạc'),
-            ('0901000001', '0912000003', CONVERT(DATETIME2, '2026-05-28T10:35:00'), 'HOAN_THANH', N'Thu mua nhẫn cũ'),
-            ('0901000005', '0912000004', CONVERT(DATETIME2, '2026-06-09T15:25:00'), 'DA_HUY', N'Khách hàng đổi ý'),
-            ('0901000005', '0912000005', CONVERT(DATETIME2, '2026-06-19T11:45:00'), 'HOAN_THANH', N'Thu mua vàng 18K'),
-            ('0901000001', '0912000006', CONVERT(DATETIME2, '2026-07-03T13:15:00'), 'HOAN_THANH', N'Thu mua bạch kim'),
-            ('0901000005', '0912000001', CONVERT(DATETIME2, '2026-07-14T09:50:00'), 'HOAN_THANH', N'Thu mua lắc chân'),
-            ('0901000005', '0912000002', CONVERT(DATETIME2, '2026-07-25T16:05:00'), 'DA_HUY', N'Không đạt kiểm định')
-    ) AS seed(SoDienThoaiNhanVien, SoDienThoaiKhachHang, NgayThuMua, TrangThai, GhiChu)
+            (N'SEED-TM-001', '0901000005', '0912000001', CONVERT(DATETIME2, '2026-05-07T09:20:00'), 'HOAN_THANH', N'Thu mua vàng cũ'),
+            (N'SEED-TM-002', '0901000005', '0912000002', CONVERT(DATETIME2, '2026-05-16T14:10:00'), 'HOAN_THANH', N'Thu mua trang sức bạc'),
+            (N'SEED-TM-003', '0901000001', '0912000003', CONVERT(DATETIME2, '2026-05-28T10:35:00'), 'HOAN_THANH', N'Thu mua nhẫn cũ'),
+            (N'SEED-TM-004', '0901000005', '0912000004', CONVERT(DATETIME2, '2026-06-09T15:25:00'), 'DA_HUY', N'Khách hàng đổi ý'),
+            (N'SEED-TM-005', '0901000005', '0912000005', CONVERT(DATETIME2, '2026-06-19T11:45:00'), 'HOAN_THANH', N'Thu mua vàng 18K'),
+            (N'SEED-TM-006', '0901000001', '0912000006', CONVERT(DATETIME2, '2026-07-03T13:15:00'), 'HOAN_THANH', N'Thu mua bạch kim'),
+            (N'SEED-TM-007', '0901000005', '0912000001', CONVERT(DATETIME2, '2026-07-14T09:50:00'), 'HOAN_THANH', N'Thu mua lắc chân'),
+            (N'SEED-TM-008', '0901000005', '0912000002', CONVERT(DATETIME2, '2026-07-25T16:05:00'), 'DA_HUY', N'Không đạt kiểm định')
+    ) AS seed(MaPhieuNguon, SoDienThoaiNhanVien, SoDienThoaiKhachHang, NgayThuMua, TrangThai, GhiChu)
     JOIN dbo.NhanVien nv ON nv.SoDienThoai = seed.SoDienThoaiNhanVien
     JOIN dbo.KhachHang kh ON kh.SoDienThoai = seed.SoDienThoaiKhachHang;
 

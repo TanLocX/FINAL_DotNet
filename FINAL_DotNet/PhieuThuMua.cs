@@ -19,6 +19,7 @@ public partial class PhieuThuMua
     }
 
     public int PhieuThuMuaId { get; set; }
+    public string MaPhieuNguon { get; set; }
     public int NhanVienId { get; set; }
     public int KhachHangId { get; set; }
     public System.DateTime NgayThuMua { get; set; }

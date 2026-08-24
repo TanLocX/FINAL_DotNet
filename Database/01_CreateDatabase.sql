@@ -226,6 +226,7 @@ BEGIN TRY
     CREATE TABLE dbo.PhieuThuMua
     (
         PhieuThuMuaId      INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PhieuThuMua PRIMARY KEY,
+        MaPhieuNguon       NVARCHAR(50) NULL,
         NhanVienId         INT NOT NULL,
         KhachHangId        INT NOT NULL,
         NgayThuMua         DATETIME2 NOT NULL CONSTRAINT DF_PhieuThuMua_Ngay DEFAULT SYSDATETIME(),
@@ -327,6 +328,8 @@ BEGIN TRY
     CREATE INDEX IX_PhieuNhap_TrangThai_NgayNhap ON dbo.PhieuNhap(TrangThai, NgayNhap);
     CREATE INDEX IX_CTPhieuNhap_SanPhamId ON dbo.ChiTietPhieuNhap(SanPhamId);
     CREATE INDEX IX_PhieuThuMua_TrangThai_Ngay ON dbo.PhieuThuMua(TrangThai, NgayThuMua);
+    CREATE UNIQUE INDEX UX_PhieuThuMua_MaNguon ON dbo.PhieuThuMua(MaPhieuNguon)
+        WHERE MaPhieuNguon IS NOT NULL;
     CREATE INDEX IX_CTThuMua_ChatLieuId ON dbo.ChiTietPhieuThuMua(ChatLieuId);
     CREATE INDEX IX_BaoHanh_TrangThai_Ngay ON dbo.PhieuBaoHanh(TrangThai, NgayTiepNhan);
     CREATE INDEX IX_NhatKyEmail_ThoiGian ON dbo.NhatKyGuiEmail(ThoiGianGui);

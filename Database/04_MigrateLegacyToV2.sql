@@ -242,6 +242,7 @@ BEGIN TRY
     CREATE TABLE dbo.PhieuThuMua_V2
     (
         PhieuThuMuaId      INT IDENTITY(1,1) NOT NULL CONSTRAINT PK_PhieuThuMua PRIMARY KEY,
+        MaPhieuNguon       NVARCHAR(50) NULL,
         NhanVienId         INT NOT NULL,
         KhachHangId        INT NOT NULL,
         NgayThuMua         DATETIME2 NOT NULL CONSTRAINT DF_PhieuThuMua_Ngay DEFAULT SYSDATETIME(),
@@ -621,6 +622,12 @@ BEGIN TRY
     EXEC sys.sp_rename N'dbo.PhieuBaoHanh_V2', N'PhieuBaoHanh';
     EXEC sys.sp_rename N'dbo.MauEmail_V2', N'MauEmail';
     EXEC sys.sp_rename N'dbo.NhatKyGuiEmail_V2', N'NhatKyGuiEmail';
+
+    UPDATE dbo.PhieuThuMua
+    SET MaPhieuNguon = N'LEGACY-PTM-' + RIGHT(N'000000' + CONVERT(NVARCHAR(10), PhieuThuMuaId), 6)
+    WHERE MaPhieuNguon IS NULL;
+    CREATE UNIQUE INDEX UX_PhieuThuMua_MaNguon ON dbo.PhieuThuMua(MaPhieuNguon)
+        WHERE MaPhieuNguon IS NOT NULL;
 
     COMMIT TRANSACTION;
 END TRY

@@ -20,6 +20,30 @@ DECLARE @SoBangNghiepVu INT =
 IF @SoBangNghiepVu <> 17
     THROW 50010, N'CSDL không có đủ 17 bảng nghiệp vụ.', 1;
 
+IF COL_LENGTH(N'dbo.PhieuThuMua', N'MaPhieuNguon') IS NULL
+    THROW 50020, N'Bảng PhieuThuMua chưa có cột MaPhieuNguon phục vụ import Excel.', 1;
+
+IF EXISTS
+(
+    SELECT MaPhieuNguon
+    FROM dbo.PhieuThuMua
+    WHERE MaPhieuNguon IS NOT NULL
+    GROUP BY MaPhieuNguon
+    HAVING COUNT(*) > 1
+)
+    THROW 50021, N'Dữ liệu PhieuThuMua có MaPhieuNguon bị trùng.', 1;
+
+IF NOT EXISTS
+(
+    SELECT 1
+    FROM sys.indexes
+    WHERE object_id = OBJECT_ID(N'dbo.PhieuThuMua')
+      AND name = N'UX_PhieuThuMua_MaNguon'
+      AND is_unique = 1
+      AND has_filter = 1
+)
+    THROW 50022, N'Chưa có chỉ mục duy nhất lọc UX_PhieuThuMua_MaNguon.', 1;
+
 DECLARE @SoDong TABLE
 (
     ThuTu   INT NOT NULL,

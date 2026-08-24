@@ -42,7 +42,7 @@ Hệ thống được xây dựng cho cửa hàng trang sức và đá quý, h�
 - Quản lý riêng hồ sơ nhân viên và tài khoản đăng nhập.
 - Quản lý khách hàng, danh mục, nhà cung cấp và chất liệu.
 - Quản lý sản phẩm, thành phần chất liệu, giá và tồn kho.
-- Bán hàng, nhập hàng từ nhà cung cấp và thu mua từ khách hàng.
+- Bán hàng, nhập hàng từ nhà cung cấp và import dữ liệu thu mua lịch sử từ Excel.
 - Theo dõi hạn bảo hành và từng lần tiếp nhận bảo hành.
 - Quản lý mẫu email, gửi email và lưu nhật ký gửi.
 - Tìm kiếm đa tiêu chí, thống kê, Excel, Report và Backup/Restore.
@@ -92,11 +92,15 @@ NhanVien 1 ─── 0..1 TaiKhoan
 
 Nhà cung cấp thực tế được xác định qua `PhieuNhap`. Không bắt buộc gắn một nhà cung cấp cố định vào sản phẩm vì cùng sản phẩm có thể được nhập từ nhiều nguồn.
 
-## 3.4. Thu mua từ khách hàng
+## 3.4. Thu mua từ dữ liệu Excel
 
-- `PhieuNhap` ghi nhận hàng nhập từ nhà cung cấp.
-- `PhieuThuMua` ghi nhận vàng, đá quý hoặc trang sức cửa hàng mua lại từ khách hàng.
-- Hai nghiệp vụ được tách để thống kê và kiểm soát chính xác.
+- Dữ liệu thu mua lịch sử được nhận từ file `.xlsx` theo mẫu thống nhất.
+- Chỉ Admin được chọn file, xem trước lỗi và xác nhận import.
+- Mỗi `MaPhieuNguon` nhóm nhiều dòng chi tiết thành một phiếu và được đặt chỉ
+  mục duy nhất để ngăn import lặp.
+- Ứng dụng tự kiểm tra khóa ngoại, trọng lượng, đơn giá, trạng thái và tính tổng
+  tiền trước khi lưu toàn bộ bằng Entity Framework trong transaction.
+- Admin và nhân viên có thể tra cứu, thống kê, xuất Excel và xem Report.
 
 ## 3.5. Bảo hành
 
@@ -140,8 +144,8 @@ Giữ đầy đủ hai bảng:
 | 10 | `ChiTietHoaDon` | Sản phẩm trong hóa đơn |
 | 11 | `PhieuNhap` | Đầu phiếu nhập từ nhà cung cấp |
 | 12 | `ChiTietPhieuNhap` | Sản phẩm trong phiếu nhập |
-| 13 | `PhieuThuMua` | Đầu phiếu thu mua từ khách hàng |
-| 14 | `ChiTietPhieuThuMua` | Món/chất liệu được thu mua |
+| 13 | `PhieuThuMua` | Đầu phiếu thu mua lịch sử được import từ Excel |
+| 14 | `ChiTietPhieuThuMua` | Các mặt hàng trong phiếu thu mua đã import |
 | 15 | `PhieuBaoHanh` | Các lần tiếp nhận bảo hành |
 | 16 | `MauEmail` | Mẫu tiêu đề và nội dung email |
 | 17 | `NhatKyGuiEmail` | Lịch sử gửi email |
@@ -277,7 +281,7 @@ Bản ghi này không được xóa, khóa hoặc dùng để gửi email market
 | `DuongDanAnh` | `NVARCHAR(500)` | Có | Đường dẫn tương đối |
 | `DangKinhDoanh` | `BIT` | Không | Xóa mềm |
 
-Barcode/QR được sinh từ mã hiển thị của `SanPhamId`, không cần lưu ảnh barcode trong CSDL.
+Mã hiển thị sản phẩm được sinh từ `SanPhamId`, ví dụ `SP000123`.
 
 ## 6.8. `ChiTietChatLieu`
 
@@ -346,6 +350,7 @@ Barcode/QR được sinh từ mã hiển thị của `SanPhamId`, không cần l
 | Cột | Kiểu | NULL | Ý nghĩa |
 |---|---|:---:|---|
 | `PhieuThuMuaId` | `INT IDENTITY` | Không | PK |
+| `MaPhieuNguon` | `NVARCHAR(50)` | Có | Mã duy nhất từ file nguồn, chống import lặp |
 | `NhanVienId` | `INT` | Không | FK → nhân viên lập |
 | `KhachHangId` | `INT` | Không | FK → khách bán lại |
 | `NgayThuMua` | `DATETIME2` | Không | Ngày thu mua |
@@ -521,20 +526,16 @@ Khi hủy phiếu nhập:
 - Tìm lần nhập hợp lệ gần nhất để khôi phục `GiaVon`.
 - Đặt `TrangThai = 'DA_HUY'` trong cùng transaction.
 
-## 9.4. Thu mua từ khách hàng
+## 9.4. Import dữ liệu thu mua
 
-1. Chọn khách hàng; nhân viên lấy từ phiên đăng nhập.
-2. Phiếu có ít nhất một dòng chi tiết.
-3. Chọn chất liệu, nhập tên món, trọng lượng và đơn vị.
-4. Đơn giá mặc định từ `ChatLieu.GiaMuaVao`, người có quyền có thể điều chỉnh.
-5. Lưu snapshot dữ liệu và tính tổng tiền trong transaction.
-
-```text
-ThanhTienDong  = TrongLuong × DonGiaThuMua
-TongTienThuMua = SUM(ThanhTienDong)
-```
-
-Phiếu hoàn thành không xóa vật lý. Phiếu `DA_HUY` không được tính vào thống kê thu mua thực tế.
+1. File phải có đúng các cột bắt buộc; giới hạn 20 MB và 5.000 dòng dữ liệu.
+2. `MaPhieuNguon` chỉ gồm chữ Latin, số, dấu `_`, `.`, `-` và tối đa 50 ký tự.
+3. Nhân viên, khách hàng, chất liệu và sản phẩm tùy chọn phải tồn tại trong CSDL.
+4. Các dòng cùng mã nguồn phải thống nhất ngày, nhân viên, khách hàng và trạng thái.
+5. Trọng lượng, đơn giá phải lớn hơn 0; trạng thái chỉ nhận `HOAN_THANH` hoặc `DA_HUY`.
+6. Người dùng phải xem trước và sửa hết lỗi trước khi nút Import được bật.
+7. Đầu phiếu, chi tiết và tổng tiền được lưu trong transaction `Serializable`.
+8. Chỉ mục duy nhất `UX_PhieuThuMua_MaNguon` chặn import cùng mã nguồn lần hai.
 
 ## 9.5. Bảo hành
 
@@ -563,7 +564,7 @@ Phiếu hoàn thành không xóa vật lý. Phiếu `DA_HUY` không được tí
 - Không để trống trường bắt buộc; cắt khoảng trắng phù hợp.
 - Kiểm tra độ dài theo schema.
 - Giá, số lượng, trọng lượng, điểm và tồn kho không âm.
-- Số lượng giao dịch và trọng lượng thu mua phải lớn hơn 0.
+- Số lượng giao dịch phải lớn hơn 0.
 - Ngày sinh không lớn hơn hiện tại.
 - Hạn bảo hành không nhỏ hơn ngày bán.
 - Ngày trả bảo hành không nhỏ hơn ngày tiếp nhận.
@@ -606,7 +607,7 @@ Khóa `IDENTITY` do SQL Server sinh. Ứng dụng kiểm tra khóa nghiệp vụ
 | `FrmBanHang` | Lập hóa đơn và chi tiết |
 | `FrmHoaDon` | Lịch sử, tìm kiếm, hủy và in hóa đơn |
 | `FrmNhapHang` | Lập phiếu nhập và lịch sử nhập |
-| `FrmThuMua` | Lập phiếu thu mua và lịch sử thu mua |
+| `FrmThuMua` | Tải mẫu, xem trước/import Excel, tra cứu, thống kê, Excel và Report |
 | `FrmBaoHanh` | Tiếp nhận, xử lý và trả bảo hành |
 | `FrmQuanLyEmail` | Mẫu email, gửi email và nhật ký |
 | `FrmThongKe` | Thống kê, biểu đồ và xuất dữ liệu |
@@ -623,7 +624,7 @@ Main Form phải mở được các form con. Form quản lý có DataGridView, 
 - **Sản phẩm:** mã/tên, danh mục, chất liệu, khoảng giá, tồn kho, trạng thái kinh doanh.
 - **Hóa đơn:** khoảng ngày, khách hàng, nhân viên, sản phẩm, trạng thái, khoảng tiền.
 - **Phiếu nhập:** khoảng ngày, nhà cung cấp, nhân viên, sản phẩm, trạng thái.
-- **Phiếu thu mua:** khoảng ngày, khách hàng, nhân viên, chất liệu, trạng thái.
+- **Phiếu thu mua:** mã phiếu/mã nguồn, khoảng ngày, khách hàng, nhân viên, chất liệu, sản phẩm và trạng thái.
 - **Bảo hành:** mã phiếu, khách hàng, hóa đơn/sản phẩm, ngày tiếp nhận, hạn và trạng thái.
 - **Nhật ký email:** thời gian, email nhận, khách hàng, mẫu, loại gửi và trạng thái.
 
@@ -633,7 +634,7 @@ Main Form phải mở được các form con. Form quản lý có DataGridView, 
 - Top sản phẩm bán chạy; doanh thu theo danh mục, chất liệu và nhân viên.
 - Sản phẩm tồn thấp.
 - Tổng tiền nhập theo tháng/nhà cung cấp; số lượng nhập theo sản phẩm.
-- Tổng tiền thu mua theo tháng, khách hàng và chất liệu.
+- Số phiếu, tổng tiền hoàn thành, tổng trọng lượng và số khách hàng thu mua theo bộ lọc.
 - Số phiếu bảo hành theo trạng thái; sản phẩm sắp hết hạn bảo hành.
 - Số email thành công/thất bại, tỷ lệ thành công và số email theo mẫu.
 
@@ -647,9 +648,9 @@ PhieuThuMua.TrangThai = HOAN_THANH
 
 ## 12.3. Report và Excel
 
-Report tối thiểu: hóa đơn, phiếu nhập, phiếu thu mua và phiếu tiếp nhận bảo hành. Dùng RDLC + ReportViewer và dữ liệu chuẩn bị qua EF/LINQ hoặc DTO.
+Report hiện có: hóa đơn, phiếu nhập, phiếu thu mua và phiếu tiếp nhận bảo hành. Dùng RDLC + ReportViewer và dữ liệu chuẩn bị qua EF/LINQ hoặc DTO.
 
-Excel tối thiểu xuất: sản phẩm, hóa đơn, nhập hàng, thu mua, bảo hành và nhật ký email. File `.xlsx` phải có tiêu đề cột, định dạng ngày/số tiền và tên file rõ ràng.
+Excel hiện xuất: sản phẩm, hóa đơn, nhập hàng, thu mua, bảo hành và nhật ký email. Phân hệ thu mua còn tạo file mẫu và đọc `.xlsx`; file phải có tiêu đề cột, định dạng ngày/số tiền và tên file rõ ràng.
 
 ---
 
@@ -659,7 +660,7 @@ Excel tối thiểu xuất: sản phẩm, hóa đơn, nhập hàng, thu mua, b�
 - Không sửa entity do EDMX sinh; schema đổi thì `Update Model from Database`.
 - Thuộc tính bổ sung đặt trong partial class/ViewModel.
 - LINQ dùng cho tìm kiếm, thống kê và truy vấn nhiều bảng.
-- Bán, nhập, thu mua và hủy giao dịch dùng transaction.
+- Bán hàng, nhập hàng, import thu mua và hủy giao dịch dùng transaction.
 - Typed DataSet/TableAdapter không thay thế EF cho CRUD chính; nếu không dùng thì loại khỏi project.
 
 ```csharp
@@ -752,7 +753,9 @@ UNION ALL SELECT 'NhatKyGuiEmail', COUNT(*) FROM dbo.NhatKyGuiEmail;
 | Báo cáo Word | 10 | Đặc tả, CSDL, kết quả, hướng dẫn, ảnh, phụ lục code |
 | Demo và nộp | 5 | Chạy ổn định, source, `.bak`, Word, hướng dẫn |
 
-Điểm thưởng được chứng minh bằng phân quyền, BCrypt, reset password, Backup/Restore, Guna UI2, LINQ/truy vấn nhiều bảng, Barcode/QR, mã tự tăng và installer.
+Điểm thưởng hiện có thể chứng minh bằng phân quyền, BCrypt, reset password, Backup/Restore,
+Guna UI2, LINQ/truy vấn nhiều bảng và mã tự tăng. Barcode/QR và installer chỉ ghi nhận
+khi đã được triển khai, kiểm thử và đưa vào sản phẩm nộp.
 
 ---
 
@@ -761,13 +764,14 @@ UNION ALL SELECT 'NhatKyGuiEmail', COUNT(*) FROM dbo.NhatKyGuiEmail;
 1. Đăng nhập Admin và nhân viên để chứng minh BCrypt/phân quyền.
 2. Thêm nhân viên, cấp tài khoản, reset và bắt buộc đổi mật khẩu.
 3. CRUD danh mục, nhà cung cấp và chất liệu.
-4. Thêm sản phẩm có nhiều chất liệu; hiển thị mã tự tăng và Barcode/QR.
+4. Thêm sản phẩm có nhiều chất liệu và kiểm tra mã tự tăng.
 5. Lập/hủy phiếu nhập và kiểm tra tồn kho, giá vốn.
 6. Lập/hủy hóa đơn và kiểm tra tồn kho, doanh thu.
-7. Lập phiếu thu mua, tính tiền theo chất liệu/trọng lượng.
-8. Tiếp nhận bảo hành và cập nhật trạng thái.
-9. CRUD mẫu email; gửi email đơn/hàng loạt và mở nhật ký.
-10. Tìm kiếm, thống kê, Excel, Report và Backup.
+7. Tải file mẫu, import dữ liệu thu mua và thử import lặp để chứng minh validation.
+8. Lọc, thống kê, xuất Excel và xem Report phiếu thu mua.
+9. Tiếp nhận bảo hành và cập nhật trạng thái.
+10. CRUD mẫu email; gửi email đơn/hàng loạt và mở nhật ký.
+11. Tìm kiếm, thống kê, Excel, Report và Backup.
 
 ---
 
@@ -1005,6 +1009,7 @@ GO
 CREATE TABLE dbo.PhieuThuMua
 (
     PhieuThuMuaId      INT IDENTITY(1,1) PRIMARY KEY,
+    MaPhieuNguon       NVARCHAR(50) NULL,
     NhanVienId         INT NOT NULL,
     KhachHangId        INT NOT NULL,
     NgayThuMua         DATETIME2 NOT NULL CONSTRAINT DF_PhieuThuMua_Ngay DEFAULT SYSDATETIME(),
@@ -1107,6 +1112,8 @@ CREATE INDEX IX_CTHoaDon_SanPhamId ON dbo.ChiTietHoaDon(SanPhamId);
 CREATE INDEX IX_PhieuNhap_TrangThai_NgayNhap ON dbo.PhieuNhap(TrangThai, NgayNhap);
 CREATE INDEX IX_CTPhieuNhap_SanPhamId ON dbo.ChiTietPhieuNhap(SanPhamId);
 CREATE INDEX IX_PhieuThuMua_TrangThai_Ngay ON dbo.PhieuThuMua(TrangThai, NgayThuMua);
+CREATE UNIQUE INDEX UX_PhieuThuMua_MaNguon ON dbo.PhieuThuMua(MaPhieuNguon)
+WHERE MaPhieuNguon IS NOT NULL;
 CREATE INDEX IX_CTThuMua_ChatLieuId ON dbo.ChiTietPhieuThuMua(ChatLieuId);
 CREATE INDEX IX_BaoHanh_TrangThai_Ngay ON dbo.PhieuBaoHanh(TrangThai, NgayTiepNhan);
 CREATE INDEX IX_NhatKyEmail_ThoiGian ON dbo.NhatKyGuiEmail(ThoiGianGui);
@@ -1145,7 +1152,7 @@ Các quy tắc liên bảng như `GiamGia <= TongTien`, `HanBaoHanh >= NgayLap`,
 - [ ] Nút quên mật khẩu không mở form đăng ký.
 - [ ] Không có tự đăng ký công khai; phân quyền hoạt động thật.
 - [ ] Có DataGridView, ComboBox FK, CRUD và validation.
-- [ ] Có bán hàng, nhập hàng, thu mua và bảo hành.
+- [ ] Có bán hàng, nhập hàng, import/tra cứu thu mua và bảo hành.
 - [ ] Có mẫu email, gửi email và nhật ký gửi.
 - [ ] Có tìm kiếm, thống kê, Excel, Report, reset password và Backup/Restore.
 
@@ -1165,7 +1172,7 @@ Mô hình 17 bảng của `QL_CuaHangDaQuy_PNJ` cân bằng giữa rubric và ng
 
 - Nhân viên được tách khỏi tài khoản để bảo toàn hồ sơ và lịch sử giao dịch.
 - Chất liệu/thành phần sản phẩm được chuẩn hóa cho sản phẩm nhiều chất liệu.
-- Thu mua từ khách hàng được tách khỏi nhập hàng từ nhà cung cấp.
+- Dữ liệu thu mua lịch sử được import từ Excel, kiểm tra trùng và liên kết đúng khách hàng, nhân viên, chất liệu, sản phẩm.
 - Hạn bảo hành và các lần tiếp nhận bảo hành được quản lý riêng nhưng liên kết.
 - `MauEmail` và `NhatKyGuiEmail` được giữ để hỗ trợ chăm sóc khách hàng, tìm kiếm, thống kê và truy vấn nhiều bảng.
 

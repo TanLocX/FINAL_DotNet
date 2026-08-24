@@ -292,6 +292,7 @@
             <PropertyRef Name="PhieuThuMuaId" />
           </Key>
           <Property Name="PhieuThuMuaId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="MaPhieuNguon" Type="nvarchar" MaxLength="50" />
           <Property Name="NhanVienId" Type="int" Nullable="false" />
           <Property Name="KhachHangId" Type="int" Nullable="false" />
           <Property Name="NgayThuMua" Type="datetime2" Nullable="false" />
@@ -959,6 +960,7 @@
             <PropertyRef Name="PhieuThuMuaId" />
           </Key>
           <Property Name="PhieuThuMuaId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MaPhieuNguon" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="NhanVienId" Type="Int32" Nullable="false" />
           <Property Name="KhachHangId" Type="Int32" Nullable="false" />
           <Property Name="NgayThuMua" Type="DateTime" Nullable="false" />
@@ -1473,6 +1475,7 @@
             <EntityTypeMapping TypeName="FINAL_DotNet.PhieuThuMua">
               <MappingFragment StoreEntitySet="PhieuThuMua">
                 <ScalarProperty Name="PhieuThuMuaId" ColumnName="PhieuThuMuaId" />
+                <ScalarProperty Name="MaPhieuNguon" ColumnName="MaPhieuNguon" />
                 <ScalarProperty Name="NhanVienId" ColumnName="NhanVienId" />
                 <ScalarProperty Name="KhachHangId" ColumnName="KhachHangId" />
                 <ScalarProperty Name="NgayThuMua" ColumnName="NgayThuMua" />

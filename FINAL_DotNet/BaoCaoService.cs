@@ -118,6 +118,54 @@ namespace FINAL_DotNet
             }
         }
 
+        public static CauHinhBaoCao TaoPhieuThuMua(int phieuThuMuaId)
+        {
+            using (var db = DatabaseConnection.CreateContext())
+            {
+                PhieuThuMua phieu = db.PhieuThuMuas
+                    .Include(item => item.KhachHang)
+                    .Include(item => item.NhanVien)
+                    .Include(item => item.ChiTietPhieuThuMuas.Select(detail => detail.ChatLieu))
+                    .Include(item => item.ChiTietPhieuThuMuas.Select(detail => detail.SanPham))
+                    .AsNoTracking()
+                    .SingleOrDefault(item => item.PhieuThuMuaId == phieuThuMuaId);
+                if (phieu == null) throw new InvalidOperationException("Không tìm thấy phiếu thu mua đã chọn.");
+
+                List<DongBaoCao> cacDong = phieu.ChiTietPhieuThuMuas
+                    .OrderBy(detail => detail.ChiTietPhieuThuMuaId)
+                    .Select((detail, index) => new DongBaoCao
+                    {
+                        SoThuTu = index + 1,
+                        NoiDung = string.Format(VanHoaVietNam,
+                            "{0}{1} - {2}\r\nTrọng lượng: {3:N3} {4}    Đơn giá: {5:N0} đ    Thành tiền: {6:N0} đ",
+                            detail.SanPhamId.HasValue ? $"SP{detail.SanPhamId:000000} / " : string.Empty,
+                            detail.ChatLieu.TenChatLieu,
+                            detail.TenSanPhamThu,
+                            detail.TrongLuong,
+                            detail.DonViTinh,
+                            detail.DonGiaThuMua,
+                            detail.ThanhTien ?? detail.TrongLuong * detail.DonGiaThuMua)
+                    }).ToList();
+
+                string ghiChu = phieu.GhiChu ?? string.Empty;
+
+                return new CauHinhBaoCao("Phiếu thu mua " + $"PTM{phieu.PhieuThuMuaId:000000}", cacDong,
+                    TaoThamSo(
+                        "PHIẾU THU MUA TỪ KHÁCH HÀNG",
+                        $"PTM{phieu.PhieuThuMuaId:000000}",
+                        "Ngày thu mua: " + phieu.NgayThuMua.ToString("dd/MM/yyyy HH:mm"),
+                        "Khách hàng: " + phieu.KhachHang.HoTen + " - " + phieu.KhachHang.SoDienThoai,
+                        "Nhân viên: " + phieu.NhanVien.HoTen,
+                        "Mã nguồn: " + (phieu.MaPhieuNguon ?? "Không có") + " | Trạng thái: " +
+                        (phieu.TrangThai == "HOAN_THANH" ? "Hoàn thành" : "Đã hủy"),
+                        "CHI TIẾT THU MUA",
+                        string.Empty,
+                        string.Empty,
+                        "Tổng tiền: " + DinhDangTien(phieu.TongTienThuMua),
+                        "Ghi chú: " + (string.IsNullOrWhiteSpace(ghiChu) ? "Không có" : ghiChu)));
+            }
+        }
+
         public static CauHinhBaoCao TaoPhieuBaoHanh(int phieuBaoHanhId)
         {
             using (var db = DatabaseConnection.CreateContext())

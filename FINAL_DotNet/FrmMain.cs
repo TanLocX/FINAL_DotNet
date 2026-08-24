@@ -46,7 +46,7 @@ namespace FINAL_DotNet
             ThemNutMenu("Khách hàng", "Quản lý khách hàng", false);
             ThemNutMenu("Sản phẩm", "Quản lý sản phẩm", false);
             ThemNutMenu("Nhập hàng", "Nhập hàng", false);
-            ThemNutMenu("Thu mua", "Thu mua từ khách hàng", false);
+            ThemNutMenu("Thu mua Excel", "Import và tra cứu thu mua", false);
             ThemNutMenu("Bảo hành", "Quản lý bảo hành", false);
             ThemNutMenu("Email", "Quản lý email", false);
             ThemNutMenu("Thống kê", "Thống kê", false);
@@ -177,6 +177,12 @@ namespace FINAL_DotNet
             if (menu.TieuDeTrang == "Nhập hàng")
             {
                 MoFormCon(new FrmNhapHang(), menu.TieuDeTrang, false);
+                return;
+            }
+
+            if (menu.TieuDeTrang == "Import và tra cứu thu mua")
+            {
+                MoFormCon(new FrmThuMua(), menu.TieuDeTrang, false);
                 return;
             }
 
