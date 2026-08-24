@@ -451,7 +451,8 @@ namespace FINAL_DotNet
             btnLuuHoaDon.Enabled = false;
             btnHuyHoaDon.Enabled = item.TrangThai == "DA_THANH_TOAN";
             btnInHoaDon.Enabled = item.TrangThai == "DA_THANH_TOAN";
-            tabBanHang.SelectedTab = tabLichSu;
+            if (moLichSuBanDau && tabBanHang.TabPages.Contains(tabLichSu))
+                tabBanHang.SelectedTab = tabLichSu;
             lblThongBao.Text = string.Empty;
         }
 
@@ -861,7 +862,8 @@ namespace FINAL_DotNet
             btnLuuHoaDon.Enabled = true;
             btnHuyHoaDon.Enabled = false;
             btnInHoaDon.Enabled = false;
-            tabBanHang.SelectedTab = tabLapHoaDon;
+            if (!moLichSuBanDau && tabBanHang.TabPages.Contains(tabLapHoaDon))
+                tabBanHang.SelectedTab = tabLapHoaDon;
             lblThongBao.Text = string.Empty;
         }
 

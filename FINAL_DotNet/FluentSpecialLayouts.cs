@@ -27,11 +27,13 @@ namespace FINAL_DotNet
             switch (form.GetType().Name)
             {
                 case "FrmBanHang":
+                    ConfigureTransaction(form, "pnlDauHoaDon", "pnlDongBan", "pnlThongTinHoaDon", false);
+                    break;
                 case "FrmHoaDon":
-                    ConfigureTransaction(form, "pnlDauHoaDon", "pnlDongBan", "pnlThongTinHoaDon");
+                    ConfigureTransaction(form, "pnlDauHoaDon", "pnlDongBan", "pnlThongTinHoaDon", true);
                     break;
                 case "FrmNhapHang":
-                    ConfigureTransaction(form, "pnlDauPhieu", "pnlDongNhap", "pnlThongTinPhieu");
+                    ConfigureTransaction(form, "pnlDauPhieu", "pnlDongNhap", "pnlThongTinPhieu", false);
                     break;
                 case "FrmBaoHanh":
                     ConfigureWarranty(form);
@@ -67,15 +69,60 @@ namespace FINAL_DotNet
             }
         }
 
-        private static void ConfigureTransaction(Form form, string headerName, string lineName, string summaryName)
+        private static void ConfigureTransaction(Form form, string headerName, string lineName, string summaryName, bool invoiceHistoryOnly)
         {
-            ConfigureWorkbench(Find<SplitContainer>(form, "splitChinh"), 0.34F, 500);
-            ReflowToolbar(Find<Panel>(form, "pnlBoLoc"), 132);
+            SplitContainer split = Find<SplitContainer>(form, "splitChinh");
+            Panel filter = Find<Panel>(form, "pnlBoLoc");
+            ConfigureWorkbench(split, 0.34F, 500);
+            ReflowToolbar(filter, 132);
             ReflowToolbar(Find<Panel>(form, headerName), 72);
             ReflowToolbar(Find<Panel>(form, lineName), 128);
             ReflowSummary(Find<Panel>(form, summaryName), 104);
-            ReflowFooter(Find<Panel>(form, "pnlChan"));
+            ConfigureInvoiceMode(form, split, filter, invoiceHistoryOnly);
+            Button[] footerButtons = form.GetType().Name == "FrmHoaDon"
+                ? new[] { Find<Button>(form, "btnHuyHoaDon"), Find<Button>(form, "btnInHoaDon") }
+                : form.GetType().Name == "FrmBanHang"
+                    ? new[] { Find<Button>(form, "btnLuuHoaDon"), Find<Button>(form, "btnHoaDonMoi") }
+                    : new Button[0];
+            ReflowFooter(Find<Panel>(form, "pnlChan"), footerButtons);
             SetTabPadding(form);
+        }
+
+        private static void ConfigureInvoiceMode(Form form, SplitContainer split, Panel filter, bool invoiceHistoryOnly)
+        {
+            TabControl tabs = Find<TabControl>(form, "tabBanHang");
+            TabPage createTab = Find<TabPage>(form, "tabLapHoaDon");
+            TabPage historyTab = Find<TabPage>(form, "tabLichSu");
+            Button save = Find<Button>(form, "btnLuuHoaDon");
+            Button cancel = Find<Button>(form, "btnHuyHoaDon");
+            Button report = Find<Button>(form, "btnInHoaDon");
+            Button fresh = Find<Button>(form, "btnHoaDonMoi");
+
+            if (invoiceHistoryOnly)
+            {
+                if (tabs != null && createTab != null && tabs.TabPages.Contains(createTab)) tabs.TabPages.Remove(createTab);
+                if (tabs != null && historyTab != null) tabs.SelectedTab = historyTab;
+                if (historyTab != null) historyTab.Text = "Chi tiết hóa đơn";
+                if (filter != null) filter.Visible = true;
+                if (split != null) split.Panel1Collapsed = false;
+                if (save != null) save.Visible = false;
+                if (fresh != null) fresh.Visible = false;
+                if (cancel != null) cancel.Visible = true;
+                if (report != null) report.Visible = true;
+                return;
+            }
+
+            if (tabs != null && historyTab != null && tabs.TabPages.Contains(historyTab)) tabs.TabPages.Remove(historyTab);
+            if (tabs != null && createTab != null) tabs.SelectedTab = createTab;
+            if (createTab != null) createTab.Text = form.GetType().Name == "FrmNhapHang" ? "Lập phiếu nhập" : "Bán hàng tại quầy";
+            if (form.GetType().Name != "FrmBanHang") return;
+
+            if (filter != null) { filter.Visible = false; filter.Height = 0; }
+            if (split != null) split.Panel1Collapsed = true;
+            if (cancel != null) cancel.Visible = false;
+            if (report != null) report.Visible = false;
+            if (save != null) save.Visible = true;
+            if (fresh != null) fresh.Visible = true;
         }
 
         private static void ConfigureWarranty(Form form)
@@ -167,6 +214,17 @@ namespace FINAL_DotNet
                 used.Add(label);
                 flow.Controls.Add(CreateField(label, input, CompactWidth(input), 58));
             }
+            foreach (Label value in labels.Where(item => !used.Contains(item)).OrderBy(item => item.Top).ThenBy(item => item.Left).ToArray())
+            {
+                Label caption = labels
+                    .Where(item => item != value && !used.Contains(item) && value.Top - item.Top >= 14 && value.Top - item.Top <= 32 && Math.Abs(value.Left - item.Left) < 32)
+                    .OrderBy(item => value.Top - item.Bottom)
+                    .FirstOrDefault();
+                if (caption == null) continue;
+                used.Add(caption);
+                used.Add(value);
+                flow.Controls.Add(CreateField(caption, value, 150, 58));
+            }
             foreach (Button button in buttons)
             {
                 button.Size = new Size(88, ButtonHeight);
@@ -249,10 +307,12 @@ namespace FINAL_DotNet
             panel.Controls.Add(table);
         }
 
-        private static void ReflowFooter(Panel panel)
+        private static void ReflowFooter(Panel panel, params Button[] requestedButtons)
         {
             if (panel == null || panel.Controls.Cast<Control>().Any(item => item.Name == "flpSpecialFooter")) return;
-            Button[] buttons = panel.Controls.OfType<Button>().OrderByDescending(item => item.Left).ToArray();
+            Button[] buttons = requestedButtons != null && requestedButtons.Any(item => item != null)
+                ? requestedButtons.Where(item => item != null).OrderByDescending(item => item.Left).ToArray()
+                : panel.Controls.OfType<Button>().OrderByDescending(item => item.Left).ToArray();
             Label status = panel.Controls.OfType<Label>().FirstOrDefault();
             panel.Controls.Clear();
             panel.Height = 72;
