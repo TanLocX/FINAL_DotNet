@@ -222,6 +222,12 @@ namespace FINAL_DotNet
                 return;
             }
 
+            if (menu.TieuDeTrang == "Sao lưu và phục hồi CSDL")
+            {
+                MoFormCon(new FrmSaoLuuPhucHoi(), menu.TieuDeTrang, true);
+                return;
+            }
+
             DongFormConHienTai();
             pnlChaoMung.Visible = true;
             lblTieuDeTrang.Text = menu.TieuDeTrang;

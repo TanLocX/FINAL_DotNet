@@ -74,6 +74,7 @@
       <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.IO.Compression" />
@@ -129,6 +130,7 @@
     <Compile Include="CurrentUserSession.cs" />
     <Compile Include="DatabaseConnection.cs" />
     <Compile Include="BaoCaoService.cs" />
+    <Compile Include="SaoLuuPhucHoiService.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -153,6 +155,12 @@
     </Compile>
     <Compile Include="FrmXemBaoCao.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmSaoLuuPhucHoi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmSaoLuuPhucHoi.Designer.cs">
+      <DependentUpon>FrmSaoLuuPhucHoi.cs</DependentUpon>
     </Compile>
     <Compile Include="FrmKhachHang.cs">
       <SubType>Form</SubType>

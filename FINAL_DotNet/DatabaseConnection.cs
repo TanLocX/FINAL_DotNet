@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Data.Entity.Core.EntityClient;
 using System.Data.SqlClient;
 
@@ -23,6 +24,30 @@ namespace FINAL_DotNet
             return entityConnectionString == null
                 ? new QL_CuaHangDaQuy_PNJEntities()
                 : new QL_CuaHangDaQuy_PNJEntities(entityConnectionString);
+        }
+
+        public static SqlConnection CreateSqlConnection(string initialCatalog = null)
+        {
+            string entityConnectionString = BuildEntityConnectionString();
+            if (entityConnectionString == null)
+            {
+                ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings["QL_CuaHangDaQuy_PNJEntities"];
+                if (setting == null || string.IsNullOrWhiteSpace(setting.ConnectionString))
+                    throw new InvalidOperationException("Không tìm thấy cấu hình kết nối QL_CuaHangDaQuy_PNJEntities.");
+                entityConnectionString = setting.ConnectionString;
+            }
+
+            var entityBuilder = new EntityConnectionStringBuilder(entityConnectionString);
+            var sqlBuilder = new SqlConnectionStringBuilder(entityBuilder.ProviderConnectionString);
+            if (!string.IsNullOrWhiteSpace(initialCatalog)) sqlBuilder.InitialCatalog = initialCatalog.Trim();
+            sqlBuilder.ApplicationName = "FINAL_DotNet Backup Restore";
+            return new SqlConnection(sqlBuilder.ConnectionString);
+        }
+
+        public static string GetDatabaseName()
+        {
+            using (SqlConnection connection = CreateSqlConnection())
+                return new SqlConnectionStringBuilder(connection.ConnectionString).InitialCatalog;
         }
 
         private static string BuildEntityConnectionString()
