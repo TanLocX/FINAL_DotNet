@@ -16,10 +16,17 @@ namespace FINAL_DotNet
         private int? sanPhamDangChonId;
         private int? danhMucBanDauId;
         private bool dangLamMoiBieuMau;
+        private TabPage tabMaQr;
+        private PictureBox picMaQr;
+        private Label lblNoiDungQr;
+        private Label lblKetQuaQr;
+        private Button btnLuuMaQr;
+        private Button btnDocMaQr;
 
         public FrmSanPham()
         {
             InitializeComponent();
+            KhoiTaoGiaoDienQr();
             cboLocTrangThai.SelectedIndex = 0;
             cboLocTonKho.SelectedIndex = 0;
             cboDonViTinh.SelectedIndex = 0;
@@ -27,6 +34,15 @@ namespace FINAL_DotNet
             numGiaBan.Maximum = 9999999999999999M;
             numSoLuongTon.Maximum = int.MaxValue;
             numTrongLuong.Maximum = 9999999.999M;
+            FormClosed += FrmSanPham_FormClosed;
+        }
+
+        private void FrmSanPham_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (picMaQr?.Image == null) return;
+            Image anh = picMaQr.Image;
+            picMaQr.Image = null;
+            anh.Dispose();
         }
 
         private void FrmSanPham_Load(object sender, EventArgs e)
@@ -287,6 +303,7 @@ namespace FINAL_DotNet
                 TaiLuoiThanhPhan();
                 LamMoiNhapThanhPhan();
                 HienThiAnh(item.DuongDanAnh);
+                HienThiMaQr(item.MaSanPham);
                 tabBieuMau.SelectedTab = tabThongTin;
                 lblThongBao.Text = string.Empty;
             }
@@ -569,6 +586,7 @@ namespace FINAL_DotNet
             TaiLuoiThanhPhan();
             LamMoiNhapThanhPhan();
             HienThiAnh(null);
+            HienThiMaQr(null);
             lblThongBao.Text = string.Empty;
             tabBieuMau.SelectedTab = tabThongTin;
             dgvSanPham.ClearSelection();
@@ -596,6 +614,208 @@ namespace FINAL_DotNet
         }
 
         private void txtDuongDanAnh_Leave(object sender, EventArgs e) => HienThiAnh(txtDuongDanAnh.Text.Trim());
+
+        private void KhoiTaoGiaoDienQr()
+        {
+            tabMaQr = new TabPage
+            {
+                Text = "QR sản phẩm",
+                BackColor = Color.White,
+                Padding = new Padding(12)
+            };
+            picMaQr = new PictureBox
+            {
+                BackColor = Color.White,
+                BorderStyle = BorderStyle.FixedSingle,
+                Dock = DockStyle.Fill,
+                Margin = new Padding(16),
+                SizeMode = PictureBoxSizeMode.Zoom
+            };
+            lblNoiDungQr = new Label
+            {
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(30, 58, 78),
+                Text = "Chưa chọn sản phẩm",
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+            lblKetQuaQr = new Label
+            {
+                Dock = DockStyle.Fill,
+                ForeColor = Color.DimGray,
+                Text = "Chọn sản phẩm để sinh QR. Có thể lưu QR thành PNG hoặc đọc lại từ một file ảnh.",
+                TextAlign = ContentAlignment.TopLeft
+            };
+            btnLuuMaQr = new Button();
+            btnDocMaQr = new Button();
+            CauHinhNut(btnLuuMaQr, "Lưu QR PNG", 0, 0, 125, MauXanh());
+            CauHinhNut(btnDocMaQr, "Đọc QR từ ảnh", 0, 0, 145, Color.FromArgb(45, 91, 123));
+            btnLuuMaQr.Enabled = false;
+            btnLuuMaQr.Click += btnLuuMaQr_Click;
+            btnDocMaQr.Click += btnDocMaQr_Click;
+
+            var nut = new FlowLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+                FlowDirection = FlowDirection.LeftToRight,
+                WrapContents = false,
+                Padding = new Padding(0, 5, 0, 0)
+            };
+            btnLuuMaQr.Margin = new Padding(0, 0, 10, 0);
+            btnDocMaQr.Margin = new Padding(0);
+            nut.Controls.Add(btnLuuMaQr);
+            nut.Controls.Add(btnDocMaQr);
+
+            var thongTin = new TableLayoutPanel { Dock = DockStyle.Fill, RowCount = 3, Padding = new Padding(12) };
+            thongTin.RowStyles.Add(new RowStyle(SizeType.Absolute, 54F));
+            thongTin.RowStyles.Add(new RowStyle(SizeType.Absolute, 48F));
+            thongTin.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            thongTin.Controls.Add(lblNoiDungQr, 0, 0);
+            thongTin.Controls.Add(nut, 0, 1);
+            thongTin.Controls.Add(lblKetQuaQr, 0, 2);
+
+            var boCuc = new TableLayoutPanel { Dock = DockStyle.Fill, ColumnCount = 2 };
+            boCuc.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 42F));
+            boCuc.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 58F));
+            boCuc.Controls.Add(picMaQr, 0, 0);
+            boCuc.Controls.Add(thongTin, 1, 0);
+            tabMaQr.Controls.Add(boCuc);
+            tabBieuMau.Controls.Add(tabMaQr);
+        }
+
+        private void HienThiMaQr(string maSanPham)
+        {
+            if (picMaQr.Image != null)
+            {
+                Image anhCu = picMaQr.Image;
+                picMaQr.Image = null;
+                anhCu.Dispose();
+            }
+            bool coMa = !string.IsNullOrWhiteSpace(maSanPham) && maSanPham.StartsWith("SP", StringComparison.OrdinalIgnoreCase);
+            btnLuuMaQr.Enabled = coMa;
+            lblNoiDungQr.Text = coMa ? "Nội dung QR: " + maSanPham : "Chưa chọn sản phẩm";
+            lblKetQuaQr.ForeColor = Color.DimGray;
+            lblKetQuaQr.Text = coMa
+                ? "QR được sinh từ mã sản phẩm. Nhấn Lưu QR PNG để dùng khi demo hoặc Đọc QR từ ảnh để tìm lại sản phẩm."
+                : "Chọn sản phẩm để sinh QR. Có thể lưu QR thành PNG hoặc đọc lại từ một file ảnh.";
+            if (!coMa) return;
+
+            try
+            {
+                picMaQr.Image = QrCodeService.TaoMaQr(maSanPham, 360);
+            }
+            catch (Exception)
+            {
+                btnLuuMaQr.Enabled = false;
+                lblKetQuaQr.ForeColor = Color.Firebrick;
+                lblKetQuaQr.Text = "Không thể sinh QR cho sản phẩm đã chọn.";
+            }
+        }
+
+        private void btnLuuMaQr_Click(object sender, EventArgs e)
+        {
+            if (picMaQr.Image == null || !sanPhamDangChonId.HasValue)
+            {
+                lblKetQuaQr.ForeColor = Color.Firebrick;
+                lblKetQuaQr.Text = "Vui lòng chọn sản phẩm trước khi lưu QR.";
+                return;
+            }
+            using (var dialog = new SaveFileDialog
+            {
+                Title = "Lưu QR sản phẩm",
+                Filter = "Ảnh PNG (*.png)|*.png",
+                DefaultExt = "png",
+                AddExtension = true,
+                FileName = "QR_" + txtMaVach.Text + ".png"
+            })
+            {
+                if (dialog.ShowDialog(this) != DialogResult.OK) return;
+                try
+                {
+                    using (var anh = new Bitmap(picMaQr.Image))
+                        anh.Save(dialog.FileName, System.Drawing.Imaging.ImageFormat.Png);
+                    lblKetQuaQr.ForeColor = Color.FromArgb(30, 115, 75);
+                    lblKetQuaQr.Text = "Đã lưu QR tại: " + dialog.FileName;
+                }
+                catch (Exception)
+                {
+                    lblKetQuaQr.ForeColor = Color.Firebrick;
+                    lblKetQuaQr.Text = "Không thể lưu file QR. Hãy chọn thư mục khác rồi thử lại.";
+                }
+            }
+        }
+
+        private void btnDocMaQr_Click(object sender, EventArgs e)
+        {
+            if (!KiemTraPhienDangNhap(true)) return;
+            using (var dialog = new OpenFileDialog
+            {
+                Title = "Chọn ảnh QR sản phẩm",
+                Filter = "Tệp ảnh|*.png;*.jpg;*.jpeg;*.bmp|Tất cả tệp|*.*"
+            })
+            {
+                if (dialog.ShowDialog(this) != DialogResult.OK) return;
+                try
+                {
+                    if (new FileInfo(dialog.FileName).Length > 20 * 1024 * 1024)
+                        throw new InvalidOperationException("Ảnh QR không được lớn hơn 20 MB.");
+
+                    string noiDung;
+                    using (var stream = new FileStream(dialog.FileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (var anhNguon = Image.FromStream(stream))
+                    using (var anh = new Bitmap(anhNguon))
+                        noiDung = QrCodeService.DocMaQr(anh);
+
+                    int? sanPhamId = ThuDocMaSanPhamTuQr(noiDung);
+                    if (!sanPhamId.HasValue)
+                        throw new InvalidOperationException("Ảnh không chứa QR sản phẩm hợp lệ dạng SP000001.");
+
+                    using (var db = DatabaseConnection.CreateContext())
+                    {
+                        if (!db.SanPhams.AsNoTracking().Any(item => item.SanPhamId == sanPhamId.Value))
+                            throw new InvalidOperationException("QR chứa mã sản phẩm không tồn tại trong CSDL.");
+                    }
+
+                    XoaBoLocSanPham();
+                    txtTuKhoa.Text = noiDung.ToUpperInvariant();
+                    TaiDanhSach(sanPhamId.Value);
+                    tabBieuMau.SelectedTab = tabMaQr;
+                    lblKetQuaQr.ForeColor = Color.FromArgb(30, 115, 75);
+                    lblKetQuaQr.Text = "Đọc thành công " + noiDung.ToUpperInvariant() + " và đã chọn đúng sản phẩm.";
+                }
+                catch (InvalidOperationException ex)
+                {
+                    lblKetQuaQr.ForeColor = Color.Firebrick;
+                    lblKetQuaQr.Text = ex.Message;
+                }
+                catch (Exception)
+                {
+                    lblKetQuaQr.ForeColor = Color.Firebrick;
+                    lblKetQuaQr.Text = "Không thể đọc ảnh QR đã chọn.";
+                }
+            }
+        }
+
+        private static int? ThuDocMaSanPhamTuQr(string noiDung)
+        {
+            if (string.IsNullOrWhiteSpace(noiDung)) return null;
+            string value = noiDung.Trim();
+            if (!value.StartsWith("SP", StringComparison.OrdinalIgnoreCase) || value.Length <= 2) return null;
+            string digits = value.Substring(2);
+            if (digits.Any(character => character < '0' || character > '9')) return null;
+            int id;
+            return int.TryParse(digits, out id) && id > 0 ? (int?)id : null;
+        }
+
+        private void XoaBoLocSanPham()
+        {
+            txtGiaTu.Clear();
+            txtGiaDen.Clear();
+            cboLocTrangThai.SelectedIndex = 0;
+            cboLocTonKho.SelectedIndex = 0;
+            if (cboLocDanhMuc.Items.Count > 0) cboLocDanhMuc.SelectedIndex = 0;
+            if (cboLocChatLieu.Items.Count > 0) cboLocChatLieu.SelectedIndex = 0;
+        }
 
         private void HienThiAnh(string duongDan)
         {

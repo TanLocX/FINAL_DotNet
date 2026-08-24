@@ -281,7 +281,10 @@ Bản ghi này không được xóa, khóa hoặc dùng để gửi email market
 | `DuongDanAnh` | `NVARCHAR(500)` | Có | Đường dẫn tương đối |
 | `DangKinhDoanh` | `BIT` | Không | Xóa mềm |
 
-Mã hiển thị sản phẩm được sinh từ `SanPhamId`, ví dụ `SP000123`.
+Mã hiển thị sản phẩm được sinh từ `SanPhamId`, ví dụ `SP000123`. Ứng dụng dùng
+ZXing.Net để sinh QR từ mã này khi chọn sản phẩm, cho phép lưu QR thành PNG và
+đọc QR từ file ảnh để truy vấn đúng sản phẩm bằng Entity Framework. Ảnh QR được
+sinh tại thời điểm chạy nên không cần thêm cột QR vào CSDL.
 
 ## 6.8. `ChiTietChatLieu`
 
@@ -603,7 +606,7 @@ Khóa `IDENTITY` do SQL Server sinh. Ứng dụng kiểm tra khóa nghiệp vụ
 | `FrmDanhMuc` | CRUD danh mục |
 | `FrmNhaCungCap` | CRUD nhà cung cấp |
 | `FrmChatLieu` | CRUD chất liệu và giá tham khảo |
-| `FrmSanPham` | CRUD sản phẩm, thành phần chất liệu, ảnh, barcode |
+| `FrmSanPham` | CRUD sản phẩm, thành phần chất liệu, ảnh; sinh, lưu và đọc QR để tìm sản phẩm |
 | `FrmBanHang` | Lập hóa đơn và chi tiết |
 | `FrmHoaDon` | Lịch sử, tìm kiếm, hủy và in hóa đơn |
 | `FrmNhapHang` | Lập phiếu nhập và lịch sử nhập |
@@ -753,9 +756,9 @@ UNION ALL SELECT 'NhatKyGuiEmail', COUNT(*) FROM dbo.NhatKyGuiEmail;
 | Báo cáo Word | 10 | Đặc tả, CSDL, kết quả, hướng dẫn, ảnh, phụ lục code |
 | Demo và nộp | 5 | Chạy ổn định, source, `.bak`, Word, hướng dẫn |
 
-Điểm thưởng hiện có thể chứng minh bằng phân quyền, BCrypt, reset password, Backup/Restore,
-Guna UI2, LINQ/truy vấn nhiều bảng và mã tự tăng. Barcode/QR và installer chỉ ghi nhận
-khi đã được triển khai, kiểm thử và đưa vào sản phẩm nộp.
+Điểm thưởng hiện có thể chứng minh bằng phân quyền, BCrypt, reset password,
+Backup/Restore, Guna UI2, LINQ/truy vấn nhiều bảng, QR Code và mã tự tăng.
+Installer chỉ ghi nhận khi đã được triển khai, kiểm thử và đưa vào sản phẩm nộp.
 
 ---
 
@@ -764,7 +767,8 @@ khi đã được triển khai, kiểm thử và đưa vào sản phẩm nộp.
 1. Đăng nhập Admin và nhân viên để chứng minh BCrypt/phân quyền.
 2. Thêm nhân viên, cấp tài khoản, reset và bắt buộc đổi mật khẩu.
 3. CRUD danh mục, nhà cung cấp và chất liệu.
-4. Thêm sản phẩm có nhiều chất liệu và kiểm tra mã tự tăng.
+4. Chọn sản phẩm, mở tab **QR sản phẩm**, lưu QR ra PNG, đọc lại file QR và
+   chứng minh ứng dụng tự tìm đúng sản phẩm.
 5. Lập/hủy phiếu nhập và kiểm tra tồn kho, giá vốn.
 6. Lập/hủy hóa đơn và kiểm tra tồn kho, doanh thu.
 7. Tải file mẫu, import dữ liệu thu mua và thử import lặp để chứng minh validation.

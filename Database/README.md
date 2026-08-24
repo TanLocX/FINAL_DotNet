@@ -69,6 +69,14 @@ Các cột bắt buộc gồm `MaPhieuNguon`, `NgayThuMua`, `MaNhanVien`,
 buộc. Nhiều dòng có cùng `MaPhieuNguon` được gộp vào một phiếu. Chỉ mục duy
 nhất trong CSDL ngăn import cùng mã nguồn lần hai.
 
+## Demo QR sản phẩm
+
+Mở menu **Sản phẩm**, chọn một dòng rồi mở tab **QR sản phẩm**. Ứng dụng sinh
+QR từ mã hiển thị như `SP000001`. Nhấn **Lưu QR PNG**, sau đó nhấn **Đọc QR từ
+ảnh** và chọn lại file vừa lưu. Nếu QR hợp lệ, ứng dụng giải mã, kiểm tra sản
+phẩm trong CSDL và tự chọn đúng dòng. QR sai định dạng hoặc mã không tồn tại sẽ
+được từ chối. Chức năng sử dụng gói `ZXing.Net` phiên bản `0.16.11`.
+
 ## Ảnh sản phẩm
 
 Các đường dẫn trong dữ liệu mẫu có dạng `Resources\<ten-file>.png`. Khi có ảnh, đặt 10 file vào thư mục `FINAL_DotNet\Resources` với đúng tên đã khai báo. Script kiểm tra đường dẫn trong CSDL nhưng không yêu cầu file ảnh phải tồn tại trên máy.

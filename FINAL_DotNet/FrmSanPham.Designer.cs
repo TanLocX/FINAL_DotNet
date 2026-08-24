@@ -188,7 +188,7 @@ namespace FINAL_DotNet
             ThemDongThongTin(0, "Mã sản phẩm", this.txtMaSanPham, "Tên sản phẩm *", this.txtTenSanPham);
             ThemDongThongTin(1, "Danh mục *", this.cboDanhMuc, "Giá vốn", this.numGiaVon);
             ThemDongThongTin(2, "Giá bán", this.numGiaBan, "Số lượng tồn", this.numSoLuongTon);
-            ThemDongThongTin(3, "Đường dẫn ảnh", this.txtDuongDanAnh, "Mã vạch", this.txtMaVach);
+            ThemDongThongTin(3, "Đường dẫn ảnh", this.txtDuongDanAnh, "Nội dung QR", this.txtMaVach);
             this.tableThongTin.Controls.Add(this.picSanPham, 5, 0);
             this.tableThongTin.SetRowSpan(this.picSanPham, 3);
             this.tableThongTin.Controls.Add(this.chkDangKinhDoanh, 5, 3);
