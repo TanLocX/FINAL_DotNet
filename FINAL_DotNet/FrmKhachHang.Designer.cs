@@ -46,7 +46,7 @@ namespace FINAL_DotNet
             this.lblEmail = new System.Windows.Forms.Label();
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.lblNgaySinh = new System.Windows.Forms.Label();
-            this.dtpNgaySinh = new System.Windows.Forms.DateTimePicker();
+            this.dtpNgaySinh = new FINAL_DotNet.DarkGoldDateTimePicker();
             this.lblDiaChi = new System.Windows.Forms.Label();
             this.txtDiaChi = new System.Windows.Forms.TextBox();
             this.lblDiemTichLuy = new System.Windows.Forms.Label();

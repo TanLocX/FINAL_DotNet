@@ -15,8 +15,8 @@ namespace FINAL_DotNet
             System.Windows.Forms.DataGridViewCellStyle headerStyle = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlBoLoc = new System.Windows.Forms.Panel();
             this.txtTuKhoa = new System.Windows.Forms.TextBox();
-            this.dtpTuNgay = new System.Windows.Forms.DateTimePicker();
-            this.dtpDenNgay = new System.Windows.Forms.DateTimePicker();
+            this.dtpTuNgay = new FINAL_DotNet.DarkGoldDateTimePicker();
+            this.dtpDenNgay = new FINAL_DotNet.DarkGoldDateTimePicker();
             this.cboLocNhaCungCap = new System.Windows.Forms.ComboBox();
             this.cboLocTrangThai = new System.Windows.Forms.ComboBox();
             this.btnTimKiem = new System.Windows.Forms.Button();
@@ -24,7 +24,7 @@ namespace FINAL_DotNet
             this.lblSoKetQua = new System.Windows.Forms.Label();
             this.splitChinh = new System.Windows.Forms.SplitContainer();
             this.dgvPhieuNhap = new System.Windows.Forms.DataGridView();
-            this.tabNhapHang = new System.Windows.Forms.TabControl();
+            this.tabNhapHang = new FINAL_DotNet.DarkGoldTabControl();
             this.tabLapPhieu = new System.Windows.Forms.TabPage();
             this.dgvGioNhap = new System.Windows.Forms.DataGridView();
             this.pnlDongNhap = new System.Windows.Forms.Panel();

@@ -16,6 +16,7 @@ namespace FINAL_DotNet
         {
             InitializeComponent();
             cboLocTrangThai.SelectedIndex = 0;
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void FrmDanhMuc_Load(object sender, EventArgs e)

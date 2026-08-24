@@ -21,6 +21,7 @@ namespace FINAL_DotNet
             cboLocTrangThai.SelectedIndex = 0;
             numSoLuong.Maximum = int.MaxValue;
             numDonGiaNhap.Maximum = 9999999999999999M;
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void FrmNhapHang_Load(object sender, EventArgs e)

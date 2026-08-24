@@ -20,6 +20,7 @@ namespace FINAL_DotNet
             InitializeComponent();
             cboLocTrangThai.SelectedIndex = 0;
             cboLocHanBaoHanh.SelectedIndex = 0;
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void FrmBaoHanh_Load(object sender, EventArgs e)

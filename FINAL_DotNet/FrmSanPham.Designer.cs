@@ -26,7 +26,7 @@ namespace FINAL_DotNet
             this.lblSoKetQua = new System.Windows.Forms.Label();
             this.splitChinh = new System.Windows.Forms.SplitContainer();
             this.dgvSanPham = new System.Windows.Forms.DataGridView();
-            this.tabBieuMau = new System.Windows.Forms.TabControl();
+            this.tabBieuMau = new FINAL_DotNet.DarkGoldTabControl();
             this.tabThongTin = new System.Windows.Forms.TabPage();
             this.tableThongTin = new System.Windows.Forms.TableLayoutPanel();
             this.txtMaSanPham = new System.Windows.Forms.TextBox();

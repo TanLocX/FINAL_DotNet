@@ -12,7 +12,7 @@ namespace FINAL_DotNet
 
         private void InitializeComponent()
         {
-            this.tabChinh = new System.Windows.Forms.TabControl();
+            this.tabChinh = new FINAL_DotNet.DarkGoldTabControl();
             this.tabSmtp = new System.Windows.Forms.TabPage();
             this.txtMayChuSmtp = new System.Windows.Forms.TextBox();
             this.nudCongSmtp = new System.Windows.Forms.NumericUpDown();
@@ -43,7 +43,7 @@ namespace FINAL_DotNet
             this.lblSoNguoiNhan = new System.Windows.Forms.Label();
             this.btnTaiNguoiNhan = new System.Windows.Forms.Button();
             this.chkHenGio = new System.Windows.Forms.CheckBox();
-            this.dtpHenGio = new System.Windows.Forms.DateTimePicker();
+            this.dtpHenGio = new FINAL_DotNet.DarkGoldDateTimePicker();
             this.progressHangLoat = new System.Windows.Forms.ProgressBar();
             this.lblTrangThaiHangLoat = new System.Windows.Forms.Label();
             this.btnGuiHangLoat = new System.Windows.Forms.Button();
@@ -59,8 +59,8 @@ namespace FINAL_DotNet
             this.btnTaoMauMacDinh = new System.Windows.Forms.Button();
             this.tabNhatKy = new System.Windows.Forms.TabPage();
             this.txtTimNhatKy = new System.Windows.Forms.TextBox();
-            this.dtpTuNgayNhatKy = new System.Windows.Forms.DateTimePicker();
-            this.dtpDenNgayNhatKy = new System.Windows.Forms.DateTimePicker();
+            this.dtpTuNgayNhatKy = new FINAL_DotNet.DarkGoldDateTimePicker();
+            this.dtpDenNgayNhatKy = new FINAL_DotNet.DarkGoldDateTimePicker();
             this.cboLocLoaiGui = new System.Windows.Forms.ComboBox();
             this.cboLocTrangThaiNhatKy = new System.Windows.Forms.ComboBox();
             this.cboLocMauNhatKy = new System.Windows.Forms.ComboBox();

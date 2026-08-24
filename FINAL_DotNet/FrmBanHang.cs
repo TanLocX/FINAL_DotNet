@@ -31,6 +31,7 @@ namespace FINAL_DotNet
             cboPhuongThucThanhToan.SelectedIndex = 0;
             numSoLuong.Maximum = int.MaxValue;
             numGiamGia.Maximum = 9999999999999999M;
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void KhoiTaoGiaoDienTuyBien()

@@ -19,6 +19,7 @@ namespace FINAL_DotNet
             cboGioiTinh.SelectedIndex = 0;
             dtpNgaySinh.MaxDate = DateTime.Today;
             dtpNgaySinh.Checked = false;
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void FrmNhanVien_Load(object sender, EventArgs e)

@@ -15,8 +15,8 @@ namespace FINAL_DotNet
             System.Windows.Forms.DataGridViewCellStyle headerStyle = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlBoLoc = new System.Windows.Forms.Panel();
             this.txtTuKhoa = new System.Windows.Forms.TextBox();
-            this.dtpTuNgay = new System.Windows.Forms.DateTimePicker();
-            this.dtpDenNgay = new System.Windows.Forms.DateTimePicker();
+            this.dtpTuNgay = new FINAL_DotNet.DarkGoldDateTimePicker();
+            this.dtpDenNgay = new FINAL_DotNet.DarkGoldDateTimePicker();
             this.cboLocTrangThai = new System.Windows.Forms.ComboBox();
             this.cboLocHanBaoHanh = new System.Windows.Forms.ComboBox();
             this.btnTimKiem = new System.Windows.Forms.Button();
@@ -24,11 +24,11 @@ namespace FINAL_DotNet
             this.lblSoKetQua = new System.Windows.Forms.Label();
             this.splitChinh = new System.Windows.Forms.SplitContainer();
             this.dgvPhieuBaoHanh = new System.Windows.Forms.DataGridView();
-            this.tabBaoHanh = new System.Windows.Forms.TabControl();
+            this.tabBaoHanh = new FINAL_DotNet.DarkGoldTabControl();
             this.tabTiepNhan = new System.Windows.Forms.TabPage();
             this.pnlYeuCau = new System.Windows.Forms.Panel();
             this.txtNoiDungTiepNhan = new System.Windows.Forms.TextBox();
-            this.dtpNgayTraDuKien = new System.Windows.Forms.DateTimePicker();
+            this.dtpNgayTraDuKien = new FINAL_DotNet.DarkGoldDateTimePicker();
             this.txtGhiChuTiepNhan = new System.Windows.Forms.TextBox();
             this.pnlSanPhamDaBan = new System.Windows.Forms.Panel();
             this.txtTimSanPhamDaBan = new System.Windows.Forms.TextBox();
@@ -43,8 +43,8 @@ namespace FINAL_DotNet
             this.pnlXuLy = new System.Windows.Forms.Panel();
             this.txtNoiDungXuLy = new System.Windows.Forms.TextBox();
             this.cboTrangThaiXuLy = new System.Windows.Forms.ComboBox();
-            this.dtpNgayTraDuKienXuLy = new System.Windows.Forms.DateTimePicker();
-            this.dtpNgayTraThucTe = new System.Windows.Forms.DateTimePicker();
+            this.dtpNgayTraDuKienXuLy = new FINAL_DotNet.DarkGoldDateTimePicker();
+            this.dtpNgayTraThucTe = new FINAL_DotNet.DarkGoldDateTimePicker();
             this.txtGhiChuXuLy = new System.Windows.Forms.TextBox();
             this.pnlThongTinXuLy = new System.Windows.Forms.Panel();
             this.lblMaPhieuXuLy = new System.Windows.Forms.Label();

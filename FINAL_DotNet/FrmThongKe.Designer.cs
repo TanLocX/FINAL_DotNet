@@ -54,13 +54,13 @@ namespace FINAL_DotNet
         {
             this.components = new System.ComponentModel.Container();
             this.pnlBoLoc = new Panel();
-            this.dtpTuNgay = new DateTimePicker();
-            this.dtpDenNgay = new DateTimePicker();
+            this.dtpTuNgay = new DarkGoldDateTimePicker();
+            this.dtpDenNgay = new DarkGoldDateTimePicker();
             this.cboKhoangThoiGian = new ComboBox();
             this.nudNguongTon = new NumericUpDown();
             this.btnTaiLai = new Button();
             this.lblTrangThaiTai = new Label();
-            this.tabChinh = new TabControl();
+            this.tabChinh = new DarkGoldTabControl();
             this.tabTongQuan = new TabPage();
             this.tabPhanTich = new TabPage();
             this.tabXuatDuLieu = new TabPage();
@@ -183,7 +183,7 @@ namespace FINAL_DotNet
             this.tabPhanTich.BackColor = MauNen();
             this.tabPhanTich.Padding = new Padding(8);
 
-            var tabNhom = new TabControl { Dock = DockStyle.Fill, Font = new Font("Segoe UI", 9F, FontStyle.Bold) };
+            var tabNhom = new DarkGoldTabControl { Dock = DockStyle.Fill, Font = new Font("Segoe UI", 9F, FontStyle.Bold) };
             var tabDoanhThu = new TabPage("Bán hàng và nhập hàng") { BackColor = MauNen(), Padding = new Padding(7) };
             var tabVanHanh = new TabPage("Tồn kho, bảo hành và email") { BackColor = MauNen(), Padding = new Padding(7) };
 
@@ -197,7 +197,7 @@ namespace FINAL_DotNet
             luoiBieuDo.Controls.Add(TaoKhung("Doanh thu theo danh mục", this.chartDanhMuc), 0, 0);
             luoiBieuDo.Controls.Add(TaoKhung("Doanh thu theo chất liệu", this.chartChatLieu), 1, 0);
             luoiBieuDo.Controls.Add(TaoKhung("Doanh thu theo nhân viên", this.chartNhanVien), 0, 1);
-            var tabNhapHang = new TabControl { Dock = DockStyle.Fill, Font = new Font("Segoe UI", 8.5F, FontStyle.Bold), MinimumSize = new Size(40, 40) };
+            var tabNhapHang = new DarkGoldTabControl { Dock = DockStyle.Fill, Font = new Font("Segoe UI", 8.5F, FontStyle.Bold), MinimumSize = new Size(40, 40) };
             var tabNhapThang = new TabPage("Theo tháng") { BackColor = Color.White, Padding = new Padding(2) };
             var tabNhapNcc = new TabPage("Nhà cung cấp") { BackColor = Color.White, Padding = new Padding(2) };
             var tabNhapSanPham = new TabPage("Sản phẩm") { BackColor = Color.White, Padding = new Padding(2) };

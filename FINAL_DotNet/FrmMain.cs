@@ -15,6 +15,7 @@ namespace FINAL_DotNet
         public FrmMain()
         {
             InitializeComponent();
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         public bool DaYeuCauDangXuat => dangXuat;

@@ -21,6 +21,7 @@ namespace FINAL_DotNet
             cboLocTrangThai.SelectedIndex = 0;
             dtpNgaySinh.MaxDate = DateTime.Today;
             dtpNgaySinh.Checked = false;
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void FrmKhachHang_Load(object sender, EventArgs e)

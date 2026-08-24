@@ -27,6 +27,7 @@ namespace FINAL_DotNet
             InitializeComponent();
             boDemHenGio.Interval = 1000;
             boDemHenGio.Tick += boDemHenGio_Tick;
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void FrmQuanLyEmail_Load(object sender, EventArgs e)

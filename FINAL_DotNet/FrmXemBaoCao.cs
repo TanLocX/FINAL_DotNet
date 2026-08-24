@@ -32,6 +32,7 @@ namespace FINAL_DotNet
                 ShowZoomControl = true
             };
             Controls.Add(reportViewer);
+            LuxuryDarkGoldTheme.Apply(this);
 
             reportViewer.LocalReport.ReportEmbeddedResource = BaoCaoService.TaiNguyenMauBaoCao;
             reportViewer.LocalReport.DataSources.Clear();

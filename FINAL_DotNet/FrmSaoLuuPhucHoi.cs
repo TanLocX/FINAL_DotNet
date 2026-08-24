@@ -14,6 +14,7 @@ namespace FINAL_DotNet
         public FrmSaoLuuPhucHoi()
         {
             InitializeComponent();
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private async void FrmSaoLuuPhucHoi_Load(object sender, EventArgs e)

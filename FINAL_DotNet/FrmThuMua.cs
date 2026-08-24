@@ -33,7 +33,7 @@ namespace FINAL_DotNet
         };
         private static readonly CultureInfo VanHoaVietNam = CultureInfo.GetCultureInfo("vi-VN");
 
-        private readonly TabControl tabChinh = new TabControl();
+        private readonly TabControl tabChinh = new DarkGoldTabControl();
         private readonly TextBox txtTepExcel = new TextBox();
         private readonly Button btnChonTep = TaoNut("Chọn file", Color.FromArgb(45, 91, 123));
         private readonly Button btnTaiMau = TaoNut("Tải file mẫu", Color.FromArgb(91, 104, 116));
@@ -71,6 +71,7 @@ namespace FINAL_DotNet
             FormBorderStyle = FormBorderStyle.None;
             TaoGiaoDien();
             GanSuKien();
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void TaoGiaoDien()
@@ -759,7 +760,7 @@ namespace FINAL_DotNet
 
         private static DateTimePicker TaoNgayLoc()
         {
-            return new DateTimePicker { Width = 135, Format = DateTimePickerFormat.Short, ShowCheckBox = true, Checked = false };
+            return new DarkGoldDateTimePicker { Width = 135, Format = DateTimePickerFormat.Short, ShowCheckBox = true, Checked = false };
         }
 
         private static Button TaoNut(string text, Color color)

@@ -17,6 +17,7 @@ namespace FINAL_DotNet
         {
             InitializeComponent();
             cboLocTrangThai.SelectedIndex = 0;
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void FrmNhaCungCap_Load(object sender, EventArgs e)

@@ -27,6 +27,7 @@ namespace FINAL_DotNet
             cboKhoangThoiGian.SelectedIndex = 2;
             ApDungKhoangThoiGian(2);
             dangKhoiTao = false;
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void FrmThongKe_Load(object sender, EventArgs e)

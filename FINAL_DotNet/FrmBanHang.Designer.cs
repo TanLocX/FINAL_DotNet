@@ -14,8 +14,8 @@ namespace FINAL_DotNet
         {
             this.pnlBoLoc = new System.Windows.Forms.Panel();
             this.txtTuKhoa = new System.Windows.Forms.TextBox();
-            this.dtpTuNgay = new System.Windows.Forms.DateTimePicker();
-            this.dtpDenNgay = new System.Windows.Forms.DateTimePicker();
+            this.dtpTuNgay = new FINAL_DotNet.DarkGoldDateTimePicker();
+            this.dtpDenNgay = new FINAL_DotNet.DarkGoldDateTimePicker();
             this.cboLocKhachHang = new System.Windows.Forms.ComboBox();
             this.cboLocTrangThai = new System.Windows.Forms.ComboBox();
             this.txtTienTu = new System.Windows.Forms.TextBox();
@@ -25,14 +25,14 @@ namespace FINAL_DotNet
             this.lblSoKetQua = new System.Windows.Forms.Label();
             this.splitChinh = new System.Windows.Forms.SplitContainer();
             this.dgvHoaDon = new System.Windows.Forms.DataGridView();
-            this.tabBanHang = new System.Windows.Forms.TabControl();
+            this.tabBanHang = new FINAL_DotNet.DarkGoldTabControl();
             this.tabLapHoaDon = new System.Windows.Forms.TabPage();
             this.dgvGioHang = new System.Windows.Forms.DataGridView();
             this.pnlDongBan = new System.Windows.Forms.Panel();
             this.cboSanPham = new System.Windows.Forms.ComboBox();
             this.numSoLuong = new System.Windows.Forms.NumericUpDown();
             this.lblDonGiaBan = new System.Windows.Forms.Label();
-            this.dtpHanBaoHanh = new System.Windows.Forms.DateTimePicker();
+            this.dtpHanBaoHanh = new FINAL_DotNet.DarkGoldDateTimePicker();
             this.lblTonKho = new System.Windows.Forms.Label();
             this.btnThemDong = new System.Windows.Forms.Button();
             this.btnXoaDong = new System.Windows.Forms.Button();

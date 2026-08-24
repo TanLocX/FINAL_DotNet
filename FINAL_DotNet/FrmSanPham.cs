@@ -35,6 +35,7 @@ namespace FINAL_DotNet
             numSoLuongTon.Maximum = int.MaxValue;
             numTrongLuong.Maximum = 9999999.999M;
             FormClosed += FrmSanPham_FormClosed;
+            LuxuryDarkGoldTheme.Apply(this);
         }
 
         private void FrmSanPham_FormClosed(object sender, FormClosedEventArgs e)
