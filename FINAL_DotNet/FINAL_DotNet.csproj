@@ -133,6 +133,12 @@
     <Compile Include="FrmBanHang.Designer.cs">
       <DependentUpon>FrmBanHang.cs</DependentUpon>
     </Compile>
+    <Compile Include="FrmBaoHanh.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmBaoHanh.Designer.cs">
+      <DependentUpon>FrmBaoHanh.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrmHoaDon.cs">
       <SubType>Form</SubType>
     </Compile>
