@@ -38,6 +38,7 @@ namespace FINAL_DotNet
 
             ConfigureFilterBars(form);
             ConfigureCrudLayout(form);
+            FluentSpecialLayouts.Apply(form);
             ConfigureCommonControls(form);
 
             form.ResumeLayout(true);

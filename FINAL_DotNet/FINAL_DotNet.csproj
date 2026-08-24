@@ -254,6 +254,7 @@
     </Compile>
     <Compile Include="LuxuryDarkGoldControls.cs" />
     <Compile Include="FluentDesktopLayout.cs" />
+    <Compile Include="FluentSpecialLayouts.cs" />
     <Compile Include="LuxuryDarkGoldTheme.cs" />
     <Compile Include="MauEmail.cs">
       <DependentUpon>Model1.tt</DependentUpon>
