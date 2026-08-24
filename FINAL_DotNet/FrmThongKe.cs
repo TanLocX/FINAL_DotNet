@@ -213,9 +213,14 @@ namespace FINAL_DotNet
             chart.Legends.Clear();
             chart.Titles.Clear();
             var area = new ChartArea("Chinh");
-            area.BackColor = Color.White;
+            chart.BackColor = LuxuryDarkGoldTheme.Card;
+            area.BackColor = LuxuryDarkGoldTheme.Card;
             area.AxisX.MajorGrid.Enabled = false;
-            area.AxisY.MajorGrid.LineColor = Color.FromArgb(230, 233, 237);
+            area.AxisY.MajorGrid.LineColor = LuxuryDarkGoldTheme.Border;
+            area.AxisX.LineColor = LuxuryDarkGoldTheme.Border;
+            area.AxisY.LineColor = LuxuryDarkGoldTheme.Border;
+            area.AxisX.LabelStyle.ForeColor = LuxuryDarkGoldTheme.TextSecondary;
+            area.AxisY.LabelStyle.ForeColor = LuxuryDarkGoldTheme.TextSecondary;
             area.AxisX.LabelStyle.Font = new Font("Segoe UI", 8F);
             area.AxisY.LabelStyle.Font = new Font("Segoe UI", 8F);
             area.AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
@@ -225,7 +230,7 @@ namespace FINAL_DotNet
         private static void HienThiBieuDoRong(Chart chart)
         {
             chart.Titles.Add(new Title("Không có dữ liệu trong khoảng đã chọn",
-                Docking.Top, new Font("Segoe UI", 9F), Color.Gray));
+                Docking.Top, new Font("Segoe UI", 9F), LuxuryDarkGoldTheme.TextSecondary));
         }
 
         private static void VeBieuDoThoiGian(Chart chart, IList<DiemThongKe> duLieu)
@@ -271,7 +276,13 @@ namespace FINAL_DotNet
         {
             KhoiTaoBieuDo(chart);
             if (duLieu.Count == 0) { HienThiBieuDoRong(chart); return; }
-            var legend = new Legend("ChuThich") { Docking = Docking.Right, Font = new Font("Segoe UI", 8F) };
+            var legend = new Legend("ChuThich")
+            {
+                Docking = Docking.Right,
+                Font = new Font("Segoe UI", 8F),
+                BackColor = LuxuryDarkGoldTheme.Card,
+                ForeColor = LuxuryDarkGoldTheme.TextSecondary
+            };
             chart.Legends.Add(legend);
             var series = new Series("Bảo hành")
             {

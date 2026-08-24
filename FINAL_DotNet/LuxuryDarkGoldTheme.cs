@@ -45,11 +45,45 @@ namespace FINAL_DotNet
             }
 
             form.SuspendLayout();
+            FluentDesktopLayout.Apply(form);
             form.BackColor = Background;
             form.ForeColor = TextPrimary;
             form.Font = FontOf(9.75F);
             ApplyControl(form);
             form.ResumeLayout(true);
+        }
+
+        internal static void ActivateNavigation(Button selected, Control root)
+        {
+            if (selected == null || root == null)
+            {
+                return;
+            }
+
+            foreach (Button button in Descendants(root).OfType<Button>())
+            {
+                ThemeState state = States.GetOrCreateValue(button);
+                if (state.ButtonRole != ButtonRole.Navigation)
+                {
+                    continue;
+                }
+
+                state.NavigationActive = button == selected;
+                ApplyButtonPalette(button, state, false);
+                button.Invalidate();
+            }
+        }
+
+        private static System.Collections.Generic.IEnumerable<Control> Descendants(Control root)
+        {
+            foreach (Control child in root.Controls)
+            {
+                yield return child;
+                foreach (Control descendant in Descendants(child))
+                {
+                    yield return descendant;
+                }
+            }
         }
 
         private static bool IsExcluded(Form form)
@@ -230,16 +264,12 @@ namespace FINAL_DotNet
         {
             string name = Normalize(panel.Name);
             bool isMainSurface = name.Contains("content") || name.Contains("sidebar") ||
-                                 name.Contains("flowmenu") || name == "panel1" || name == "panel2";
-            panel.BackColor = isMainSurface ? Background : Card;
+                                 name.Contains("flowmenu") || name.Contains("fluent") ||
+                                 name == "panel1" || name == "panel2";
+            bool isBar = name.Contains("boloc") || name.Contains("thaotac") ||
+                         name.Contains("chan") || name.Contains("header");
+            panel.BackColor = isMainSurface ? Background : (isBar ? Card : Background);
             panel.ForeColor = TextPrimary;
-
-            if (!isMainSurface && !(panel is FlowLayoutPanel) && !(panel is TableLayoutPanel))
-            {
-                panel.Paint += CardPanel_Paint;
-                panel.Resize += RoundedPanel_Resize;
-                SetRoundedRegion(panel, 8);
-            }
         }
 
         private static void CardPanel_Paint(object sender, PaintEventArgs e)
@@ -273,9 +303,10 @@ namespace FINAL_DotNet
                            (label.Font.Bold && label.Font.Size >= 11F);
 
             label.BackColor = Color.Transparent;
-            label.ForeColor = name.Contains("loi") ? Danger : (isTitle ? Gold : TextSecondary);
+            label.ForeColor = name.Contains("loi") ? Danger : (isTitle ? TextPrimary : TextSecondary);
             if (name.Contains("thuonghieu"))
             {
+                label.ForeColor = Gold;
                 label.Font = FontOf(15F, FontStyle.Bold);
             }
             else if (isTitle)
@@ -380,10 +411,11 @@ namespace FINAL_DotNet
             grid.BorderStyle = BorderStyle.None;
             grid.GridColor = Border;
             grid.RowHeadersVisible = false;
-            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            OptimizeGridColumns(grid);
+            grid.DataBindingComplete += Grid_DataBindingComplete;
             grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             grid.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            grid.ColumnHeadersHeight = Math.Max(34, grid.ColumnHeadersHeight);
+            grid.ColumnHeadersHeight = Math.Max(40, grid.ColumnHeadersHeight);
             grid.ColumnHeadersDefaultCellStyle.BackColor = Background;
             grid.ColumnHeadersDefaultCellStyle.ForeColor = Gold;
             grid.ColumnHeadersDefaultCellStyle.SelectionBackColor = Background;
@@ -399,7 +431,40 @@ namespace FINAL_DotNet
             grid.AlternatingRowsDefaultCellStyle.ForeColor = TextPrimary;
             grid.AlternatingRowsDefaultCellStyle.SelectionBackColor = Selection;
             grid.AlternatingRowsDefaultCellStyle.SelectionForeColor = Gold;
-            grid.RowTemplate.Height = Math.Max(30, grid.RowTemplate.Height);
+            grid.RowTemplate.Height = Math.Max(40, grid.RowTemplate.Height);
+        }
+
+        private static void Grid_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            OptimizeGridColumns(sender as DataGridView);
+        }
+
+        private static void OptimizeGridColumns(DataGridView grid)
+        {
+            if (grid == null)
+            {
+                return;
+            }
+
+            grid.AutoSizeColumnsMode = grid.Columns.Count > 6
+                ? DataGridViewAutoSizeColumnsMode.None
+                : DataGridViewAutoSizeColumnsMode.Fill;
+
+            if (grid.Columns.Count <= 6)
+            {
+                return;
+            }
+
+            foreach (DataGridViewColumn column in grid.Columns)
+            {
+                column.Width = Math.Max(88, Math.Min(220, column.Width));
+                string name = Normalize(column.Name + column.DataPropertyName);
+                if (name.Contains("gia") || name.Contains("tien") || name.Contains("tong") ||
+                    name.Contains("diem") || name.Contains("soluong"))
+                {
+                    column.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                }
+            }
         }
 
         private static void StyleTabs(TabControl tabs)
@@ -452,9 +517,11 @@ namespace FINAL_DotNet
             button.Cursor = Cursors.Hand;
             button.FlatStyle = FlatStyle.Flat;
             button.UseVisualStyleBackColor = false;
-            button.Font = FontOf(state.ButtonRole == ButtonRole.Primary ? 11.25F : 9.75F, FontStyle.Bold);
-            button.Padding = state.ButtonRole == ButtonRole.Navigation ? new Padding(15, 0, 0, 0) : button.Padding;
-            button.TextAlign = state.ButtonRole == ButtonRole.Navigation ? ContentAlignment.MiddleLeft : button.TextAlign;
+            button.Font = FontOf(state.ButtonRole == ButtonRole.Primary ? 11.25F :
+                (state.ButtonRole == ButtonRole.Group ? 8.5F : 9.75F), FontStyle.Bold);
+            bool menuButton = state.ButtonRole == ButtonRole.Navigation || state.ButtonRole == ButtonRole.Group;
+            button.Padding = menuButton ? new Padding(15, 0, 0, 0) : button.Padding;
+            button.TextAlign = menuButton ? ContentAlignment.MiddleLeft : button.TextAlign;
             ApplyButtonPalette(button, state, false);
             button.MouseEnter += Button_MouseEnter;
             button.MouseLeave += Button_MouseLeave;
@@ -466,13 +533,8 @@ namespace FINAL_DotNet
             {
                 button.Click += NavigationButton_Click;
                 button.Paint += NavigationButton_Paint;
-                bool hasActiveSibling = button.Parent != null && button.Parent.Controls.OfType<Button>()
-                    .Any(item => item != button && States.GetOrCreateValue(item).NavigationActive);
-                if (!hasActiveSibling)
-                {
-                    state.NavigationActive = true;
-                    ApplyButtonPalette(button, state, false);
-                }
+                state.NavigationActive = Normalize(button.Text) == "tongquan";
+                ApplyButtonPalette(button, state, false);
             }
         }
 
@@ -481,7 +543,11 @@ namespace FINAL_DotNet
             string name = Normalize(button.Name);
             string semantic = string.IsNullOrEmpty(name) ? Normalize(button.Text) : name;
             string parentName = button.Parent == null ? string.Empty : Normalize(button.Parent.Name);
-            if (parentName.Contains("flowmenu") || semantic.StartsWith("btnnav"))
+            if (semantic.StartsWith("btnnhom"))
+            {
+                return ButtonRole.Group;
+            }
+            if (parentName.Contains("flowmenu") || parentName.Contains("nhommenu") || semantic.StartsWith("btnnav"))
             {
                 return ButtonRole.Navigation;
             }
@@ -607,6 +673,12 @@ namespace FINAL_DotNet
                 case ButtonRole.Navigation:
                     button.BackColor = state.NavigationActive || hovered ? Card : Background;
                     button.ForeColor = state.NavigationActive || hovered ? Gold : TextSecondary;
+                    button.FlatAppearance.BorderColor = Background;
+                    button.FlatAppearance.BorderSize = 0;
+                    break;
+                case ButtonRole.Group:
+                    button.BackColor = hovered ? Card : Background;
+                    button.ForeColor = hovered ? Gold : TextSecondary;
                     button.FlatAppearance.BorderColor = Background;
                     button.FlatAppearance.BorderSize = 0;
                     break;
@@ -804,7 +876,8 @@ namespace FINAL_DotNet
             Primary,
             Secondary,
             Danger,
-            Navigation
+            Navigation,
+            Group
         }
 
         private sealed class ThemeState

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace FINAL_DotNet
@@ -47,49 +48,82 @@ namespace FINAL_DotNet
             flowMenu.Controls.Clear();
             mucQuanTri.Clear();
 
-            ThemTieuDeNhom("NGHIỆP VỤ", false);
-            ThemNutMenu("Tổng quan", "Tổng quan hệ thống", false);
-            ThemNutMenu("Bán hàng", "Bán hàng", false);
-            ThemNutMenu("Hóa đơn", "Quản lý hóa đơn", false);
-            ThemNutMenu("Khách hàng", "Quản lý khách hàng", false);
-            ThemNutMenu("Sản phẩm", "Quản lý sản phẩm", false);
-            ThemNutMenu("Nhập hàng", "Nhập hàng", false);
-            ThemNutMenu("Thu mua Excel", "Import và tra cứu thu mua", false);
-            ThemNutMenu("Bảo hành", "Quản lý bảo hành", false);
-            ThemNutMenu("Email", "Quản lý email", false);
-            ThemNutMenu("Thống kê", "Thống kê", false);
+            FlowLayoutPanel nhomTongQuan = ThemNhomMenu("TỔNG QUAN", false, true);
+            ThemNutMenu(nhomTongQuan, "Tổng quan", "Tổng quan hệ thống", false);
 
-            ThemTieuDeNhom("QUẢN TRỊ", true);
-            ThemNutMenu("Nhân viên", "Quản lý nhân viên", true);
-            ThemNutMenu("Tài khoản", "Quản lý tài khoản và phân quyền", true);
-            ThemNutMenu("Danh mục sản phẩm", "Quản lý danh mục sản phẩm", true);
-            ThemNutMenu("Chất liệu", "Quản lý chất liệu và giá tham khảo", true);
-            ThemNutMenu("Nhà cung cấp", "Quản lý nhà cung cấp", true);
-            ThemNutMenu("Sao lưu / Phục hồi", "Sao lưu và phục hồi CSDL", true);
+            FlowLayoutPanel nhomKinhDoanh = ThemNhomMenu("KINH DOANH", false, false);
+            ThemNutMenu(nhomKinhDoanh, "Bán hàng", "Bán hàng", false);
+            ThemNutMenu(nhomKinhDoanh, "Hóa đơn", "Quản lý hóa đơn", false);
+            ThemNutMenu(nhomKinhDoanh, "Khách hàng", "Quản lý khách hàng", false);
+
+            FlowLayoutPanel nhomHangHoa = ThemNhomMenu("HÀNG HÓA & DỊCH VỤ", false, false);
+            ThemNutMenu(nhomHangHoa, "Sản phẩm", "Quản lý sản phẩm", false);
+            ThemNutMenu(nhomHangHoa, "Nhập hàng", "Nhập hàng", false);
+            ThemNutMenu(nhomHangHoa, "Thu mua Excel", "Import và tra cứu thu mua", false);
+            ThemNutMenu(nhomHangHoa, "Bảo hành", "Quản lý bảo hành", false);
+
+            FlowLayoutPanel nhomVanHanh = ThemNhomMenu("VẬN HÀNH", false, false);
+            ThemNutMenu(nhomVanHanh, "Email", "Quản lý email", false);
+            ThemNutMenu(nhomVanHanh, "Thống kê", "Thống kê", false);
+
+            FlowLayoutPanel nhomQuanTri = ThemNhomMenu("QUẢN TRỊ", true, false);
+            ThemNutMenu(nhomQuanTri, "Nhân viên", "Quản lý nhân viên", true);
+            ThemNutMenu(nhomQuanTri, "Tài khoản", "Quản lý tài khoản và phân quyền", true);
+            ThemNutMenu(nhomQuanTri, "Danh mục sản phẩm", "Quản lý danh mục sản phẩm", true);
+            ThemNutMenu(nhomQuanTri, "Chất liệu", "Quản lý chất liệu và giá tham khảo", true);
+            ThemNutMenu(nhomQuanTri, "Nhà cung cấp", "Quản lý nhà cung cấp", true);
+            ThemNutMenu(nhomQuanTri, "Sao lưu / Phục hồi", "Sao lưu và phục hồi CSDL", true);
         }
 
-        private void ThemTieuDeNhom(string noiDung, bool chiDanhChoQuanTri)
+        private FlowLayoutPanel ThemNhomMenu(string noiDung, bool chiDanhChoQuanTri, bool moSan)
         {
-            var label = new Label
+            var noiDungNhom = new FlowLayoutPanel
             {
-                AutoSize = false,
-                Font = new Font("Segoe UI", 8F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(172, 182, 194),
-                Margin = new Padding(18, 14, 6, 4),
-                Size = new Size(190, 22),
-                Text = noiDung,
-                TextAlign = ContentAlignment.MiddleLeft
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                BackColor = Color.Transparent,
+                FlowDirection = FlowDirection.TopDown,
+                Margin = Padding.Empty,
+                Name = "pnlNhomMenu",
+                Size = new Size(215, 0),
+                Visible = moSan,
+                WrapContents = false
             };
+
+            var trangThai = new ThongTinNhomMenu(noiDungNhom, noiDung, moSan);
+            var tieuDe = new Button
+            {
+                Cursor = Cursors.Hand,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+                Margin = new Padding(10, 6, 10, 2),
+                Name = "btnNhomMenu",
+                Padding = new Padding(8, 0, 0, 0),
+                Size = new Size(195, 34),
+                Tag = trangThai,
+                Text = (moSan ? "▾  " : "▸  ") + noiDung,
+                TextAlign = ContentAlignment.MiddleLeft,
+                UseVisualStyleBackColor = false
+            };
+            tieuDe.FlatAppearance.BorderSize = 0;
+            tieuDe.Click += btnNhomMenu_Click;
 
             if (chiDanhChoQuanTri)
             {
-                mucQuanTri.Add(label);
+                mucQuanTri.Add(tieuDe);
+                mucQuanTri.Add(noiDungNhom);
             }
 
-            flowMenu.Controls.Add(label);
+            flowMenu.Controls.Add(tieuDe);
+            flowMenu.Controls.Add(noiDungNhom);
+            return noiDungNhom;
         }
 
-        private void ThemNutMenu(string noiDung, string tieuDeTrang, bool chiDanhChoQuanTri)
+        private void ThemNutMenu(
+            FlowLayoutPanel nhom,
+            string noiDung,
+            string tieuDeTrang,
+            bool chiDanhChoQuanTri)
         {
             var button = new Button
             {
@@ -98,9 +132,10 @@ namespace FINAL_DotNet
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 10F),
                 ForeColor = Color.White,
-                Margin = new Padding(10, 2, 10, 2),
+                Margin = new Padding(10, 1, 10, 1),
+                Name = "btnNav" + nhom.Controls.Count,
                 Padding = new Padding(14, 0, 0, 0),
-                Size = new Size(195, 40),
+                Size = new Size(195, 38),
                 Tag = new ThongTinMenu(tieuDeTrang, chiDanhChoQuanTri),
                 Text = noiDung,
                 TextAlign = ContentAlignment.MiddleLeft,
@@ -115,7 +150,35 @@ namespace FINAL_DotNet
                 mucQuanTri.Add(button);
             }
 
-            flowMenu.Controls.Add(button);
+            nhom.Controls.Add(button);
+        }
+
+        private void btnNhomMenu_Click(object sender, EventArgs e)
+        {
+            Button button = sender as Button;
+            ThongTinNhomMenu nhom = button == null ? null : button.Tag as ThongTinNhomMenu;
+            if (nhom == null)
+            {
+                return;
+            }
+
+            bool seMo = !nhom.DangMo;
+            foreach (Button tieuDeKhac in flowMenu.Controls.OfType<Button>())
+            {
+                ThongTinNhomMenu nhomKhac = tieuDeKhac.Tag as ThongTinNhomMenu;
+                if (nhomKhac == null || nhomKhac == nhom)
+                {
+                    continue;
+                }
+
+                nhomKhac.DangMo = false;
+                nhomKhac.NoiDung.Visible = false;
+                tieuDeKhac.Text = "▸  " + nhomKhac.TieuDe;
+            }
+
+            nhom.DangMo = seMo;
+            nhom.NoiDung.Visible = nhom.DangMo;
+            button.Text = (nhom.DangMo ? "▾  " : "▸  ") + nhom.TieuDe;
         }
 
         private void ApDungPhanQuyen()
@@ -123,7 +186,14 @@ namespace FINAL_DotNet
             bool laQuanTriVien = phienDangNhap.LaQuanTriVien;
             foreach (Control control in mucQuanTri)
             {
-                control.Visible = laQuanTriVien;
+                if (!laQuanTriVien)
+                {
+                    control.Visible = false;
+                }
+                else if (!(control is FlowLayoutPanel))
+                {
+                    control.Visible = true;
+                }
             }
         }
 
@@ -135,6 +205,8 @@ namespace FINAL_DotNet
             {
                 return;
             }
+
+            LuxuryDarkGoldTheme.ActivateNavigation(button, flowMenu);
 
             if (menu.ChiDanhChoQuanTri && !phienDangNhap.LaQuanTriVien)
             {
@@ -335,6 +407,20 @@ namespace FINAL_DotNet
 
             public string TieuDeTrang { get; }
             public bool ChiDanhChoQuanTri { get; }
+        }
+
+        private sealed class ThongTinNhomMenu
+        {
+            internal ThongTinNhomMenu(FlowLayoutPanel noiDung, string tieuDe, bool dangMo)
+            {
+                NoiDung = noiDung;
+                TieuDe = tieuDe;
+                DangMo = dangMo;
+            }
+
+            internal FlowLayoutPanel NoiDung { get; private set; }
+            internal string TieuDe { get; private set; }
+            internal bool DangMo { get; set; }
         }
     }
 }
