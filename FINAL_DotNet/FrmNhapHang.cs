@@ -205,6 +205,7 @@ namespace FINAL_DotNet
             dgvChiTietPhieu.DataSource = item.ChiTiet.Select(ct => ct.SaoChep()).ToList();
             btnLuuPhieu.Enabled = false;
             btnHuyPhieu.Enabled = item.TrangThai == "HOAN_THANH";
+            btnXemBaoCao.Enabled = item.TrangThai == "HOAN_THANH";
             tabNhapHang.SelectedTab = tabChiTiet;
             lblThongBao.Text = string.Empty;
         }
@@ -217,6 +218,28 @@ namespace FINAL_DotNet
                 return;
             }
             TaiDanhSachPhieu();
+        }
+
+        private void btnXemBaoCao_Click(object sender, EventArgs e)
+        {
+            if (!KiemTraPhienDangNhap(true) || !phieuNhapDangChonId.HasValue)
+            {
+                HienThiLoi("Vui lòng chọn phiếu nhập đã hoàn thành cần xem báo cáo.");
+                return;
+            }
+            try
+            {
+                CauHinhBaoCao cauHinh = BaoCaoService.TaoPhieuNhap(phieuNhapDangChonId.Value);
+                using (var xemTruoc = new FrmXemBaoCao(cauHinh)) xemTruoc.ShowDialog(this);
+            }
+            catch (InvalidOperationException ex)
+            {
+                HienThiLoi(ex.Message);
+            }
+            catch (Exception)
+            {
+                HienThiLoi("Không thể tạo báo cáo phiếu nhập. Hãy kiểm tra kết nối CSDL và cấu hình ReportViewer.");
+            }
         }
 
         private void txtTuKhoa_KeyDown(object sender, KeyEventArgs e)
@@ -557,6 +580,7 @@ namespace FINAL_DotNet
             dgvChiTietPhieu.DataSource = null;
             btnLuuPhieu.Enabled = true;
             btnHuyPhieu.Enabled = false;
+            btnXemBaoCao.Enabled = false;
             tabNhapHang.SelectedTab = tabLapPhieu;
             lblThongBao.Text = string.Empty;
         }

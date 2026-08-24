@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Report xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <AutoRefresh>0</AutoRefresh>
+  <DataSources>
+    <DataSource Name="NguonDuLieuCucBo">
+      <ConnectionProperties>
+        <DataProvider>System.Data.DataSet</DataProvider>
+        <ConnectString>/* Local Connection */</ConnectString>
+      </ConnectionProperties>
+      <rd:DataSourceID>3c5a6e4f-bdb4-48fb-8f4e-230a75bb9ee5</rd:DataSourceID>
+    </DataSource>
+  </DataSources>
+  <DataSets>
+    <DataSet Name="dsDongBaoCao">
+      <Query>
+        <DataSourceName>NguonDuLieuCucBo</DataSourceName>
+        <CommandText>/* Local Query */</CommandText>
+      </Query>
+      <Fields>
+        <Field Name="SoThuTu">
+          <DataField>SoThuTu</DataField>
+          <rd:TypeName>System.Int32</rd:TypeName>
+        </Field>
+        <Field Name="NoiDung">
+          <DataField>NoiDung</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+      </Fields>
+    </DataSet>
+  </DataSets>
+  <ReportSections>
+    <ReportSection>
+      <Body>
+        <ReportItems>
+          <Textbox Name="txtTenCuaHang">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Parameters!pTenCuaHang.Value</Value>
+                    <Style>
+                      <FontFamily>Segoe UI</FontFamily>
+                      <FontSize>10pt</FontSize>
+                      <FontWeight>Bold</FontWeight>
+                      <Color>#1B2735</Color>
+                    </Style>
+                  </TextRun>
+                </TextRuns>
+                <Style><TextAlign>Center</TextAlign></Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>txtTenCuaHang</rd:DefaultName>
+            <Top>0.1in</Top><Left>0.15in</Left><Height>0.28in</Height><Width>7.1in</Width>
+            <Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtTieuDe">
+            <CanGrow>true</CanGrow>
+            <KeepTogether>true</KeepTogether>
+            <Paragraphs>
+              <Paragraph>
+                <TextRuns>
+                  <TextRun>
+                    <Value>=Parameters!pTieuDe.Value</Value>
+                    <Style><FontFamily>Segoe UI</FontFamily><FontSize>18pt</FontSize><FontWeight>Bold</FontWeight><Color>#B18436</Color></Style>
+                  </TextRun>
+                </TextRuns>
+                <Style><TextAlign>Center</TextAlign></Style>
+              </Paragraph>
+            </Paragraphs>
+            <rd:DefaultName>txtTieuDe</rd:DefaultName>
+            <Top>0.45in</Top><Left>0.15in</Left><Height>0.42in</Height><Width>7.1in</Width>
+            <Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtMaChungTu">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pMaChungTu.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>11pt</FontSize><FontWeight>Bold</FontWeight><Color>#1B2735</Color></Style></TextRun></TextRuns><Style><TextAlign>Center</TextAlign></Style></Paragraph></Paragraphs>
+            <rd:DefaultName>txtMaChungTu</rd:DefaultName>
+            <Top>0.92in</Top><Left>0.15in</Left><Height>0.28in</Height><Width>7.1in</Width>
+            <Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtThongTin1">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pThongTin1.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize></Style></TextRun></TextRuns><Style /></Paragraph></Paragraphs>
+            <rd:DefaultName>txtThongTin1</rd:DefaultName>
+            <Top>1.3in</Top><Left>0.2in</Left><Height>0.28in</Height><Width>3.45in</Width>
+            <Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtThongTin2">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pThongTin2.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize></Style></TextRun></TextRuns><Style /></Paragraph></Paragraphs>
+            <rd:DefaultName>txtThongTin2</rd:DefaultName>
+            <Top>1.3in</Top><Left>3.8in</Left><Height>0.28in</Height><Width>3.45in</Width>
+            <Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtThongTin3">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pThongTin3.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize></Style></TextRun></TextRuns><Style /></Paragraph></Paragraphs>
+            <rd:DefaultName>txtThongTin3</rd:DefaultName>
+            <Top>1.62in</Top><Left>0.2in</Left><Height>0.28in</Height><Width>3.45in</Width>
+            <Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtThongTin4">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pThongTin4.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize></Style></TextRun></TextRuns><Style /></Paragraph></Paragraphs>
+            <rd:DefaultName>txtThongTin4</rd:DefaultName>
+            <Top>1.62in</Top><Left>3.8in</Left><Height>0.28in</Height><Width>3.45in</Width>
+            <Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtTieuDeChiTiet">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pTieuDeChiTiet.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>10pt</FontSize><FontWeight>Bold</FontWeight><Color>White</Color></Style></TextRun></TextRuns><Style><TextAlign>Left</TextAlign></Style></Paragraph></Paragraphs>
+            <rd:DefaultName>txtTieuDeChiTiet</rd:DefaultName>
+            <Top>2.02in</Top><Left>0.2in</Left><Height>0.34in</Height><Width>7.05in</Width>
+            <Style><Border><Style>Solid</Style><Color>#1B2735</Color></Border><BackgroundColor>#1B2735</BackgroundColor><PaddingLeft>8pt</PaddingLeft><PaddingRight>4pt</PaddingRight><PaddingTop>5pt</PaddingTop><PaddingBottom>3pt</PaddingBottom></Style>
+          </Textbox>
+          <Tablix Name="tblChiTiet">
+            <TablixBody>
+              <TablixColumns><TablixColumn><Width>7.05in</Width></TablixColumn></TablixColumns>
+              <TablixRows>
+                <TablixRow>
+                  <Height>0.5in</Height>
+                  <TablixCells>
+                    <TablixCell>
+                      <CellContents>
+                        <Textbox Name="txtDongChiTiet">
+                          <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+                          <Paragraphs><Paragraph><TextRuns><TextRun><Value>=CStr(Fields!SoThuTu.Value) &amp; ". " &amp; Fields!NoiDung.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><Color>#1B2735</Color></Style></TextRun></TextRuns><Style><LineHeight>14pt</LineHeight></Style></Paragraph></Paragraphs>
+                          <rd:DefaultName>txtDongChiTiet</rd:DefaultName>
+                          <Style><Border><Color>#D9DDE2</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>=IIF(Fields!SoThuTu.Value Mod 2 = 0, "#F6F7F9", "White")</BackgroundColor><PaddingLeft>8pt</PaddingLeft><PaddingRight>6pt</PaddingRight><PaddingTop>5pt</PaddingTop><PaddingBottom>5pt</PaddingBottom></Style>
+                        </Textbox>
+                      </CellContents>
+                    </TablixCell>
+                  </TablixCells>
+                </TablixRow>
+              </TablixRows>
+            </TablixBody>
+            <TablixColumnHierarchy><TablixMembers><TablixMember /></TablixMembers></TablixColumnHierarchy>
+            <TablixRowHierarchy>
+              <TablixMembers>
+                <TablixMember>
+                  <Group Name="grpChiTiet"><GroupExpressions><GroupExpression>=Fields!SoThuTu.Value</GroupExpression></GroupExpressions></Group>
+                  <SortExpressions><SortExpression><Value>=Fields!SoThuTu.Value</Value></SortExpression></SortExpressions>
+                </TablixMember>
+              </TablixMembers>
+            </TablixRowHierarchy>
+            <DataSetName>dsDongBaoCao</DataSetName>
+            <Top>2.36in</Top><Left>0.2in</Left><Height>0.5in</Height><Width>7.05in</Width>
+            <Style><Border><Style>None</Style></Border></Style>
+          </Tablix>
+          <Textbox Name="txtTongKet1">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pTongKet1.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+            <rd:DefaultName>txtTongKet1</rd:DefaultName>
+            <Top>6.2in</Top><Left>3.85in</Left><Height>0.28in</Height><Width>3.4in</Width>
+            <Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>5pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtTongKet2">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pTongKet2.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9.5pt</FontSize></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+            <rd:DefaultName>txtTongKet2</rd:DefaultName>
+            <Top>6.5in</Top><Left>3.85in</Left><Height>0.28in</Height><Width>3.4in</Width>
+            <Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>5pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtTongKet3">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pTongKet3.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>11pt</FontSize><FontWeight>Bold</FontWeight><Color>#B18436</Color></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+            <rd:DefaultName>txtTongKet3</rd:DefaultName>
+            <Top>6.8in</Top><Left>3.85in</Left><Height>0.32in</Height><Width>3.4in</Width>
+            <Style><Border><Style>None</Style></Border><PaddingLeft>2pt</PaddingLeft><PaddingRight>5pt</PaddingRight><PaddingTop>3pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtGhiChu">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pGhiChu.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>9pt</FontSize><FontStyle>Italic</FontStyle><Color>#5F6A77</Color></Style></TextRun></TextRuns><Style /></Paragraph></Paragraphs>
+            <rd:DefaultName>txtGhiChu</rd:DefaultName>
+            <Top>7.2in</Top><Left>0.2in</Left><Height>0.55in</Height><Width>7.05in</Width>
+            <Style><Border><Color>#D9DDE2</Color><Style>Solid</Style><Width>0.5pt</Width></Border><BackgroundColor>#FAFAFA</BackgroundColor><PaddingLeft>8pt</PaddingLeft><PaddingRight>8pt</PaddingRight><PaddingTop>6pt</PaddingTop><PaddingBottom>6pt</PaddingBottom></Style>
+          </Textbox>
+          <Textbox Name="txtNgayIn">
+            <CanGrow>true</CanGrow><KeepTogether>true</KeepTogether>
+            <Paragraphs><Paragraph><TextRuns><TextRun><Value>=Parameters!pNgayIn.Value</Value><Style><FontFamily>Segoe UI</FontFamily><FontSize>8pt</FontSize><Color>#7A8490</Color></Style></TextRun></TextRuns><Style><TextAlign>Right</TextAlign></Style></Paragraph></Paragraphs>
+            <rd:DefaultName>txtNgayIn</rd:DefaultName>
+            <Top>7.88in</Top><Left>3.85in</Left><Height>0.25in</Height><Width>3.4in</Width>
+            <Style><PaddingLeft>2pt</PaddingLeft><PaddingRight>2pt</PaddingRight><PaddingTop>2pt</PaddingTop><PaddingBottom>2pt</PaddingBottom></Style>
+          </Textbox>
+        </ReportItems>
+        <Height>8.25in</Height>
+        <Style />
+      </Body>
+      <Width>7.45in</Width>
+      <Page>
+        <PageHeight>11.69in</PageHeight><PageWidth>8.27in</PageWidth>
+        <LeftMargin>0.4in</LeftMargin><RightMargin>0.4in</RightMargin><TopMargin>0.45in</TopMargin><BottomMargin>0.45in</BottomMargin>
+        <Style />
+      </Page>
+    </ReportSection>
+  </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="pTenCuaHang"><DataType>String</DataType><Prompt>pTenCuaHang</Prompt></ReportParameter>
+    <ReportParameter Name="pTieuDe"><DataType>String</DataType><Prompt>pTieuDe</Prompt></ReportParameter>
+    <ReportParameter Name="pMaChungTu"><DataType>String</DataType><Prompt>pMaChungTu</Prompt></ReportParameter>
+    <ReportParameter Name="pThongTin1"><DataType>String</DataType><AllowBlank>true</AllowBlank><Prompt>pThongTin1</Prompt></ReportParameter>
+    <ReportParameter Name="pThongTin2"><DataType>String</DataType><AllowBlank>true</AllowBlank><Prompt>pThongTin2</Prompt></ReportParameter>
+    <ReportParameter Name="pThongTin3"><DataType>String</DataType><AllowBlank>true</AllowBlank><Prompt>pThongTin3</Prompt></ReportParameter>
+    <ReportParameter Name="pThongTin4"><DataType>String</DataType><AllowBlank>true</AllowBlank><Prompt>pThongTin4</Prompt></ReportParameter>
+    <ReportParameter Name="pTieuDeChiTiet"><DataType>String</DataType><Prompt>pTieuDeChiTiet</Prompt></ReportParameter>
+    <ReportParameter Name="pTongKet1"><DataType>String</DataType><AllowBlank>true</AllowBlank><Prompt>pTongKet1</Prompt></ReportParameter>
+    <ReportParameter Name="pTongKet2"><DataType>String</DataType><AllowBlank>true</AllowBlank><Prompt>pTongKet2</Prompt></ReportParameter>
+    <ReportParameter Name="pTongKet3"><DataType>String</DataType><AllowBlank>true</AllowBlank><Prompt>pTongKet3</Prompt></ReportParameter>
+    <ReportParameter Name="pGhiChu"><DataType>String</DataType><AllowBlank>true</AllowBlank><Prompt>pGhiChu</Prompt></ReportParameter>
+    <ReportParameter Name="pNgayIn"><DataType>String</DataType><Prompt>pNgayIn</Prompt></ReportParameter>
+  </ReportParameters>
+  <ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+  <rd:ReportUnitType>Inch</rd:ReportUnitType>
+  <rd:ReportID>b6272c85-b841-4b6e-aa16-e35dcb56db34</rd:ReportID>
+</Report>

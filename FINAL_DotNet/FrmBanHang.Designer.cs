@@ -301,7 +301,7 @@ namespace FINAL_DotNet
             CauHinhNut(this.btnHuyHoaDon, "Hủy hóa đơn", 564, 12, 120, System.Drawing.Color.Firebrick);
             this.btnHuyHoaDon.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.btnHuyHoaDon.Click += new System.EventHandler(this.btnHuyHoaDon_Click);
-            CauHinhNut(this.btnInHoaDon, "In hóa đơn", 692, 12, 106, System.Drawing.Color.FromArgb(44, 95, 138));
+            CauHinhNut(this.btnInHoaDon, "Xem báo cáo", 692, 12, 106, System.Drawing.Color.FromArgb(44, 95, 138));
             this.btnInHoaDon.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.btnInHoaDon.Click += new System.EventHandler(this.btnInHoaDon_Click);
             CauHinhNut(this.btnHoaDonMoi, "Hóa đơn mới", 806, 12, 110, System.Drawing.Color.DimGray);

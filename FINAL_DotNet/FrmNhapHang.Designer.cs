@@ -55,6 +55,7 @@ namespace FINAL_DotNet
             this.pnlChan = new System.Windows.Forms.Panel();
             this.lblThongBao = new System.Windows.Forms.Label();
             this.btnLuuPhieu = new System.Windows.Forms.Button();
+            this.btnXemBaoCao = new System.Windows.Forms.Button();
             this.btnHuyPhieu = new System.Windows.Forms.Button();
             this.btnPhieuMoi = new System.Windows.Forms.Button();
             this.pnlBoLoc.SuspendLayout();
@@ -270,20 +271,25 @@ namespace FINAL_DotNet
             this.pnlChan.Size = new System.Drawing.Size(1000, 58);
             this.lblThongBao.ForeColor = System.Drawing.Color.Crimson;
             this.lblThongBao.Location = new System.Drawing.Point(14, 5);
-            this.lblThongBao.Size = new System.Drawing.Size(500, 46);
+            this.lblThongBao.Size = new System.Drawing.Size(410, 46);
             this.lblThongBao.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblThongBao.AutoEllipsis = true;
-            CauHinhNut(this.btnLuuPhieu, "Lưu phiếu nhập", 552, 12, 132, MauXanh());
+            CauHinhNut(this.btnLuuPhieu, "Lưu phiếu nhập", 420, 12, 126, MauXanh());
             this.btnLuuPhieu.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.btnLuuPhieu.Click += new System.EventHandler(this.btnLuuPhieu_Click);
-            CauHinhNut(this.btnHuyPhieu, "Hủy phiếu", 692, 12, 110, System.Drawing.Color.Firebrick);
+            CauHinhNut(this.btnXemBaoCao, "Xem báo cáo", 554, 12, 122, System.Drawing.Color.FromArgb(44, 95, 138));
+            this.btnXemBaoCao.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.btnXemBaoCao.Enabled = false;
+            this.btnXemBaoCao.Click += new System.EventHandler(this.btnXemBaoCao_Click);
+            CauHinhNut(this.btnHuyPhieu, "Hủy phiếu", 684, 12, 110, System.Drawing.Color.Firebrick);
             this.btnHuyPhieu.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.btnHuyPhieu.Click += new System.EventHandler(this.btnHuyPhieu_Click);
-            CauHinhNut(this.btnPhieuMoi, "Phiếu mới", 810, 12, 105, System.Drawing.Color.DimGray);
+            CauHinhNut(this.btnPhieuMoi, "Phiếu mới", 802, 12, 105, System.Drawing.Color.DimGray);
             this.btnPhieuMoi.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.btnPhieuMoi.Click += new System.EventHandler(this.btnPhieuMoi_Click);
             this.pnlChan.Controls.Add(this.lblThongBao);
             this.pnlChan.Controls.Add(this.btnLuuPhieu);
+            this.pnlChan.Controls.Add(this.btnXemBaoCao);
             this.pnlChan.Controls.Add(this.btnHuyPhieu);
             this.pnlChan.Controls.Add(this.btnPhieuMoi);
 
@@ -451,6 +457,7 @@ namespace FINAL_DotNet
         private System.Windows.Forms.Panel pnlChan;
         private System.Windows.Forms.Label lblThongBao;
         private System.Windows.Forms.Button btnLuuPhieu;
+        private System.Windows.Forms.Button btnXemBaoCao;
         private System.Windows.Forms.Button btnHuyPhieu;
         private System.Windows.Forms.Button btnPhieuMoi;
     }

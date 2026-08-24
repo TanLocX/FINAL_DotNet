@@ -55,6 +55,7 @@ namespace FINAL_DotNet
             this.pnlChan = new System.Windows.Forms.Panel();
             this.lblThongBao = new System.Windows.Forms.Label();
             this.btnTiepNhan = new System.Windows.Forms.Button();
+            this.btnXemBaoCao = new System.Windows.Forms.Button();
             this.btnCapNhat = new System.Windows.Forms.Button();
             this.btnLamMoi = new System.Windows.Forms.Button();
             this.pnlBoLoc.SuspendLayout();
@@ -240,10 +241,14 @@ namespace FINAL_DotNet
             this.pnlChan.Size = new System.Drawing.Size(1000, 58);
             this.lblThongBao.ForeColor = System.Drawing.Color.Crimson;
             this.lblThongBao.Location = new System.Drawing.Point(14, 5);
-            this.lblThongBao.Size = new System.Drawing.Size(500, 46);
+            this.lblThongBao.Size = new System.Drawing.Size(420, 46);
             this.lblThongBao.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblThongBao.AutoEllipsis = true;
-            CauHinhNut(this.btnTiepNhan, "Tiếp nhận", 562, 12, 110, MauXanh());
+            CauHinhNut(this.btnXemBaoCao, "Xem báo cáo", 440, 12, 116, System.Drawing.Color.FromArgb(44, 95, 138));
+            this.btnXemBaoCao.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.btnXemBaoCao.Enabled = false;
+            this.btnXemBaoCao.Click += new System.EventHandler(this.btnXemBaoCao_Click);
+            CauHinhNut(this.btnTiepNhan, "Tiếp nhận", 564, 12, 110, MauXanh());
             this.btnTiepNhan.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.btnTiepNhan.Click += new System.EventHandler(this.btnTiepNhan_Click);
             CauHinhNut(this.btnCapNhat, "Cập nhật xử lý", 680, 12, 132, System.Drawing.Color.FromArgb(196, 148, 52));
@@ -253,6 +258,7 @@ namespace FINAL_DotNet
             this.btnLamMoi.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
             this.btnLamMoi.Click += new System.EventHandler(this.btnLamMoi_Click);
             this.pnlChan.Controls.Add(this.lblThongBao);
+            this.pnlChan.Controls.Add(this.btnXemBaoCao);
             this.pnlChan.Controls.Add(this.btnTiepNhan);
             this.pnlChan.Controls.Add(this.btnCapNhat);
             this.pnlChan.Controls.Add(this.btnLamMoi);
@@ -410,6 +416,7 @@ namespace FINAL_DotNet
         private System.Windows.Forms.Panel pnlChan;
         private System.Windows.Forms.Label lblThongBao;
         private System.Windows.Forms.Button btnTiepNhan;
+        private System.Windows.Forms.Button btnXemBaoCao;
         private System.Windows.Forms.Button btnCapNhat;
         private System.Windows.Forms.Button btnLamMoi;
     }

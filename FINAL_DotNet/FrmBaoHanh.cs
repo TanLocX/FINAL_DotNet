@@ -269,6 +269,7 @@ namespace FINAL_DotNet
             TaiLuaChonTrangThai(item.TrangThai);
             btnTiepNhan.Enabled = false;
             btnCapNhat.Enabled = true;
+            btnXemBaoCao.Enabled = true;
             tabBaoHanh.SelectedTab = tabXuLy;
             lblThongBao.Text = string.Empty;
         }
@@ -281,6 +282,28 @@ namespace FINAL_DotNet
             if (tiepTheo != null) cboTrangThaiXuLy.Items.Add(new LuaChonTrangThai(tiepTheo));
             cboTrangThaiXuLy.SelectedIndex = 0;
             CapNhatQuyenNhapNgayTra();
+        }
+
+        private void btnXemBaoCao_Click(object sender, EventArgs e)
+        {
+            if (!KiemTraPhienDangNhap(true) || !phieuBaoHanhDangChonId.HasValue)
+            {
+                HienThiLoi("Vui lòng chọn phiếu bảo hành cần xem báo cáo.");
+                return;
+            }
+            try
+            {
+                CauHinhBaoCao cauHinh = BaoCaoService.TaoPhieuBaoHanh(phieuBaoHanhDangChonId.Value);
+                using (var xemTruoc = new FrmXemBaoCao(cauHinh)) xemTruoc.ShowDialog(this);
+            }
+            catch (InvalidOperationException ex)
+            {
+                HienThiLoi(ex.Message);
+            }
+            catch (Exception)
+            {
+                HienThiLoi("Không thể tạo phiếu tiếp nhận bảo hành. Hãy kiểm tra kết nối CSDL và cấu hình ReportViewer.");
+            }
         }
 
         private static string TrangThaiTiepTheo(string trangThai)
@@ -501,6 +524,7 @@ namespace FINAL_DotNet
             dgvPhieuBaoHanh.ClearSelection();
             btnTiepNhan.Enabled = true;
             btnCapNhat.Enabled = false;
+            btnXemBaoCao.Enabled = false;
             tabBaoHanh.SelectedTab = tabTiepNhan;
             lblThongBao.Text = string.Empty;
         }

@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Drawing;
-using System.Drawing.Printing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -257,7 +256,7 @@ namespace FINAL_DotNet
             dgvChiTietHoaDon.DataSource = item.ChiTiet.Select(ct => ct.SaoChep()).ToList();
             btnLuuHoaDon.Enabled = false;
             btnHuyHoaDon.Enabled = item.TrangThai == "DA_THANH_TOAN";
-            btnInHoaDon.Enabled = true;
+            btnInHoaDon.Enabled = item.TrangThai == "DA_THANH_TOAN";
             tabBanHang.SelectedTab = tabLichSu;
             lblThongBao.Text = string.Empty;
         }
@@ -619,75 +618,27 @@ namespace FINAL_DotNet
 
         private void btnInHoaDon_Click(object sender, EventArgs e)
         {
-            if (!KiemTraPhienDangNhap(true) || hoaDonDangChon == null)
+            if (!KiemTraPhienDangNhap(true) || !hoaDonDangChonId.HasValue)
             {
-                HienThiLoi("Vui lòng chọn hóa đơn cần in.");
+                HienThiLoi("Vui lòng chọn hóa đơn đã thanh toán cần xem báo cáo.");
                 return;
             }
             try
             {
-                using (var taiLieu = new PrintDocument())
-                using (var xemTruoc = new PrintPreviewDialog())
+                CauHinhBaoCao cauHinh = BaoCaoService.TaoHoaDon(hoaDonDangChonId.Value);
+                using (var xemTruoc = new FrmXemBaoCao(cauHinh))
                 {
-                    taiLieu.DocumentName = "HoaDon_" + hoaDonDangChon.MaHoaDon;
-                    taiLieu.PrintPage += InTrangHoaDon;
-                    xemTruoc.Document = taiLieu;
-                    xemTruoc.Width = 900;
-                    xemTruoc.Height = 700;
                     xemTruoc.ShowDialog(this);
                 }
             }
+            catch (InvalidOperationException ex)
+            {
+                HienThiLoi(ex.Message);
+            }
             catch (Exception)
             {
-                HienThiLoi("Không thể tạo bản in hóa đơn. Hãy kiểm tra máy in.");
+                HienThiLoi("Không thể tạo báo cáo hóa đơn. Hãy kiểm tra kết nối CSDL và cấu hình ReportViewer.");
             }
-        }
-
-        private void InTrangHoaDon(object sender, PrintPageEventArgs e)
-        {
-            var hoaDon = hoaDonDangChon;
-            if (hoaDon == null) return;
-            float x = e.MarginBounds.Left;
-            float y = e.MarginBounds.Top;
-            using (var tieuDe = new Font("Segoe UI", 16F, FontStyle.Bold))
-            using (var dam = new Font("Segoe UI", 10F, FontStyle.Bold))
-            using (var thuong = new Font("Segoe UI", 10F))
-            using (var nho = new Font("Segoe UI", 8F))
-            {
-                e.Graphics.DrawString("PNJ MANAGER - HÓA ĐƠN BÁN HÀNG", tieuDe, Brushes.Black, x, y);
-                y += 38;
-                e.Graphics.DrawString($"Mã: {hoaDon.MaHoaDon}    Ngày: {hoaDon.NgayLap:dd/MM/yyyy HH:mm}", thuong, Brushes.Black, x, y);
-                y += 24;
-                e.Graphics.DrawString($"Khách hàng: {hoaDon.TenKhachHang}    Nhân viên: {hoaDon.TenNhanVien}", thuong, Brushes.Black, x, y);
-                y += 30;
-                e.Graphics.DrawString("Sản phẩm", dam, Brushes.Black, x, y);
-                e.Graphics.DrawString("SL", dam, Brushes.Black, x + 360, y);
-                e.Graphics.DrawString("Đơn giá", dam, Brushes.Black, x + 420, y);
-                e.Graphics.DrawString("Thành tiền", dam, Brushes.Black, x + 550, y);
-                y += 24;
-                foreach (var dong in hoaDon.ChiTiet)
-                {
-                    e.Graphics.DrawString(dong.TenSanPham, thuong, Brushes.Black, new RectangleF(x, y, 350, 22));
-                    e.Graphics.DrawString(dong.SoLuong.ToString(), thuong, Brushes.Black, x + 360, y);
-                    e.Graphics.DrawString(dong.DonGiaBan.ToString("N0"), thuong, Brushes.Black, x + 420, y);
-                    e.Graphics.DrawString(dong.ThanhTien.ToString("N0"), thuong, Brushes.Black, x + 550, y);
-                    y += 23;
-                    if (dong.HanBaoHanh.HasValue)
-                    {
-                        e.Graphics.DrawString("Bảo hành đến " + dong.HanBaoHanh.Value.ToString("dd/MM/yyyy"), nho, Brushes.DimGray, x + 12, y);
-                        y += 18;
-                    }
-                }
-                y += 12;
-                e.Graphics.DrawString($"Tổng tiền: {hoaDon.TongTien:N0} đ", dam, Brushes.Black, x + 420, y);
-                y += 24;
-                e.Graphics.DrawString($"Giảm giá: {hoaDon.GiamGia:N0} đ", thuong, Brushes.Black, x + 420, y);
-                y += 24;
-                e.Graphics.DrawString($"Thanh toán: {hoaDon.ThanhTien:N0} đ", dam, Brushes.Black, x + 420, y);
-                y += 30;
-                e.Graphics.DrawString($"Phương thức: {hoaDon.PhuongThucThanhToan} - {hoaDon.TrangThaiHienThi}", thuong, Brushes.Black, x, y);
-            }
-            e.HasMorePages = false;
         }
 
         private void btnHoaDonMoi_Click(object sender, EventArgs e) => LamMoiHoaDon();
