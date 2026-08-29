@@ -20,6 +20,10 @@ namespace FINAL_DotNet
         public FrmTaiKhoan()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
             cboLocTrangThai.SelectedIndex = 0;
             cboVaiTro.SelectedIndex = 1;
             LuxuryDarkGoldTheme.Apply(this);

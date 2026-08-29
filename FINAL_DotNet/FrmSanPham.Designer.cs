@@ -396,7 +396,7 @@ namespace FINAL_DotNet
             this.splitChinh.Panel2.Controls.Add(this.tabBieuMau);
             this.splitChinh.Panel2.Padding = new System.Windows.Forms.Padding(0, 4, 0, 0);
             this.splitChinh.Size = new System.Drawing.Size(1000, 453);
-            this.splitChinh.SplitterDistance = 195;
+            this.splitChinh.SplitterDistance = 194;
             this.splitChinh.SplitterWidth = 6;
             this.splitChinh.TabIndex = 1;
             // 
@@ -409,7 +409,7 @@ namespace FINAL_DotNet
             this.dgvSanPham.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(39)))), ((int)(((byte)(53)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F);
             dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -441,11 +441,11 @@ namespace FINAL_DotNet
             this.dgvSanPham.ReadOnly = true;
             this.dgvSanPham.RowHeadersVisible = false;
             this.dgvSanPham.RowTemplate.Height = 29;
-            this.dgvSanPham.Size = new System.Drawing.Size(1000, 185);
+            this.dgvSanPham.Size = new System.Drawing.Size(1000, 184);
             this.dgvSanPham.TabIndex = 0;
             this.dgvSanPham.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.dgvSanPham.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(39)))), ((int)(((byte)(53)))));
-            this.dgvSanPham.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.dgvSanPham.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.dgvSanPham.ThemeStyle.HeaderStyle.Height = 34;
             this.dgvSanPham.ThemeStyle.ReadOnly = true;
             this.dgvSanPham.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 9F);
@@ -517,7 +517,7 @@ namespace FINAL_DotNet
             this.tabBieuMau.Location = new System.Drawing.Point(0, 4);
             this.tabBieuMau.Name = "tabBieuMau";
             this.tabBieuMau.SelectedIndex = 0;
-            this.tabBieuMau.Size = new System.Drawing.Size(1000, 248);
+            this.tabBieuMau.Size = new System.Drawing.Size(1000, 249);
             this.tabBieuMau.TabButtonHoverState.BorderColor = System.Drawing.Color.Empty;
             this.tabBieuMau.TabButtonHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(246)))));
             this.tabBieuMau.TabButtonHoverState.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -545,7 +545,7 @@ namespace FINAL_DotNet
             this.tabThongTin.Location = new System.Drawing.Point(4, 36);
             this.tabThongTin.Name = "tabThongTin";
             this.tabThongTin.Padding = new System.Windows.Forms.Padding(8);
-            this.tabThongTin.Size = new System.Drawing.Size(992, 208);
+            this.tabThongTin.Size = new System.Drawing.Size(992, 209);
             this.tabThongTin.TabIndex = 0;
             this.tabThongTin.Text = "Thông tin sản phẩm";
             // 
@@ -584,7 +584,7 @@ namespace FINAL_DotNet
             this.tableThongTin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableThongTin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tableThongTin.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableThongTin.Size = new System.Drawing.Size(976, 192);
+            this.tableThongTin.Size = new System.Drawing.Size(976, 193);
             this.tableThongTin.TabIndex = 0;
             // 
             // lblMaSanPham
@@ -774,7 +774,7 @@ namespace FINAL_DotNet
             this.lblDuongDanAnh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.lblDuongDanAnh.Location = new System.Drawing.Point(3, 147);
             this.lblDuongDanAnh.Name = "lblDuongDanAnh";
-            this.lblDuongDanAnh.Size = new System.Drawing.Size(99, 42);
+            this.lblDuongDanAnh.Size = new System.Drawing.Size(99, 43);
             this.lblDuongDanAnh.TabIndex = 12;
             this.lblDuongDanAnh.Text = "Đường dẫn ảnh";
             this.lblDuongDanAnh.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
@@ -787,7 +787,7 @@ namespace FINAL_DotNet
             this.pnlDuongDanAnh.Location = new System.Drawing.Point(108, 147);
             this.pnlDuongDanAnh.Margin = new System.Windows.Forms.Padding(3, 3, 8, 3);
             this.pnlDuongDanAnh.Name = "pnlDuongDanAnh";
-            this.pnlDuongDanAnh.Size = new System.Drawing.Size(291, 42);
+            this.pnlDuongDanAnh.Size = new System.Drawing.Size(291, 43);
             this.pnlDuongDanAnh.TabIndex = 13;
             // 
             // btnChonAnh
@@ -832,7 +832,7 @@ namespace FINAL_DotNet
             this.lblMaVach.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.lblMaVach.Location = new System.Drawing.Point(410, 147);
             this.lblMaVach.Name = "lblMaVach";
-            this.lblMaVach.Size = new System.Drawing.Size(94, 42);
+            this.lblMaVach.Size = new System.Drawing.Size(94, 43);
             this.lblMaVach.TabIndex = 14;
             this.lblMaVach.Text = "Nội dung QR";
             this.lblMaVach.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
@@ -851,7 +851,7 @@ namespace FINAL_DotNet
             this.txtMaVach.PlaceholderText = "";
             this.txtMaVach.ReadOnly = true;
             this.txtMaVach.SelectedText = "";
-            this.txtMaVach.Size = new System.Drawing.Size(291, 34);
+            this.txtMaVach.Size = new System.Drawing.Size(291, 35);
             this.txtMaVach.TabIndex = 15;
             // 
             // picSanPham
@@ -896,7 +896,7 @@ namespace FINAL_DotNet
             this.chkDangKinhDoanh.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(39)))), ((int)(((byte)(53)))));
             this.chkDangKinhDoanh.Location = new System.Drawing.Point(824, 147);
             this.chkDangKinhDoanh.Name = "chkDangKinhDoanh";
-            this.chkDangKinhDoanh.Size = new System.Drawing.Size(149, 42);
+            this.chkDangKinhDoanh.Size = new System.Drawing.Size(149, 43);
             this.chkDangKinhDoanh.TabIndex = 17;
             this.chkDangKinhDoanh.Text = "Đang kinh doanh";
             this.chkDangKinhDoanh.UncheckedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
@@ -912,7 +912,7 @@ namespace FINAL_DotNet
             this.tabThanhPhan.Location = new System.Drawing.Point(4, 36);
             this.tabThanhPhan.Name = "tabThanhPhan";
             this.tabThanhPhan.Padding = new System.Windows.Forms.Padding(8);
-            this.tabThanhPhan.Size = new System.Drawing.Size(992, 227);
+            this.tabThanhPhan.Size = new System.Drawing.Size(992, 209);
             this.tabThanhPhan.TabIndex = 1;
             this.tabThanhPhan.Text = "Thành phần chất liệu";
             // 
@@ -954,7 +954,7 @@ namespace FINAL_DotNet
             this.dgvThanhPhan.ReadOnly = true;
             this.dgvThanhPhan.RowHeadersVisible = false;
             this.dgvThanhPhan.RowTemplate.Height = 28;
-            this.dgvThanhPhan.Size = new System.Drawing.Size(976, 139);
+            this.dgvThanhPhan.Size = new System.Drawing.Size(976, 121);
             this.dgvThanhPhan.TabIndex = 1;
             this.dgvThanhPhan.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.dgvThanhPhan.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(39)))), ((int)(((byte)(53)))));

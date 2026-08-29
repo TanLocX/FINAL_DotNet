@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,6 +16,10 @@ namespace FINAL_DotNet
         public FrmSaoLuuPhucHoi()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
             LuxuryDarkGoldTheme.Apply(this);
         }
 
@@ -41,6 +47,7 @@ namespace FINAL_DotNet
         {
             if (dangXuLy) return;
             DatTrangThaiXuLy(true, "Đang kết nối SQL Server và tải lịch sử sao lưu...");
+            prgTienTrinh.Value = 0;
             try
             {
                 KetQuaTaiDuLieu ketQua = await Task.Run(() => new KetQuaTaiDuLieu
@@ -62,6 +69,7 @@ namespace FINAL_DotNet
                 lblTienTrinh.Text = string.IsNullOrWhiteSpace(ketQua.CanhBaoLichSu)
                     ? "Đã tải thông tin lúc " + DateTime.Now.ToString("HH:mm:ss")
                     : ketQua.CanhBaoLichSu;
+                prgTienTrinh.Value = 100;
             }
             catch (Exception ex)
             {
@@ -93,8 +101,110 @@ namespace FINAL_DotNet
         private void HienThiLichSu(List<BanSaoLuuHienThi> danhSach)
         {
             dgvLichSu.DataSource = danhSach;
-            lblSoBanSao.Text = danhSach.Count + " bản sao đầy đủ gần nhất";
+            lblSoBanSao.Text = danhSach.Count + " bản sao gần nhất";
             dgvLichSu.ClearSelection();
+        }
+
+        private void CapNhatTienTrinh(string noiDung)
+        {
+            lblTienTrinh.Text = noiDung;
+            Match m = Regex.Match(noiDung, @"(\d+)\s*(?:percent|phần trăm|%)", RegexOptions.IgnoreCase);
+            if (m.Success)
+            {
+                int val;
+                if (int.TryParse(m.Groups[1].Value, out val))
+                {
+                    prgTienTrinh.Value = Math.Max(0, Math.Min(100, val));
+                }
+            }
+        }
+
+        private void btnChonThuMuc_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Chọn thư mục lưu trữ file sao lưu (.bak) trên máy chủ SQL";
+                if (!string.IsNullOrWhiteSpace(txtThuMucSaoLuu.Text) && Directory.Exists(txtThuMucSaoLuu.Text))
+                {
+                    dialog.SelectedPath = txtThuMucSaoLuu.Text;
+                }
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    txtThuMucSaoLuu.Text = dialog.SelectedPath;
+                }
+            }
+        }
+
+        private void btnMoThuMuc_Click(object sender, EventArgs e)
+        {
+            string path = txtThuMucSaoLuu.Text.Trim();
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                MessageBox.Show("Chưa có đường dẫn thư mục sao lưu.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            try
+            {
+                if (Directory.Exists(path))
+                {
+                    System.Diagnostics.Process.Start("explorer.exe", path);
+                }
+                else
+                {
+                    MessageBox.Show("Thư mục không tồn tại trên máy hiện tại (hoặc nằm trên máy chủ SQL từ xa):\n" + path, "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không thể mở thư mục: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnChonFilePhucHoi_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.Title = "Chọn file sao lưu CSDL (.bak) để phục hồi";
+                dialog.Filter = "SQL Server Backup (*.bak)|*.bak|Tất cả file (*.*)|*.*";
+                if (!string.IsNullOrWhiteSpace(txtThuMucSaoLuu.Text) && Directory.Exists(txtThuMucSaoLuu.Text))
+                {
+                    dialog.InitialDirectory = txtThuMucSaoLuu.Text;
+                }
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    txtDuongDanPhucHoi.Text = dialog.FileName;
+                }
+            }
+        }
+
+        private async void btnXoaBanSao_Click(object sender, EventArgs e)
+        {
+            var item = dgvLichSu.CurrentRow?.DataBoundItem as BanSaoLuuHienThi;
+            if (item == null || string.IsNullOrWhiteSpace(item.DuongDan))
+            {
+                MessageBox.Show("Hãy chọn 1 bản sao trong danh sách lịch sử để xóa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var result = MessageBox.Show(
+                "Bạn có chắc muốn xóa file sao lưu vật lý này khỏi ổ đĩa?\n\nFile: " + item.DuongDan,
+                "Xác nhận xóa file backup",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result != DialogResult.Yes) return;
+
+            bool daXoa = await Task.Run(() => SaoLuuPhucHoiService.XoaBanSaoVatLy(item.DuongDan));
+            if (daXoa)
+            {
+                lblTienTrinh.Text = "Đã xóa file sao lưu: " + item.DuongDan;
+                MessageBox.Show("Đã xóa file sao lưu thành công khỏi ổ đĩa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                await TaiThongTinVaLichSu();
+            }
+            else
+            {
+                MessageBox.Show("Không thể xóa file trực tiếp. File có thể không tồn tại trên ổ đĩa này, đang được SQL Server sử dụng hoặc nằm trên máy chủ từ xa.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private async void btnSaoLuu_Click(object sender, EventArgs e)
@@ -102,6 +212,7 @@ namespace FINAL_DotNet
             if (!KiemTraQuyenQuanTri() || dangXuLy) return;
             string thuMuc = txtThuMucSaoLuu.Text.Trim();
             string tenFile = txtTenFileSaoLuu.Text.Trim();
+            bool nenDuLieu = chkNenBanSao.Checked;
             if (string.IsNullOrWhiteSpace(thuMuc) || string.IsNullOrWhiteSpace(tenFile))
             {
                 MessageBox.Show("Hãy nhập thư mục trên máy chủ SQL và tên file sao lưu.", "Thiếu thông tin",
@@ -109,19 +220,22 @@ namespace FINAL_DotNet
                 return;
             }
 
-            IProgress<string> progress = new Progress<string>(noiDung => lblTienTrinh.Text = noiDung);
+            prgTienTrinh.Value = 0;
+            IProgress<string> progress = new Progress<string>(CapNhatTienTrinh);
             DatTrangThaiXuLy(true, "Đang chuẩn bị sao lưu...");
             try
             {
-                string duongDan = await Task.Run(() => SaoLuuPhucHoiService.TaoSaoLuu(thuMuc, tenFile, progress.Report));
+                string duongDan = await Task.Run(() => SaoLuuPhucHoiService.TaoSaoLuu(thuMuc, tenFile, nenDuLieu, progress.Report));
+                prgTienTrinh.Value = 100;
                 lblTienTrinh.Text = "Sao lưu thành công: " + duongDan;
-                MessageBox.Show("Đã sao lưu và xác minh file:\n" + duongDan,
+                MessageBox.Show("Đã sao lưu và xác minh file:\n" + duongDan + (nenDuLieu ? "\n\n(Đã nén COMPRESSION - tiết kiệm dung lượng)" : ""),
                     "Sao lưu thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtTenFileSaoLuu.Text = SaoLuuPhucHoiService.TaoTenFileSaoLuu();
                 HienThiLichSu(await Task.Run(() => SaoLuuPhucHoiService.LayLichSuSaoLuu()));
             }
             catch (Exception ex)
             {
+                prgTienTrinh.Value = 0;
                 lblTienTrinh.Text = "Sao lưu thất bại.";
                 MessageBox.Show("Không thể sao lưu CSDL. " + LayThongBaoLoi(ex), "Lỗi sao lưu",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -137,6 +251,7 @@ namespace FINAL_DotNet
             if (!KiemTraQuyenQuanTri() || dangXuLy) return;
             string duongDan = txtDuongDanPhucHoi.Text.Trim();
             string thuMucAnToan = txtThuMucSaoLuu.Text.Trim();
+            bool nenDuLieu = chkNenBanSao.Checked;
             if (string.IsNullOrWhiteSpace(duongDan) || string.IsNullOrWhiteSpace(thuMucAnToan))
             {
                 MessageBox.Show("Hãy chọn file .bak từ lịch sử và nhập thư mục tạo bản sao an toàn.",
@@ -145,11 +260,13 @@ namespace FINAL_DotNet
             }
             if (!XacNhanPhucHoi(duongDan)) return;
 
-            IProgress<string> progress = new Progress<string>(noiDung => lblTienTrinh.Text = noiDung);
+            prgTienTrinh.Value = 0;
+            IProgress<string> progress = new Progress<string>(CapNhatTienTrinh);
             DatTrangThaiXuLy(true, "Đang chuẩn bị phục hồi...");
             try
             {
-                string banSaoAnToan = await Task.Run(() => SaoLuuPhucHoiService.PhucHoi(duongDan, thuMucAnToan, progress.Report));
+                string banSaoAnToan = await Task.Run(() => SaoLuuPhucHoiService.PhucHoi(duongDan, thuMucAnToan, nenDuLieu, progress.Report));
+                prgTienTrinh.Value = 100;
                 MessageBox.Show("Phục hồi CSDL thành công.\n\nBản sao trước phục hồi:\n" + banSaoAnToan +
                                 "\n\nỨng dụng sẽ khởi động lại để nạp dữ liệu và phiên đăng nhập mới.",
                     "Phục hồi thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -157,6 +274,7 @@ namespace FINAL_DotNet
             }
             catch (Exception ex)
             {
+                prgTienTrinh.Value = 0;
                 lblTienTrinh.Text = "Phục hồi thất bại. CSDL đã được yêu cầu chuyển lại chế độ nhiều người dùng.";
                 MessageBox.Show("Không thể phục hồi CSDL. " + LayThongBaoLoi(ex) +
                                 "\n\nNếu CSDL vẫn ở trạng thái SINGLE_USER hoặc RESTORING, hãy kiểm tra bằng SSMS.",
@@ -216,6 +334,11 @@ namespace FINAL_DotNet
             Cursor = dangBan ? Cursors.WaitCursor : Cursors.Default;
             btnTaiLai.Enabled = !dangBan;
             btnTaoTenMoi.Enabled = !dangBan;
+            btnChonThuMuc.Enabled = !dangBan;
+            btnMoThuMuc.Enabled = !dangBan;
+            btnChonFilePhucHoi.Enabled = !dangBan;
+            btnXoaBanSao.Enabled = !dangBan;
+            chkNenBanSao.Enabled = !dangBan;
             btnSaoLuu.Enabled = !dangBan && (thongTinMayChu?.CoQuyenSaoLuu ?? false);
             btnPhucHoi.Enabled = !dangBan && (thongTinMayChu?.CoQuyenPhucHoi ?? false);
             txtThuMucSaoLuu.Enabled = !dangBan;

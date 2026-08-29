@@ -15,6 +15,10 @@ namespace FINAL_DotNet
         public FrmDanhMuc()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
             cboLocTrangThai.SelectedIndex = 0;
             LuxuryDarkGoldTheme.Apply(this);
         }

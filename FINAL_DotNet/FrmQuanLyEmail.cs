@@ -25,6 +25,10 @@ namespace FINAL_DotNet
         public FrmQuanLyEmail()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
             boDemHenGio.Interval = 1000;
             boDemHenGio.Tick += boDemHenGio_Tick;
             LuxuryDarkGoldTheme.Apply(this);

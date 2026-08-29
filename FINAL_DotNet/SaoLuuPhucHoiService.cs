@@ -134,14 +134,14 @@ ORDER BY bs.backup_finish_date DESC, bs.backup_set_id DESC;";
             return tienToAnToan + "_" + tenCoSoDuLieu + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".bak";
         }
 
-        public static string TaoSaoLuu(string thuMucTrenMayChu, string tenFile, Action<string> baoTienTrinh = null)
+        public static string TaoSaoLuu(string thuMucTrenMayChu, string tenFile, bool nenDuLieu = true, Action<string> baoTienTrinh = null)
         {
             string duongDan = KetHopDuongDan(thuMucTrenMayChu, tenFile);
-            TaoSaoLuuTaiDuongDan(duongDan, baoTienTrinh);
+            TaoSaoLuuTaiDuongDan(duongDan, nenDuLieu, baoTienTrinh);
             return duongDan;
         }
 
-        public static string PhucHoi(string duongDanBanSao, string thuMucSaoLuuAnToan, Action<string> baoTienTrinh = null)
+        public static string PhucHoi(string duongDanBanSao, string thuMucSaoLuuAnToan, bool nenDuLieuAnToan = true, Action<string> baoTienTrinh = null)
         {
             KiemTraDuongDanDayDu(duongDanBanSao, "Đường dẫn bản sao phục hồi");
             KiemTraDuongDanDayDu(thuMucSaoLuuAnToan, "Thư mục sao lưu an toàn");
@@ -152,7 +152,7 @@ ORDER BY bs.backup_finish_date DESC, bs.backup_set_id DESC;";
             XacMinhBanSao(duongDanBanSao, viTriBanSao);
 
             string duongDanAnToan = TaoSaoLuu(thuMucSaoLuuAnToan,
-                TaoTenFileSaoLuu("TruocPhucHoi"), baoTienTrinh);
+                TaoTenFileSaoLuu("TruocPhucHoi"), nenDuLieuAnToan, baoTienTrinh);
 
             baoTienTrinh?.Invoke("Đang ngắt các kết nối và phục hồi CSDL...");
             SqlConnection.ClearAllPools();
@@ -192,11 +192,30 @@ ALTER DATABASE " + tenDaTrichDan + @" SET MULTI_USER;";
             return duongDanAnToan;
         }
 
-        private static void TaoSaoLuuTaiDuongDan(string duongDan, Action<string> baoTienTrinh)
+        public static bool XoaBanSaoVatLy(string duongDan)
+        {
+            if (string.IsNullOrWhiteSpace(duongDan)) return false;
+            try
+            {
+                if (File.Exists(duongDan))
+                {
+                    File.Delete(duongDan);
+                    return true;
+                }
+            }
+            catch
+            {
+                // File trên máy chủ SQL từ xa hoặc đang bị khóa
+            }
+            return false;
+        }
+
+        private static void TaoSaoLuuTaiDuongDan(string duongDan, bool nenDuLieu, Action<string> baoTienTrinh)
         {
             string tenCoSoDuLieu = LayTenCoSoDuLieu();
             string tenDaTrichDan = TrichDanDinhDanh(tenCoSoDuLieu);
-            baoTienTrinh?.Invoke("Đang sao lưu CSDL đến " + duongDan + "...");
+            string tuyChonNen = nenDuLieu ? ", COMPRESSION" : ", NO_COMPRESSION";
+            baoTienTrinh?.Invoke("Đang sao lưu CSDL đến " + duongDan + (nenDuLieu ? " (có nén)..." : "..."));
             using (SqlConnection connection = DatabaseConnection.CreateSqlConnection())
             {
                 GanTienTrinh(connection, baoTienTrinh);
@@ -207,7 +226,7 @@ ALTER DATABASE " + tenDaTrichDan + @" SET MULTI_USER;";
                     command.CommandText = @"
 DECLARE @DuongDan nvarchar(4000) = @pDuongDan;
 BACKUP DATABASE " + tenDaTrichDan + @" TO DISK = @DuongDan
-WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5, NAME = @pTenBanSao, DESCRIPTION = @pMoTa;";
+WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5" + tuyChonNen + @", NAME = @pTenBanSao, DESCRIPTION = @pMoTa;";
                     command.Parameters.Add("@pDuongDan", SqlDbType.NVarChar, 4000).Value = duongDan;
                     command.Parameters.Add("@pTenBanSao", SqlDbType.NVarChar, 128).Value = "PNJ Manager - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
                     command.Parameters.Add("@pMoTa", SqlDbType.NVarChar, 255).Value = "Bản sao copy-only được tạo bởi PNJ Manager";

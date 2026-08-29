@@ -46,7 +46,7 @@ namespace FINAL_DotNet
 
         private static void ConfigureFilterBars(Form form)
         {
-            if (form is FrmBanHang || form is FrmHoaDon || form is FrmKhachHang || form is FrmSanPham || form is FrmNhapHang || form is FrmBaoHanh || form is FrmQuanLyEmail || form is FrmThongKe)
+            if (form is FrmBanHang || form is FrmHoaDon || form is FrmKhachHang || form is FrmSanPham || form is FrmNhapHang || form is FrmThuMua || form is FrmBaoHanh || form is FrmQuanLyEmail || form is FrmThongKe || form is FrmNhanVien || form is FrmTaiKhoan || form is FrmDanhMuc || form is FrmChatLieu || form is FrmNhaCungCap || form is FrmSaoLuuPhucHoi)
             {
                 return;
             }
@@ -223,6 +223,11 @@ namespace FINAL_DotNet
 
         private static void ConfigureCrudLayout(Form form)
         {
+            if (form is FrmBanHang || form is FrmHoaDon || form is FrmKhachHang || form is FrmSanPham || form is FrmNhapHang || form is FrmThuMua || form is FrmBaoHanh || form is FrmQuanLyEmail || form is FrmThongKe || form is FrmNhanVien || form is FrmTaiKhoan || form is FrmDanhMuc || form is FrmChatLieu || form is FrmNhaCungCap || form is FrmSaoLuuPhucHoi)
+            {
+                return;
+            }
+
             SplitContainer split = FindControls<SplitContainer>(form)
                 .FirstOrDefault(item => string.Equals(item.Name, "splitContainer", StringComparison.OrdinalIgnoreCase));
             TableLayoutPanel fields = FindControls<TableLayoutPanel>(form)

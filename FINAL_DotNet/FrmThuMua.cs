@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -12,7 +13,7 @@ using System.Windows.Forms;
 
 namespace FINAL_DotNet
 {
-    public sealed class FrmThuMua : Form
+    public partial class FrmThuMua : Form
     {
         private const string CotMaNguon = "MaPhieuNguon";
         private const string CotNgay = "NgayThuMua";
@@ -33,160 +34,20 @@ namespace FINAL_DotNet
         };
         private static readonly CultureInfo VanHoaVietNam = CultureInfo.GetCultureInfo("vi-VN");
 
-        private readonly TabControl tabChinh = new DarkGoldTabControl();
-        private readonly TextBox txtTepExcel = new TextBox();
-        private readonly Button btnChonTep = TaoNut("Chọn file", Color.FromArgb(45, 91, 123));
-        private readonly Button btnTaiMau = TaoNut("Tải file mẫu", Color.FromArgb(91, 104, 116));
-        private readonly Button btnKiemTra = TaoNut("Đọc và kiểm tra", Color.FromArgb(181, 123, 35));
-        private readonly Button btnImport = TaoNut("Import vào CSDL", Color.FromArgb(39, 120, 85));
-        private readonly DataGridView dgvXemTruoc = TaoLuoi();
-        private readonly Label lblKetQuaImport = TaoNhanTrangThai();
-
-        private readonly TextBox txtTuKhoa = new TextBox();
-        private readonly ComboBox cboTrangThai = new ComboBox();
-        private readonly DateTimePicker dtpTuNgay = TaoNgayLoc();
-        private readonly DateTimePicker dtpDenNgay = TaoNgayLoc();
-        private readonly Button btnTim = TaoNut("Tìm kiếm", Color.FromArgb(45, 91, 123));
-        private readonly Button btnTaiLai = TaoNut("Tải lại", Color.FromArgb(91, 104, 116));
-        private readonly Button btnXuatExcel = TaoNut("Xuất Excel", Color.FromArgb(39, 120, 85));
-        private readonly Button btnXemBaoCao = TaoNut("Xem Report", Color.FromArgb(124, 77, 142));
-        private readonly DataGridView dgvPhieu = TaoLuoi();
-        private readonly DataGridView dgvChiTiet = TaoLuoi();
-        private readonly Label lblSoPhieu = TaoKpi("SỐ PHIẾU", "0");
-        private readonly Label lblTongTien = TaoKpi("TỔNG TIỀN HOÀN THÀNH", "0 đ");
-        private readonly Label lblTongTrongLuong = TaoKpi("TỔNG TRỌNG LƯỢNG", "0");
-        private readonly Label lblSoKhachHang = TaoKpi("KHÁCH HÀNG", "0");
-        private readonly Label lblThongBao = TaoNhanTrangThai();
-
         private List<DongImportThuMua> cacDongImport = new List<DongImportThuMua>();
         private List<PhieuThuMuaHienThi> cacPhieuHienTai = new List<PhieuThuMuaHienThi>();
         private int? phieuDangChonId;
 
         public FrmThuMua()
         {
-            Text = "Import và tra cứu thu mua";
-            BackColor = Color.FromArgb(242, 245, 248);
-            Font = new Font("Segoe UI", 9F);
-            Dock = DockStyle.Fill;
-            FormBorderStyle = FormBorderStyle.None;
-            TaoGiaoDien();
+            InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
+            cboTrangThai.SelectedIndex = 0;
             GanSuKien();
             LuxuryDarkGoldTheme.Apply(this);
-        }
-
-        private void TaoGiaoDien()
-        {
-            var tieuDe = new Panel { Dock = DockStyle.Top, Height = 64, BackColor = Color.White };
-            tieuDe.Controls.Add(new Label
-            {
-                AutoSize = true,
-                Font = new Font("Segoe UI", 17F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(30, 45, 60),
-                Location = new Point(20, 9),
-                Text = "THU MUA TỪ DỮ LIỆU EXCEL"
-            });
-            tieuDe.Controls.Add(new Label
-            {
-                AutoSize = true,
-                ForeColor = Color.DimGray,
-                Location = new Point(23, 39),
-                Text = "Import dữ liệu lịch sử, tra cứu, thống kê và xuất báo cáo"
-            });
-
-            tabChinh.Dock = DockStyle.Fill;
-            tabChinh.Padding = new Point(14, 7);
-            tabChinh.TabPages.Add(TaoTabImport());
-            tabChinh.TabPages.Add(TaoTabTraCuu());
-            Controls.Add(tabChinh);
-            Controls.Add(tieuDe);
-        }
-
-        private TabPage TaoTabImport()
-        {
-            var tab = new TabPage("Import Excel") { BackColor = Color.FromArgb(242, 245, 248), Padding = new Padding(12) };
-            var commands = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                Height = 48,
-                WrapContents = false,
-                FlowDirection = FlowDirection.LeftToRight,
-                Padding = new Padding(0, 6, 0, 0)
-            };
-            txtTepExcel.Width = 410;
-            txtTepExcel.ReadOnly = true;
-            txtTepExcel.Margin = new Padding(0, 4, 8, 0);
-            commands.Controls.Add(txtTepExcel);
-            commands.Controls.Add(btnChonTep);
-            commands.Controls.Add(btnTaiMau);
-            commands.Controls.Add(btnKiemTra);
-            commands.Controls.Add(btnImport);
-
-            lblKetQuaImport.Dock = DockStyle.Top;
-            lblKetQuaImport.Height = 42;
-            lblKetQuaImport.Text = "Chọn file .xlsx theo đúng mẫu để kiểm tra trước khi import.";
-            dgvXemTruoc.Dock = DockStyle.Fill;
-            dgvXemTruoc.AutoGenerateColumns = true;
-            tab.Controls.Add(dgvXemTruoc);
-            tab.Controls.Add(lblKetQuaImport);
-            tab.Controls.Add(commands);
-            return tab;
-        }
-
-        private TabPage TaoTabTraCuu()
-        {
-            var tab = new TabPage("Tra cứu và thống kê") { BackColor = Color.FromArgb(242, 245, 248), Padding = new Padding(12) };
-            var filters = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Top,
-                Height = 77,
-                AutoScroll = true,
-                WrapContents = false,
-                FlowDirection = FlowDirection.LeftToRight,
-                Padding = new Padding(0, 5, 0, 0)
-            };
-            txtTuKhoa.Width = 220;
-            cboTrangThai.DropDownStyle = ComboBoxStyle.DropDownList;
-            cboTrangThai.Items.AddRange(new object[] { "Tất cả trạng thái", "Hoàn thành", "Đã hủy" });
-            cboTrangThai.SelectedIndex = 0;
-            cboTrangThai.Width = 145;
-            filters.Controls.Add(TaoTruongLoc("Từ khóa", txtTuKhoa, 230));
-            filters.Controls.Add(TaoTruongLoc("Từ ngày", dtpTuNgay, 145));
-            filters.Controls.Add(TaoTruongLoc("Đến ngày", dtpDenNgay, 145));
-            filters.Controls.Add(TaoTruongLoc("Trạng thái", cboTrangThai, 155));
-            filters.Controls.Add(btnTim);
-            filters.Controls.Add(btnTaiLai);
-            filters.Controls.Add(btnXuatExcel);
-            filters.Controls.Add(btnXemBaoCao);
-
-            var kpis = new TableLayoutPanel { Dock = DockStyle.Top, Height = 72, ColumnCount = 4, Padding = new Padding(0, 3, 0, 6) };
-            for (int i = 0; i < 4; i++) kpis.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-            kpis.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            kpis.Controls.Add(BocKpi(lblSoPhieu), 0, 0);
-            kpis.Controls.Add(BocKpi(lblTongTien), 1, 0);
-            kpis.Controls.Add(BocKpi(lblTongTrongLuong), 2, 0);
-            kpis.Controls.Add(BocKpi(lblSoKhachHang), 3, 0);
-
-            var split = new SplitContainer
-            {
-                Dock = DockStyle.Fill,
-                Orientation = Orientation.Horizontal,
-                Size = new Size(1000, 500),
-                SplitterDistance = 265,
-                Panel1MinSize = 150,
-                Panel2MinSize = 120
-            };
-            dgvPhieu.Dock = DockStyle.Fill;
-            dgvChiTiet.Dock = DockStyle.Fill;
-            split.Panel1.Controls.Add(dgvPhieu);
-            split.Panel2.Controls.Add(dgvChiTiet);
-            lblThongBao.Dock = DockStyle.Bottom;
-            lblThongBao.Height = 30;
-
-            tab.Controls.Add(split);
-            tab.Controls.Add(lblThongBao);
-            tab.Controls.Add(kpis);
-            tab.Controls.Add(filters);
-            return tab;
         }
 
         private void GanSuKien()
@@ -194,8 +55,9 @@ namespace FINAL_DotNet
             Load += FrmThuMua_Load;
             btnChonTep.Click += btnChonTep_Click;
             btnTaiMau.Click += btnTaiMau_Click;
-            btnKiemTra.Click += btnKiemTra_Click;
+            btnKiemTra.Click += (sender, args) => ThucHienKiemTraExcel(txtTepExcel.Text);
             btnImport.Click += btnImport_Click;
+            btnXuatLoi.Click += btnXuatLoi_Click;
             btnTim.Click += (sender, args) => TaiDanhSach();
             btnTaiLai.Click += btnTaiLai_Click;
             btnXuatExcel.Click += btnXuatExcel_Click;
@@ -207,6 +69,18 @@ namespace FINAL_DotNet
                 args.SuppressKeyPress = true;
                 TaiDanhSach();
             };
+
+            // Kéo thả Drag & Drop file Excel
+            this.DragEnter += FrmThuMua_DragEnter;
+            this.DragDrop += FrmThuMua_DragDrop;
+            tabImport.DragEnter += FrmThuMua_DragEnter;
+            tabImport.DragDrop += FrmThuMua_DragDrop;
+            pnlCommandImport.DragEnter += FrmThuMua_DragEnter;
+            pnlCommandImport.DragDrop += FrmThuMua_DragDrop;
+            txtTepExcel.DragEnter += FrmThuMua_DragEnter;
+            txtTepExcel.DragDrop += FrmThuMua_DragDrop;
+            dgvXemTruoc.DragEnter += FrmThuMua_DragEnter;
+            dgvXemTruoc.DragDrop += FrmThuMua_DragDrop;
         }
 
         private void FrmThuMua_Load(object sender, EventArgs e)
@@ -222,9 +96,29 @@ namespace FINAL_DotNet
             btnChonTep.Enabled = laQuanTri;
             btnKiemTra.Enabled = laQuanTri;
             btnImport.Enabled = false;
+            btnXuatLoi.Enabled = false;
             if (!laQuanTri)
                 lblKetQuaImport.Text = "Chỉ quản trị viên được import. Bạn vẫn có thể tra cứu và xuất báo cáo.";
             TaiDanhSach();
+        }
+
+        private void FrmThuMua_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
+            else
+                e.Effect = DragDropEffects.None;
+        }
+
+        private void FrmThuMua_DragDrop(object sender, DragEventArgs e)
+        {
+            if (!CurrentUserSession.HienTai.LaQuanTriVien) return;
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (files != null && files.Length > 0 && Path.GetExtension(files[0]).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                txtTepExcel.Text = files[0];
+                ThucHienKiemTraExcel(files[0]);
+            }
         }
 
         private void btnChonTep_Click(object sender, EventArgs e)
@@ -237,10 +131,7 @@ namespace FINAL_DotNet
             {
                 if (dialog.ShowDialog(this) != DialogResult.OK) return;
                 txtTepExcel.Text = dialog.FileName;
-                cacDongImport.Clear();
-                dgvXemTruoc.DataSource = null;
-                btnImport.Enabled = false;
-                lblKetQuaImport.Text = "Đã chọn file. Nhấn Đọc và kiểm tra trước khi import.";
+                ThucHienKiemTraExcel(dialog.FileName);
             }
         }
 
@@ -271,8 +162,11 @@ namespace FINAL_DotNet
                 try
                 {
                     XlsxExportService.Xuat(dialog.FileName, "Thu mua", columns, rows);
-                    MessageBox.Show("Đã tạo file mẫu tại:\n" + dialog.FileName,
-                        "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (MessageBox.Show("Đã tạo file mẫu tại:\n" + dialog.FileName + "\n\nBạn có muốn mở file Excel mẫu ngay không?",
+                            "Tạo file mẫu thành công", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        Process.Start(dialog.FileName);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -282,35 +176,49 @@ namespace FINAL_DotNet
             }
         }
 
-        private void btnKiemTra_Click(object sender, EventArgs e)
+        private void ThucHienKiemTraExcel(string duongDanFile)
         {
             if (!CurrentUserSession.HienTai.LaQuanTriVien) return;
+            if (string.IsNullOrWhiteSpace(duongDanFile) || !File.Exists(duongDanFile))
+            {
+                lblKetQuaImport.Text = "Vui lòng chọn file .xlsx hợp lệ.";
+                lblKetQuaImport.ForeColor = Color.Firebrick;
+                return;
+            }
+
             try
             {
                 Cursor = Cursors.WaitCursor;
-                BangTinhXlsx bangTinh = XlsxImportService.DocTrangTinhDauTien(txtTepExcel.Text);
+                prgImport.Value = 20;
+                BangTinhXlsx bangTinh = XlsxImportService.DocTrangTinhDauTien(duongDanFile);
                 string thieuCot = CacCotBatBuoc.FirstOrDefault(cot =>
                     !bangTinh.CacCot.Any(header => string.Equals(header, cot, StringComparison.OrdinalIgnoreCase)));
                 if (thieuCot != null) throw new InvalidOperationException("File Excel thiếu cột bắt buộc: " + thieuCot + ".");
                 if (bangTinh.CacDong.Count == 0) throw new InvalidOperationException("File Excel không có dòng dữ liệu.");
 
+                prgImport.Value = 60;
                 cacDongImport = KiemTraCacDong(bangTinh.CacDong);
                 dgvXemTruoc.DataSource = cacDongImport.Select(item => item.TaoHienThi()).ToList();
                 int soLoi = cacDongImport.Count(item => !item.HopLe);
                 int soPhieu = cacDongImport.Where(item => item.HopLe)
                     .Select(item => item.MaPhieuNguon).Distinct(StringComparer.OrdinalIgnoreCase).Count();
+
+                prgImport.Value = 100;
                 lblKetQuaImport.Text = soLoi == 0
                     ? $"Hợp lệ: {cacDongImport.Count} dòng / {soPhieu} phiếu. Có thể import vào CSDL."
-                    : $"Có {soLoi}/{cacDongImport.Count} dòng lỗi. Sửa file rồi kiểm tra lại.";
+                    : $"Có {soLoi}/{cacDongImport.Count} dòng lỗi. Bạn có thể bấm 'Xuất danh sách lỗi' để chỉnh sửa.";
                 lblKetQuaImport.ForeColor = soLoi == 0 ? Color.FromArgb(30, 115, 75) : Color.Firebrick;
                 btnImport.Enabled = soLoi == 0 && soPhieu > 0;
+                btnXuatLoi.Enabled = soLoi > 0;
                 DinhDangLuoiLoi();
             }
             catch (Exception ex)
             {
+                prgImport.Value = 0;
                 cacDongImport.Clear();
                 dgvXemTruoc.DataSource = null;
                 btnImport.Enabled = false;
+                btnXuatLoi.Enabled = false;
                 lblKetQuaImport.ForeColor = Color.Firebrick;
                 lblKetQuaImport.Text = ex.Message;
             }
@@ -320,6 +228,8 @@ namespace FINAL_DotNet
         private List<DongImportThuMua> KiemTraCacDong(IEnumerable<DongBangTinhXlsx> rows)
         {
             var result = rows.Select(TaoDongImport).ToList();
+            bool tuDongTaoKhach = chkTuDongTaoKhach.Checked;
+
             using (var db = DatabaseConnection.CreateContext())
             {
                 var employees = db.NhanViens.AsNoTracking().ToDictionary(item => item.NhanVienId);
@@ -339,14 +249,29 @@ namespace FINAL_DotNet
                         row.ThemLoi("Mã phiếu nguồn đã được import");
                     if (row.NhanVienId.HasValue && !employees.ContainsKey(row.NhanVienId.Value))
                         row.ThemLoi("Không tìm thấy nhân viên");
+
                     KhachHang customer;
                     if (row.SoDienThoaiKhachHang != null && customers.TryGetValue(row.SoDienThoaiKhachHang, out customer))
+                    {
                         row.KhachHangId = customer.KhachHangId;
-                    else row.ThemLoi("Không tìm thấy khách hàng theo số điện thoại");
+                    }
+                    else
+                    {
+                        if (tuDongTaoKhach && !string.IsNullOrWhiteSpace(row.SoDienThoaiKhachHang))
+                        {
+                            row.KhachHangId = null; // Sẽ tự động tạo mới khi import
+                        }
+                        else
+                        {
+                            row.ThemLoi("Không tìm thấy khách hàng theo số điện thoại");
+                        }
+                    }
+
                     ChatLieu material;
                     if (row.TenChatLieu != null && materials.TryGetValue(row.TenChatLieu, out material))
                         row.ChatLieuId = material.ChatLieuId;
                     else row.ThemLoi("Không tìm thấy chất liệu");
+
                     if (row.SanPhamId.HasValue && !products.ContainsKey(row.SanPhamId.Value))
                         row.ThemLoi("Không tìm thấy sản phẩm");
                 }
@@ -360,7 +285,7 @@ namespace FINAL_DotNet
                 foreach (DongImportThuMua row in group.Skip(1))
                 {
                     if (row.NgayThuMua != first.NgayThuMua || row.NhanVienId != first.NhanVienId ||
-                        row.KhachHangId != first.KhachHangId || row.TrangThai != first.TrangThai ||
+                        row.SoDienThoaiKhachHang != first.SoDienThoaiKhachHang || row.TrangThai != first.TrangThai ||
                         !string.Equals(row.GhiChu, first.GhiChu, StringComparison.Ordinal))
                         row.ThemLoi("Thông tin đầu phiếu không đồng nhất với các dòng cùng MaPhieuNguon");
                 }
@@ -414,6 +339,62 @@ namespace FINAL_DotNet
             return row;
         }
 
+        private void btnXuatLoi_Click(object sender, EventArgs e)
+        {
+            var invalidRows = cacDongImport.Where(item => !item.HopLe).ToList();
+            if (invalidRows.Count == 0)
+            {
+                MessageBox.Show("Hiện tại không có dòng dữ liệu lỗi nào.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using (var dialog = new SaveFileDialog
+            {
+                Filter = "Excel Workbook (*.xlsx)|*.xlsx",
+                DefaultExt = "xlsx",
+                AddExtension = true,
+                FileName = "DanhSachLoi_Import_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx",
+                Title = "Lưu danh sách dòng lỗi"
+            })
+            {
+                if (dialog.ShowDialog(this) != DialogResult.OK) return;
+                var columns = new[]
+                {
+                    C("Dòng Excel", 12, KieuDuLieuExcel.SoNguyen),
+                    C(CotMaNguon, 18), C(CotNgay, 20, KieuDuLieuExcel.NgayGio), C(CotNhanVien, 15),
+                    C(CotKhachHang, 23), C(CotChatLieu, 22), C(CotSanPham, 15), C(CotTenMon, 32),
+                    C(CotTrongLuong, 15, KieuDuLieuExcel.SoThapPhan), C(CotDonVi, 14),
+                    C(CotDonGia, 20, KieuDuLieuExcel.TienTe), C(CotTrangThai, 18), C(CotGhiChu, 35),
+                    C("Chi tiết lỗi cần sửa", 45)
+                };
+                List<object[]> rows = invalidRows.Select(item => new object[]
+                {
+                    item.SoDongExcel, item.MaPhieuNguon ?? string.Empty, item.NgayThuMua,
+                    item.NhanVienId.HasValue ? $"NV{item.NhanVienId:000000}" : string.Empty,
+                    item.SoDienThoaiKhachHang ?? string.Empty, item.TenChatLieu ?? string.Empty,
+                    item.SanPhamId.HasValue ? $"SP{item.SanPhamId:000000}" : string.Empty,
+                    item.TenSanPhamThu ?? string.Empty, item.TrongLuong, item.DonViTinh ?? string.Empty,
+                    item.DonGiaThuMua, item.TrangThai ?? string.Empty, item.GhiChu ?? string.Empty,
+                    string.Join("; ", item.LayCacLoi())
+                }).ToList();
+
+                try
+                {
+                    XlsxExportService.Xuat(dialog.FileName, "Danh sách lỗi", columns, rows);
+                    if (MessageBox.Show("Đã xuất " + rows.Count + " dòng lỗi đến:\n" + dialog.FileName +
+                                        "\n\nBạn có muốn mở file Excel lỗi ngay không?",
+                            "Xuất file lỗi thành công", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        Process.Start(dialog.FileName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Không thể xuất file lỗi. " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
         private void btnImport_Click(object sender, EventArgs e)
         {
             if (!CurrentUserSession.HienTai.LaQuanTriVien || cacDongImport.Count == 0 || cacDongImport.Any(item => !item.HopLe))
@@ -425,21 +406,53 @@ namespace FINAL_DotNet
             try
             {
                 Cursor = Cursors.WaitCursor;
+                prgImport.Value = 10;
                 using (var db = DatabaseConnection.CreateContext())
                 using (var transaction = db.Database.BeginTransaction(IsolationLevel.Serializable))
                 {
                     List<string> markers = db.PhieuThuMuas.Select(item => item.MaPhieuNguon).ToList();
                     var existing = markers.Where(item => !string.IsNullOrWhiteSpace(item))
                         .ToHashSet(StringComparer.OrdinalIgnoreCase);
-                    foreach (IGrouping<string, DongImportThuMua> group in cacDongImport
-                                 .GroupBy(item => item.MaPhieuNguon, StringComparer.OrdinalIgnoreCase))
+
+                    var groups = cacDongImport.GroupBy(item => item.MaPhieuNguon, StringComparer.OrdinalIgnoreCase).ToList();
+                    int processed = 0;
+
+                    foreach (IGrouping<string, DongImportThuMua> group in groups)
                     {
                         if (existing.Contains(group.Key))
                             throw new InvalidOperationException("Mã phiếu nguồn đã được import: " + group.Key + ".");
                         DongImportThuMua first = group.First();
-                        if (!db.NhanViens.Any(item => item.NhanVienId == first.NhanVienId.Value) ||
-                            !db.KhachHangs.Any(item => item.KhachHangId == first.KhachHangId.Value))
-                            throw new InvalidOperationException("Nhân viên hoặc khách hàng vừa thay đổi. Hãy kiểm tra file lại.");
+
+                        if (!db.NhanViens.Any(item => item.NhanVienId == first.NhanVienId.Value))
+                            throw new InvalidOperationException("Nhân viên vừa thay đổi. Hãy kiểm tra file lại.");
+
+                        int finalKhachHangId;
+                        if (first.KhachHangId.HasValue)
+                        {
+                            finalKhachHangId = first.KhachHangId.Value;
+                        }
+                        else
+                        {
+                            // Tự động tạo khách hàng mới nếu chưa có
+                            string sdt = first.SoDienThoaiKhachHang;
+                            KhachHang newCust = db.KhachHangs.FirstOrDefault(k => k.SoDienThoai == sdt);
+                            if (newCust == null)
+                            {
+                                newCust = new KhachHang
+                                {
+                                    HoTen = "Khách hàng " + sdt,
+                                    SoDienThoai = sdt,
+                                    DiaChi = "Tạo tự động từ file Excel",
+                                    DiemTichLuy = 0,
+                                    ChoPhepNhanEmail = false,
+                                    DangHoatDong = true
+                                };
+                                db.KhachHangs.Add(newCust);
+                                db.SaveChanges();
+                            }
+                            finalKhachHangId = newCust.KhachHangId;
+                        }
+
                         var materialIds = group.Select(item => item.ChatLieuId.Value).Distinct().ToList();
                         if (db.ChatLieux.Count(item => materialIds.Contains(item.ChatLieuId)) != materialIds.Count)
                             throw new InvalidOperationException("Chất liệu vừa thay đổi. Hãy kiểm tra file lại.");
@@ -450,7 +463,7 @@ namespace FINAL_DotNet
                         {
                             MaPhieuNguon = group.Key,
                             NhanVienId = first.NhanVienId.Value,
-                            KhachHangId = first.KhachHangId.Value,
+                            KhachHangId = finalKhachHangId,
                             NgayThuMua = first.NgayThuMua.Value,
                             TongTienThuMua = total,
                             TrangThai = first.TrangThai,
@@ -469,13 +482,19 @@ namespace FINAL_DotNet
                                 DonGiaThuMua = row.DonGiaThuMua
                             });
                         }
+
+                        processed++;
+                        prgImport.Value = Math.Min(95, 10 + (int)(processed * 80.0 / groups.Count));
                     }
                     db.SaveChanges();
                     transaction.Commit();
                 }
+
+                prgImport.Value = 100;
                 lblKetQuaImport.ForeColor = Color.FromArgb(30, 115, 75);
                 lblKetQuaImport.Text = $"Import thành công {soPhieu} phiếu / {cacDongImport.Count} dòng.";
                 btnImport.Enabled = false;
+                btnXuatLoi.Enabled = false;
                 TaiDanhSach();
                 tabChinh.SelectedIndex = 1;
                 MessageBox.Show("Import dữ liệu thu mua thành công.", "Thành công",
@@ -483,11 +502,13 @@ namespace FINAL_DotNet
             }
             catch (DbUpdateException)
             {
+                prgImport.Value = 0;
                 lblKetQuaImport.Text = "Không thể import vì dữ liệu vi phạm khóa hoặc ràng buộc CSDL.";
                 lblKetQuaImport.ForeColor = Color.Firebrick;
             }
             catch (Exception ex)
             {
+                prgImport.Value = 0;
                 lblKetQuaImport.Text = "Import thất bại: " + ex.Message;
                 lblKetQuaImport.ForeColor = Color.Firebrick;
             }
@@ -558,10 +579,10 @@ namespace FINAL_DotNet
         private void CapNhatThongKe()
         {
             List<PhieuThuMuaHienThi> completed = cacPhieuHienTai.Where(item => item.TrangThai == "HOAN_THANH").ToList();
-            lblSoPhieu.Text = "SỐ PHIẾU\n" + cacPhieuHienTai.Count.ToString("N0", VanHoaVietNam);
-            lblTongTien.Text = "TỔNG TIỀN HOÀN THÀNH\n" + completed.Sum(item => item.TongTienThuMua).ToString("N0", VanHoaVietNam) + " đ";
-            lblTongTrongLuong.Text = "TỔNG TRỌNG LƯỢNG\n" + completed.Sum(item => item.ChiTiet.Sum(detail => detail.TrongLuong)).ToString("N3", VanHoaVietNam);
-            lblSoKhachHang.Text = "KHÁCH HÀNG\n" + completed.Select(item => item.KhachHangId).Distinct().Count().ToString("N0", VanHoaVietNam);
+            lblSoPhieu.Text = cacPhieuHienTai.Count.ToString("N0", VanHoaVietNam);
+            lblTongTien.Text = completed.Sum(item => item.TongTienThuMua).ToString("N0", VanHoaVietNam) + " đ";
+            lblTongTrongLuong.Text = completed.Sum(item => item.ChiTiet.Sum(detail => detail.TrongLuong)).ToString("N3", VanHoaVietNam);
+            lblSoKhachHang.Text = completed.Select(item => item.KhachHangId).Distinct().Count().ToString("N0", VanHoaVietNam);
         }
 
         private void dgvPhieu_SelectionChanged(object sender, EventArgs e)
@@ -616,8 +637,12 @@ namespace FINAL_DotNet
                 try
                 {
                     XlsxExportService.Xuat(dialog.FileName, "Dữ liệu thu mua", columns, rows);
-                    MessageBox.Show("Đã xuất " + rows.Count + " dòng đến:\n" + dialog.FileName,
-                        "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (MessageBox.Show("Đã xuất " + rows.Count + " dòng đến:\n" + dialog.FileName +
+                                        "\n\nBạn có muốn mở file Excel ngay không?",
+                            "Xuất Excel thành công", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        Process.Start(dialog.FileName);
+                    }
                 }
                 catch (Exception ex) { HienThiLoi("Không thể xuất Excel. " + ex.Message); }
             }
@@ -758,80 +783,6 @@ namespace FINAL_DotNet
         private static CotXuatExcel C(string title, double width, KieuDuLieuExcel type = KieuDuLieuExcel.VanBan)
             => new CotXuatExcel(title, width, type);
 
-        private static DateTimePicker TaoNgayLoc()
-        {
-            return new DarkGoldDateTimePicker { Width = 135, Format = DateTimePickerFormat.Short, ShowCheckBox = true, Checked = false };
-        }
-
-        private static Button TaoNut(string text, Color color)
-        {
-            var button = new Button
-            {
-                AutoSize = false,
-                BackColor = color,
-                FlatStyle = FlatStyle.Flat,
-                ForeColor = Color.White,
-                Height = 31,
-                Width = 112,
-                Margin = new Padding(4, 3, 4, 0),
-                Text = text,
-                Cursor = Cursors.Hand
-            };
-            button.FlatAppearance.BorderSize = 0;
-            return button;
-        }
-
-        private static DataGridView TaoLuoi()
-        {
-            return new DataGridView
-            {
-                AllowUserToAddRows = false,
-                AllowUserToDeleteRows = false,
-                AllowUserToResizeRows = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells,
-                BackgroundColor = Color.White,
-                BorderStyle = BorderStyle.None,
-                MultiSelect = false,
-                ReadOnly = true,
-                RowHeadersVisible = false,
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect
-            };
-        }
-
-        private static Label TaoNhanTrangThai()
-        {
-            return new Label { AutoEllipsis = true, ForeColor = Color.DimGray, Padding = new Padding(4, 6, 4, 4) };
-        }
-
-        private static Label TaoKpi(string title, string value)
-        {
-            return new Label
-            {
-                Dock = DockStyle.Fill,
-                Font = new Font("Segoe UI", 10F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(30, 58, 78),
-                TextAlign = ContentAlignment.MiddleCenter,
-                Text = title + "\n" + value
-            };
-        }
-
-        private static Control BocKpi(Label label)
-        {
-            var panel = new Panel { Dock = DockStyle.Fill, BackColor = Color.White, Margin = new Padding(3) };
-            panel.Controls.Add(label);
-            return panel;
-        }
-
-        private static Control TaoTruongLoc(string title, Control control, int width)
-        {
-            var panel = new Panel { Width = width, Height = 63, Margin = new Padding(0, 0, 7, 0) };
-            panel.Controls.Add(new Label { AutoSize = true, Text = title, Location = new Point(0, 0), ForeColor = Color.DimGray });
-            control.Location = new Point(0, 22);
-            control.Width = width - 5;
-            panel.Controls.Add(control);
-            return panel;
-        }
-
         private sealed class DongImportThuMua
         {
             private readonly List<string> errors = new List<string>();
@@ -852,6 +803,7 @@ namespace FINAL_DotNet
             public string GhiChu { get; set; }
             public bool HopLe => errors.Count == 0;
             public void ThemLoi(string error) { if (!errors.Contains(error)) errors.Add(error); }
+            public IReadOnlyList<string> LayCacLoi() => errors;
             public DongImportHienThi TaoHienThi() => new DongImportHienThi(this, string.Join("; ", errors));
         }
 

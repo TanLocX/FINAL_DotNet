@@ -15,6 +15,10 @@ namespace FINAL_DotNet
         public FrmNhanVien()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
             cboLocTrangThai.SelectedIndex = 0;
             cboGioiTinh.SelectedIndex = 0;
             dtpNgaySinh.MaxDate = DateTime.Today;

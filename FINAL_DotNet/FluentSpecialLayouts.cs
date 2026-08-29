@@ -31,15 +31,16 @@ namespace FINAL_DotNet
                 case "FrmKhachHang":
                 case "FrmSanPham":
                 case "FrmNhapHang":
+                case "FrmThuMua":
                 case "FrmBaoHanh":
                 case "FrmQuanLyEmail":
                 case "FrmThongKe":
-                    break;
-                case "FrmThuMua":
-                    ConfigurePurchase(form);
-                    break;
+                case "FrmNhanVien":
+                case "FrmTaiKhoan":
+                case "FrmDanhMuc":
+                case "FrmChatLieu":
+                case "FrmNhaCungCap":
                 case "FrmSaoLuuPhucHoi":
-                    ConfigureBackup(form);
                     break;
                 case "FrmXemBaoCao":
                     form.Padding = new Padding(Gap8);
