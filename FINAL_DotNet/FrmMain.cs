@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 
 namespace FINAL_DotNet
 {
@@ -91,21 +92,24 @@ namespace FINAL_DotNet
             };
 
             var trangThai = new ThongTinNhomMenu(noiDungNhom, noiDung, moSan);
-            var tieuDe = new Button
+            var tieuDe = new Guna2Button
             {
+                Animated = true,
+                BorderRadius = 6,
+                ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.DefaultButton,
                 Cursor = Cursors.Hand,
-                FlatStyle = FlatStyle.Flat,
+                FillColor = Color.Transparent,
                 Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(172, 182, 194),
+                HoverState = { FillColor = Color.FromArgb(36, 50, 68), ForeColor = Color.White },
                 Margin = new Padding(10, 6, 10, 2),
                 Name = "btnNhomMenu",
-                Padding = new Padding(8, 0, 0, 0),
-                Size = new Size(195, 34),
+                Size = new Size(215, 34),
                 Tag = trangThai,
                 Text = (moSan ? "▾  " : "▸  ") + noiDung,
-                TextAlign = ContentAlignment.MiddleLeft,
-                UseVisualStyleBackColor = false
+                TextAlign = HorizontalAlignment.Left,
+                TextOffset = new Point(6, 0)
             };
-            tieuDe.FlatAppearance.BorderSize = 0;
             tieuDe.Click += btnNhomMenu_Click;
 
             if (chiDanhChoQuanTri)
@@ -125,24 +129,24 @@ namespace FINAL_DotNet
             string tieuDeTrang,
             bool chiDanhChoQuanTri)
         {
-            var button = new Button
+            var button = new Guna2Button
             {
-                BackColor = Color.FromArgb(27, 39, 53),
+                Animated = true,
+                BorderRadius = 8,
+                ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.DefaultButton,
                 Cursor = Cursors.Hand,
-                FlatStyle = FlatStyle.Flat,
-                Font = new Font("Segoe UI", 10F),
-                ForeColor = Color.White,
-                Margin = new Padding(10, 1, 10, 1),
+                FillColor = Color.Transparent,
+                Font = new Font("Segoe UI", 9.5F),
+                ForeColor = Color.FromArgb(235, 240, 245),
+                HoverState = { FillColor = Color.FromArgb(45, 60, 80), ForeColor = Color.FromArgb(214, 182, 116) },
+                Margin = new Padding(10, 1, 10, 2),
                 Name = "btnNav" + nhom.Controls.Count,
-                Padding = new Padding(14, 0, 0, 0),
-                Size = new Size(195, 38),
+                Size = new Size(205, 38),
                 Tag = new ThongTinMenu(tieuDeTrang, chiDanhChoQuanTri),
-                Text = noiDung,
-                TextAlign = ContentAlignment.MiddleLeft,
-                UseVisualStyleBackColor = false
+                Text = "•  " + noiDung,
+                TextAlign = HorizontalAlignment.Left,
+                TextOffset = new Point(14, 0)
             };
-            button.FlatAppearance.BorderSize = 0;
-            button.FlatAppearance.MouseOverBackColor = Color.FromArgb(58, 75, 94);
             button.Click += btnMenu_Click;
 
             if (chiDanhChoQuanTri)
@@ -155,17 +159,17 @@ namespace FINAL_DotNet
 
         private void btnNhomMenu_Click(object sender, EventArgs e)
         {
-            Button button = sender as Button;
-            ThongTinNhomMenu nhom = button == null ? null : button.Tag as ThongTinNhomMenu;
+            var button = sender as Guna2Button;
+            var nhom = button?.Tag as ThongTinNhomMenu;
             if (nhom == null)
             {
                 return;
             }
 
             bool seMo = !nhom.DangMo;
-            foreach (Button tieuDeKhac in flowMenu.Controls.OfType<Button>())
+            foreach (Guna2Button tieuDeKhac in flowMenu.Controls.OfType<Guna2Button>())
             {
-                ThongTinNhomMenu nhomKhac = tieuDeKhac.Tag as ThongTinNhomMenu;
+                var nhomKhac = tieuDeKhac.Tag as ThongTinNhomMenu;
                 if (nhomKhac == null || nhomKhac == nhom)
                 {
                     continue;
@@ -197,16 +201,41 @@ namespace FINAL_DotNet
             }
         }
 
+        private void DatTrangThaiNutMenu(Guna2Button nutChon)
+        {
+            foreach (Control ctrl in flowMenu.Controls)
+            {
+                if (ctrl is FlowLayoutPanel panelNhom)
+                {
+                    foreach (Guna2Button btn in panelNhom.Controls.OfType<Guna2Button>())
+                    {
+                        if (btn == nutChon)
+                        {
+                            btn.FillColor = Color.FromArgb(214, 182, 116);
+                            btn.ForeColor = Color.FromArgb(27, 39, 53);
+                            btn.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+                        }
+                        else
+                        {
+                            btn.FillColor = Color.Transparent;
+                            btn.ForeColor = Color.FromArgb(235, 240, 245);
+                            btn.Font = new Font("Segoe UI", 9.5F, FontStyle.Regular);
+                        }
+                    }
+                }
+            }
+        }
+
         private void btnMenu_Click(object sender, EventArgs e)
         {
-            var button = sender as Button;
+            var button = sender as Guna2Button;
             var menu = button?.Tag as ThongTinMenu;
             if (menu == null)
             {
                 return;
             }
 
-            LuxuryDarkGoldTheme.ActivateNavigation(button, flowMenu);
+            DatTrangThaiNutMenu(button);
 
             if (menu.ChiDanhChoQuanTri && !phienDangNhap.LaQuanTriVien)
             {
@@ -421,6 +450,11 @@ namespace FINAL_DotNet
             internal FlowLayoutPanel NoiDung { get; private set; }
             internal string TieuDe { get; private set; }
             internal bool DangMo { get; set; }
+        }
+
+        private void flowMenu_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

@@ -7,27 +7,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-public partial class ChiTietHoaDon
+namespace FINAL_DotNet
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public ChiTietHoaDon()
+    using System;
+    using System.Collections.Generic;
+    
+    public partial class ChiTietHoaDon
     {
-        this.PhieuBaoHanhs = new HashSet<PhieuBaoHanh>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ChiTietHoaDon()
+        {
+            this.PhieuBaoHanhs = new HashSet<PhieuBaoHanh>();
+        }
+    
+        public int ChiTietHoaDonId { get; set; }
+        public int HoaDonId { get; set; }
+        public int SanPhamId { get; set; }
+        public int SoLuong { get; set; }
+        public decimal DonGiaBan { get; set; }
+        public Nullable<decimal> ThanhTien { get; set; }
+        public Nullable<System.DateTime> HanBaoHanh { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PhieuBaoHanh> PhieuBaoHanhs { get; set; }
+        public virtual HoaDon HoaDon { get; set; }
+        public virtual SanPham SanPham { get; set; }
     }
-
-    public int ChiTietHoaDonId { get; set; }
-    public int HoaDonId { get; set; }
-    public int SanPhamId { get; set; }
-    public int SoLuong { get; set; }
-    public decimal DonGiaBan { get; set; }
-    public Nullable<decimal> ThanhTien { get; set; }
-    public Nullable<System.DateTime> HanBaoHanh { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<PhieuBaoHanh> PhieuBaoHanhs { get; set; }
-    public virtual HoaDon HoaDon { get; set; }
-    public virtual SanPham SanPham { get; set; }
 }

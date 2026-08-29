@@ -3,16 +3,16 @@ using System.Configuration;
 using System.Data.Entity.Core.EntityClient;
 using System.Data.SqlClient;
 
-public partial class QL_CuaHangDaQuy_PNJEntities
-{
-    public QL_CuaHangDaQuy_PNJEntities(string connectionString)
-        : base(connectionString)
-    {
-    }
-}
-
 namespace FINAL_DotNet
 {
+    public partial class QL_CuaHangDaQuy_PNJEntities
+    {
+        public QL_CuaHangDaQuy_PNJEntities(string connectionString)
+            : base(connectionString)
+        {
+        }
+    }
+
     internal static class DatabaseConnection
     {
         private const string Metadata =

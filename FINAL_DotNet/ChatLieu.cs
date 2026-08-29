@@ -7,26 +7,29 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-public partial class ChatLieu
+namespace FINAL_DotNet
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public ChatLieu()
+    using System;
+    using System.Collections.Generic;
+    
+    public partial class ChatLieu
     {
-        this.ChiTietChatLieux = new HashSet<ChiTietChatLieu>();
-        this.ChiTietPhieuThuMuas = new HashSet<ChiTietPhieuThuMua>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ChatLieu()
+        {
+            this.ChiTietChatLieux = new HashSet<ChiTietChatLieu>();
+            this.ChiTietPhieuThuMuas = new HashSet<ChiTietPhieuThuMua>();
+        }
+    
+        public int ChatLieuId { get; set; }
+        public string TenChatLieu { get; set; }
+        public decimal GiaMuaVao { get; set; }
+        public decimal GiaBanRa { get; set; }
+        public bool DangHoatDong { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ChiTietChatLieu> ChiTietChatLieux { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ChiTietPhieuThuMua> ChiTietPhieuThuMuas { get; set; }
     }
-
-    public int ChatLieuId { get; set; }
-    public string TenChatLieu { get; set; }
-    public decimal GiaMuaVao { get; set; }
-    public decimal GiaBanRa { get; set; }
-    public bool DangHoatDong { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<ChiTietChatLieu> ChiTietChatLieux { get; set; }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<ChiTietPhieuThuMua> ChiTietPhieuThuMuas { get; set; }
 }

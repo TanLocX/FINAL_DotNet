@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
+using Guna.Charts.WinForms;
 
 namespace FINAL_DotNet
 {
@@ -16,6 +16,17 @@ namespace FINAL_DotNet
         private bool dangKhoiTao = true;
         private DuLieuThongKe duLieuHienTai;
 
+        private GunaChart chartDoanhThuNgay;
+        private GunaChart chartSanPhamBanChay;
+        private GunaChart chartDanhMuc;
+        private GunaChart chartChatLieu;
+        private GunaChart chartNhanVien;
+        private GunaChart chartNhapTheoThang;
+        private GunaChart chartNhaCungCap;
+        private GunaChart chartSanPhamNhap;
+        private GunaChart chartBaoHanh;
+        private GunaChart chartEmail;
+
         public FrmThongKe() : this(false)
         {
         }
@@ -24,14 +35,49 @@ namespace FINAL_DotNet
         {
             this.moTabPhanTich = moTabPhanTich;
             InitializeComponent();
-            cboKhoangThoiGian.SelectedIndex = 2;
-            ApDungKhoangThoiGian(2);
-            dangKhoiTao = false;
-            LuxuryDarkGoldTheme.Apply(this);
+            if (System.ComponentModel.LicenseManager.UsageMode != System.ComponentModel.LicenseUsageMode.Designtime)
+            {
+                KhoiTaoCacBieuDoGuna();
+                cboKhoangThoiGian.SelectedIndex = 2;
+                ApDungKhoangThoiGian(2);
+                dangKhoiTao = false;
+                LuxuryDarkGoldTheme.Apply(this);
+            }
+        }
+
+        private void KhoiTaoCacBieuDoGuna()
+        {
+            chartDoanhThuNgay = TaoBieuDoGuna(pnlChartDoanhThu);
+            chartSanPhamBanChay = TaoBieuDoGuna(pnlChartBanChay);
+            chartDanhMuc = TaoBieuDoGuna(pnlChartDanhMuc);
+            chartChatLieu = TaoBieuDoGuna(pnlChartChatLieu);
+            chartNhanVien = TaoBieuDoGuna(pnlChartNhanVien);
+            chartNhapTheoThang = TaoBieuDoGuna(tabNhapThang);
+            chartNhaCungCap = TaoBieuDoGuna(tabNhapNcc);
+            chartSanPhamNhap = TaoBieuDoGuna(tabNhapSanPham);
+            chartBaoHanh = TaoBieuDoGuna(pnlChartBaoHanh);
+            chartEmail = TaoBieuDoGuna(pnlChartEmail);
+        }
+
+        private static GunaChart TaoBieuDoGuna(Control parent)
+        {
+            var chart = new GunaChart
+            {
+                Dock = DockStyle.Fill,
+                BackColor = Color.White
+            };
+            parent.Controls.Add(chart);
+            chart.BringToFront();
+            return chart;
         }
 
         private void FrmThongKe_Load(object sender, EventArgs e)
         {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
+
             if (!CurrentUserSession.DaDangNhap)
             {
                 MessageBox.Show("Phiên đăng nhập đã kết thúc. Vui lòng đăng nhập lại.", "Chưa đăng nhập",
@@ -206,110 +252,117 @@ namespace FINAL_DotNet
 
         private static string DinhDangTien(decimal giaTri) => giaTri.ToString("N0", VanHoaVietNam) + " đ";
 
-        private static void KhoiTaoBieuDo(Chart chart)
+        private static readonly Color[] BangMauTron = new Color[]
         {
-            chart.Series.Clear();
-            chart.ChartAreas.Clear();
-            chart.Legends.Clear();
-            chart.Titles.Clear();
-            var area = new ChartArea("Chinh");
-            chart.BackColor = LuxuryDarkGoldTheme.Card;
-            area.BackColor = LuxuryDarkGoldTheme.Card;
-            area.AxisX.MajorGrid.Enabled = false;
-            area.AxisY.MajorGrid.LineColor = LuxuryDarkGoldTheme.Border;
-            area.AxisX.LineColor = LuxuryDarkGoldTheme.Border;
-            area.AxisY.LineColor = LuxuryDarkGoldTheme.Border;
-            area.AxisX.LabelStyle.ForeColor = LuxuryDarkGoldTheme.TextSecondary;
-            area.AxisY.LabelStyle.ForeColor = LuxuryDarkGoldTheme.TextSecondary;
-            area.AxisX.LabelStyle.Font = new Font("Segoe UI", 8F);
-            area.AxisY.LabelStyle.Font = new Font("Segoe UI", 8F);
-            area.AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
-            chart.ChartAreas.Add(area);
+            Color.FromArgb(222, 187, 116),
+            Color.FromArgb(42, 106, 133),
+            Color.FromArgb(41, 128, 97),
+            Color.FromArgb(217, 119, 6),
+            Color.FromArgb(183, 70, 77),
+            Color.FromArgb(107, 114, 128)
+        };
+
+        private static void KhoiTaoBieuDo(GunaChart chart)
+        {
+            chart.Datasets.Clear();
         }
 
-        private static void HienThiBieuDoRong(Chart chart)
-        {
-            chart.Titles.Add(new Title("Không có dữ liệu trong khoảng đã chọn",
-                Docking.Top, new Font("Segoe UI", 9F), LuxuryDarkGoldTheme.TextSecondary));
-        }
-
-        private static void VeBieuDoThoiGian(Chart chart, IList<DiemThongKe> duLieu)
+        private static void VeBieuDoThoiGian(GunaChart chart, IList<DiemThongKe> duLieu)
         {
             KhoiTaoBieuDo(chart);
-            if (duLieu.Count == 0) { HienThiBieuDoRong(chart); return; }
-            var series = new Series("Doanh thu")
+            if (duLieu.Count == 0) { chart.Update(); return; }
+            var dataset = new GunaSplineAreaDataset
             {
-                ChartType = SeriesChartType.SplineArea,
-                Color = Color.FromArgb(110, 204, 164, 87),
-                BorderColor = Color.FromArgb(173, 126, 48),
-                BorderWidth = 2,
-                XValueType = ChartValueType.String,
-                YValueType = ChartValueType.Double,
-                IsValueShownAsLabel = duLieu.Count <= 12
+                Label = "Doanh thu",
+                FillColor = Color.FromArgb(120, 222, 187, 116),
+                BorderColor = Color.FromArgb(170, 130, 60),
+                BorderWidth = 2
             };
-            series.LabelFormat = "#,##0,, 'tr'";
-            series.ToolTip = "#VALX: #VALY{N0} đ";
-            foreach (DiemThongKe item in duLieu) series.Points.AddXY(item.Ten, item.GiaTri);
-            chart.ChartAreas[0].AxisY.LabelStyle.Format = "#,##0,, 'tr'";
-            chart.Series.Add(series);
+            foreach (DiemThongKe item in duLieu)
+            {
+                dataset.DataPoints.Add(item.Ten, (double)item.GiaTri);
+            }
+            chart.Datasets.Add(dataset);
+            chart.Update();
         }
 
-        private static void VeBieuDoCot(Chart chart, IList<DiemThongKe> duLieu, bool laTien, bool thanhNgang)
+        private static void VeBieuDoCot(GunaChart chart, IList<DiemThongKe> duLieu, bool laTien, bool thanhNgang)
         {
             KhoiTaoBieuDo(chart);
-            if (duLieu.Count == 0) { HienThiBieuDoRong(chart); return; }
-            var series = new Series("Giá trị")
+            if (duLieu.Count == 0) { chart.Update(); return; }
+            if (thanhNgang)
             {
-                ChartType = thanhNgang ? SeriesChartType.Bar : SeriesChartType.Column,
-                Color = Color.FromArgb(42, 106, 133),
-                IsValueShownAsLabel = duLieu.Count <= 8,
-                YValueType = ChartValueType.Double
-            };
-            series.LabelFormat = laTien ? "#,##0,, 'tr'" : "#,##0";
-            series.ToolTip = laTien ? "#VALX: #VALY{N0} đ" : "#VALX: #VALY{N0}";
-            foreach (DiemThongKe item in duLieu.Reverse()) series.Points.AddXY(item.Ten, item.GiaTri);
-            if (laTien) chart.ChartAreas[0].AxisY.LabelStyle.Format = "#,##0,, 'tr'";
-            chart.Series.Add(series);
+                var dataset = new GunaHorizontalBarDataset
+                {
+                    Label = "Giá trị"
+                };
+                dataset.FillColors.Add(Color.FromArgb(42, 106, 133));
+                foreach (DiemThongKe item in duLieu.Reverse())
+                {
+                    dataset.DataPoints.Add(item.Ten, (double)item.GiaTri);
+                }
+                chart.Datasets.Add(dataset);
+            }
+            else
+            {
+                var dataset = new GunaBarDataset
+                {
+                    Label = "Giá trị"
+                };
+                dataset.FillColors.Add(Color.FromArgb(42, 106, 133));
+                foreach (DiemThongKe item in duLieu)
+                {
+                    dataset.DataPoints.Add(item.Ten, (double)item.GiaTri);
+                }
+                chart.Datasets.Add(dataset);
+            }
+            chart.Update();
         }
 
-        private static void VeBieuDoTron(Chart chart, IList<DiemThongKe> duLieu)
+        private static void VeBieuDoTron(GunaChart chart, IList<DiemThongKe> duLieu)
         {
             KhoiTaoBieuDo(chart);
-            if (duLieu.Count == 0) { HienThiBieuDoRong(chart); return; }
-            var legend = new Legend("ChuThich")
+            if (duLieu.Count == 0) { chart.Update(); return; }
+            var dataset = new GunaDoughnutDataset
             {
-                Docking = Docking.Right,
-                Font = new Font("Segoe UI", 8F),
-                BackColor = LuxuryDarkGoldTheme.Card,
-                ForeColor = LuxuryDarkGoldTheme.TextSecondary
+                Label = "Bảo hành"
             };
-            chart.Legends.Add(legend);
-            var series = new Series("Bảo hành")
+            for (int i = 0; i < duLieu.Count; i++)
             {
-                ChartType = SeriesChartType.Doughnut,
-                IsValueShownAsLabel = true,
-                Label = "#VALY",
-                LegendText = "#VALX",
-                ToolTip = "#VALX: #VALY phiếu"
-            };
-            foreach (DiemThongKe item in duLieu) series.Points.AddXY(item.Ten, item.GiaTri);
-            chart.Series.Add(series);
+                Color mau = BangMauTron[i % BangMauTron.Length];
+                dataset.FillColors.Add(mau);
+                dataset.DataPoints.Add(duLieu[i].Ten, (double)duLieu[i].GiaTri);
+            }
+            chart.Legend.Position = LegendPosition.Right;
+            chart.Datasets.Add(dataset);
+            chart.Update();
         }
 
-        private static void VeBieuDoEmail(Chart chart, IList<ThongKeEmailTheoMau> duLieu)
+        private static void VeBieuDoEmail(GunaChart chart, IList<ThongKeEmailTheoMau> duLieu)
         {
             KhoiTaoBieuDo(chart);
-            if (duLieu.Count == 0) { HienThiBieuDoRong(chart); return; }
-            chart.Legends.Add(new Legend("ChuThich") { Docking = Docking.Top, Font = new Font("Segoe UI", 8F) });
-            var thanhCong = new Series("Thành công") { ChartType = SeriesChartType.StackedBar, Color = Color.FromArgb(41, 128, 97), IsValueShownAsLabel = true };
-            var thatBai = new Series("Thất bại") { ChartType = SeriesChartType.StackedBar, Color = Color.FromArgb(183, 70, 77), IsValueShownAsLabel = true };
+            if (duLieu.Count == 0) { chart.Update(); return; }
+            var thanhCong = new GunaStackedHorizontalBarDataset
+            {
+                Label = "Thành công"
+            };
+            thanhCong.FillColors.Add(Color.FromArgb(41, 128, 97));
+
+            var thatBai = new GunaStackedHorizontalBarDataset
+            {
+                Label = "Thất bại"
+            };
+            thatBai.FillColors.Add(Color.FromArgb(183, 70, 77));
+
             foreach (ThongKeEmailTheoMau item in duLieu.Reverse())
             {
-                thanhCong.Points.AddXY(item.TenMau, item.ThanhCong);
-                thatBai.Points.AddXY(item.TenMau, item.ThatBai);
+                thanhCong.DataPoints.Add(item.TenMau, (double)item.ThanhCong);
+                thatBai.DataPoints.Add(item.TenMau, (double)item.ThatBai);
             }
-            chart.Series.Add(thanhCong);
-            chart.Series.Add(thatBai);
+            chart.Legend.Position = LegendPosition.Top;
+            chart.Datasets.Add(thanhCong);
+            chart.Datasets.Add(thatBai);
+            chart.Update();
         }
 
         private void DinhDangBangVanHanh()

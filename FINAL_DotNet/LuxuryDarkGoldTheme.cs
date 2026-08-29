@@ -37,8 +37,12 @@ namespace FINAL_DotNet
         private static readonly ConditionalWeakTable<Control, ThemeState> States =
             new ConditionalWeakTable<Control, ThemeState>();
 
+        private const bool IsThemeEnabled = false;
+
         internal static void Apply(Form form)
         {
+            if (!IsThemeEnabled) return;
+
             if (form == null || IsExcluded(form))
             {
                 return;
@@ -55,6 +59,8 @@ namespace FINAL_DotNet
 
         internal static void ActivateNavigation(Button selected, Control root)
         {
+            if (!IsThemeEnabled) return;
+
             if (selected == null || root == null)
             {
                 return;

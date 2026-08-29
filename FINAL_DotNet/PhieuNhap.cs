@@ -7,27 +7,30 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-public partial class PhieuNhap
+namespace FINAL_DotNet
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public PhieuNhap()
+    using System;
+    using System.Collections.Generic;
+    
+    public partial class PhieuNhap
     {
-        this.ChiTietPhieuNhaps = new HashSet<ChiTietPhieuNhap>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public PhieuNhap()
+        {
+            this.ChiTietPhieuNhaps = new HashSet<ChiTietPhieuNhap>();
+        }
+    
+        public int PhieuNhapId { get; set; }
+        public int NhanVienId { get; set; }
+        public int NhaCungCapId { get; set; }
+        public System.DateTime NgayNhap { get; set; }
+        public decimal TongTienNhap { get; set; }
+        public string TrangThai { get; set; }
+        public string GhiChu { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
+        public virtual NhaCungCap NhaCungCap { get; set; }
+        public virtual NhanVien NhanVien { get; set; }
     }
-
-    public int PhieuNhapId { get; set; }
-    public int NhanVienId { get; set; }
-    public int NhaCungCapId { get; set; }
-    public System.DateTime NgayNhap { get; set; }
-    public decimal TongTienNhap { get; set; }
-    public string TrangThai { get; set; }
-    public string GhiChu { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
-    public virtual NhaCungCap NhaCungCap { get; set; }
-    public virtual NhanVien NhanVien { get; set; }
 }

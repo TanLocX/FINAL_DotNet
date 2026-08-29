@@ -18,10 +18,52 @@ namespace FINAL_DotNet
         public FrmKhachHang()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
             cboLocTrangThai.SelectedIndex = 0;
             dtpNgaySinh.MaxDate = DateTime.Today;
             dtpNgaySinh.Checked = false;
+            KhoiTaoGiaoDienTuyBien();
             LuxuryDarkGoldTheme.Apply(this);
+        }
+
+        private void KhoiTaoGiaoDienTuyBien()
+        {
+            System.Drawing.Color headerColor = System.Drawing.Color.FromArgb(27, 39, 53);
+            dgvKhachHang.AllowUserToAddRows = false;
+            dgvKhachHang.AllowUserToDeleteRows = false;
+            dgvKhachHang.AllowUserToResizeRows = false;
+            dgvKhachHang.AutoGenerateColumns = false;
+            dgvKhachHang.BackgroundColor = System.Drawing.Color.White;
+            dgvKhachHang.BorderStyle = BorderStyle.None;
+            dgvKhachHang.ColumnHeadersHeight = 34;
+            dgvKhachHang.Dock = DockStyle.Fill;
+            dgvKhachHang.EnableHeadersVisualStyles = false;
+            dgvKhachHang.MultiSelect = false;
+            dgvKhachHang.ReadOnly = true;
+            dgvKhachHang.RowHeadersVisible = false;
+            dgvKhachHang.RowTemplate.Height = 30;
+            dgvKhachHang.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dgvKhachHang.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
+            dgvKhachHang.ThemeStyle.HeaderStyle.BackColor = headerColor;
+            dgvKhachHang.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.White;
+            dgvKhachHang.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            dgvKhachHang.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(214, 182, 116);
+            dgvKhachHang.ThemeStyle.RowsStyle.SelectionForeColor = headerColor;
+
+            if (dgvKhachHang.Columns.Count == 0)
+            {
+                dgvKhachHang.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Mã KH", DataPropertyName = "MaKhachHang", Width = 85, ReadOnly = true });
+                dgvKhachHang.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Họ tên", DataPropertyName = "HoTen", Width = 160, ReadOnly = true });
+                dgvKhachHang.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Số điện thoại", DataPropertyName = "SoDienThoai", Width = 120, ReadOnly = true });
+                dgvKhachHang.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Email", DataPropertyName = "Email", Width = 175, ReadOnly = true });
+                dgvKhachHang.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Ngày sinh", DataPropertyName = "NgaySinhHienThi", Width = 95, ReadOnly = true });
+                dgvKhachHang.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Điểm", DataPropertyName = "DiemTichLuy", Width = 75, ReadOnly = true });
+                dgvKhachHang.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Nhận email", DataPropertyName = "NhanEmail", Width = 95, ReadOnly = true });
+                dgvKhachHang.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Trạng thái", DataPropertyName = "TrangThai", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill, MinimumWidth = 115, ReadOnly = true });
+            }
         }
 
         private void FrmKhachHang_Load(object sender, EventArgs e)

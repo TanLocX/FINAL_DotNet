@@ -7,32 +7,35 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-public partial class HoaDon
+namespace FINAL_DotNet
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public HoaDon()
+    using System;
+    using System.Collections.Generic;
+    
+    public partial class HoaDon
     {
-        this.ChiTietHoaDons = new HashSet<ChiTietHoaDon>();
-        this.NhatKyGuiEmails = new HashSet<NhatKyGuiEmail>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public HoaDon()
+        {
+            this.ChiTietHoaDons = new HashSet<ChiTietHoaDon>();
+            this.NhatKyGuiEmails = new HashSet<NhatKyGuiEmail>();
+        }
+    
+        public int HoaDonId { get; set; }
+        public int NhanVienId { get; set; }
+        public int KhachHangId { get; set; }
+        public System.DateTime NgayLap { get; set; }
+        public decimal TongTien { get; set; }
+        public decimal GiamGia { get; set; }
+        public decimal ThanhTien { get; set; }
+        public string PhuongThucThanhToan { get; set; }
+        public string TrangThai { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ChiTietHoaDon> ChiTietHoaDons { get; set; }
+        public virtual KhachHang KhachHang { get; set; }
+        public virtual NhanVien NhanVien { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NhatKyGuiEmail> NhatKyGuiEmails { get; set; }
     }
-
-    public int HoaDonId { get; set; }
-    public int NhanVienId { get; set; }
-    public int KhachHangId { get; set; }
-    public System.DateTime NgayLap { get; set; }
-    public decimal TongTien { get; set; }
-    public decimal GiamGia { get; set; }
-    public decimal ThanhTien { get; set; }
-    public string PhuongThucThanhToan { get; set; }
-    public string TrangThai { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<ChiTietHoaDon> ChiTietHoaDons { get; set; }
-    public virtual KhachHang KhachHang { get; set; }
-    public virtual NhanVien NhanVien { get; set; }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<NhatKyGuiEmail> NhatKyGuiEmails { get; set; }
 }

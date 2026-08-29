@@ -7,16 +7,19 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-public partial class ChiTietChatLieu
+namespace FINAL_DotNet
 {
-    public int SanPhamId { get; set; }
-    public int ChatLieuId { get; set; }
-    public decimal TrongLuong { get; set; }
-    public string DonViTinh { get; set; }
-
-    public virtual ChatLieu ChatLieu { get; set; }
-    public virtual SanPham SanPham { get; set; }
+    using System;
+    using System.Collections.Generic;
+    
+    public partial class ChiTietChatLieu
+    {
+        public int SanPhamId { get; set; }
+        public int ChatLieuId { get; set; }
+        public decimal TrongLuong { get; set; }
+        public string DonViTinh { get; set; }
+    
+        public virtual ChatLieu ChatLieu { get; set; }
+        public virtual SanPham SanPham { get; set; }
+    }
 }

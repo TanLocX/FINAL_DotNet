@@ -6,28 +6,24 @@ using System.Data.Entity.Infrastructure;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 
 namespace FINAL_DotNet
 {
     public partial class FrmBanHang : Form
     {
         private const decimal GiaTriTienToiDa = 9999999999999999.99M;
-        private readonly bool moLichSuBanDau;
         private readonly List<DongBanHang> gioHang = new List<DongBanHang>();
-        private int? hoaDonDangChonId;
-        private HoaDonHienThi hoaDonDangChon;
         private bool dangLamMoi;
 
-        public FrmBanHang() : this(false)
+        public FrmBanHang()
         {
-        }
-
-        protected FrmBanHang(bool moLichSuBanDau)
-        {
-            this.moLichSuBanDau = moLichSuBanDau;
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
             KhoiTaoGiaoDienTuyBien();
-            cboLocTrangThai.SelectedIndex = 0;
             cboPhuongThucThanhToan.SelectedIndex = 0;
             numSoLuong.Maximum = int.MaxValue;
             numGiamGia.Maximum = 9999999999999999M;
@@ -44,154 +40,24 @@ namespace FINAL_DotNet
             };
             headerStyle.SelectionBackColor = headerStyle.BackColor;
 
-            pnlBoLoc.Controls.Add(TaoNhan("Mã HĐ / khách / nhân viên / sản phẩm", 16, 8));
-            pnlBoLoc.Controls.Add(TaoNhan("Từ ngày", 238, 8));
-            pnlBoLoc.Controls.Add(TaoNhan("Đến ngày", 378, 8));
-            pnlBoLoc.Controls.Add(TaoNhan("Khách hàng", 518, 8));
-            pnlBoLoc.Controls.Add(TaoNhan("Trạng thái", 16, 55));
-            pnlBoLoc.Controls.Add(TaoNhan("Tiền từ", 184, 55));
-            pnlBoLoc.Controls.Add(TaoNhan("Tiền đến", 306, 55));
-            CauHinhNgay(dtpTuNgay, 238, 27, 124);
-            CauHinhNgay(dtpDenNgay, 378, 27, 124);
-            CauHinhCombo(cboLocKhachHang, 518, 27, 220);
-            CauHinhCombo(cboLocTrangThai, 16, 73, 152);
-            CauHinhNut(btnTimKiem, "Tìm kiếm", 428, 66, 96, MauXanh());
-            CauHinhNut(btnTaiLai, "Tải lại", 532, 66, 82, Color.DimGray);
-
-            CauHinhLuoi(dgvHoaDon, headerStyle);
-            dgvHoaDon.Columns.Add(TaoCot("Mã HĐ", "MaHoaDon", 82));
-            dgvHoaDon.Columns.Add(TaoCot("Ngày lập", "NgayLapHienThi", 128));
-            dgvHoaDon.Columns.Add(TaoCot("Khách hàng", "TenKhachHang", 175));
-            dgvHoaDon.Columns.Add(TaoCot("Nhân viên", "TenNhanVien", 140));
-            DataGridViewTextBoxColumn cotTongHoaDon = TaoCot("Phải trả", "ThanhTien", 120);
-            cotTongHoaDon.DefaultCellStyle.Format = "N0";
-            cotTongHoaDon.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
-            dgvHoaDon.Columns.Add(cotTongHoaDon);
-            dgvHoaDon.Columns.Add(TaoCot("Thanh toán", "PhuongThucThanhToan", 110));
-            dgvHoaDon.Columns.Add(TaoCot("Trạng thái", "TrangThaiHienThi", 112));
-
-            pnlDauHoaDon.Controls.Add(TaoNhan("Khách hàng *", 4, 2));
-            pnlDauHoaDon.Controls.Add(TaoNhan("Nhân viên lập", 238, 2));
-            pnlDauHoaDon.Controls.Add(TaoNhan("Thời gian", 406, 2));
-            pnlDauHoaDon.Controls.Add(TaoNhan("Thanh toán *", 548, 2));
-            pnlDauHoaDon.Controls.Add(TaoNhan("Giảm giá", 718, 2));
-            CauHinhCombo(cboKhachHang, 4, 23, 218);
-            CauHinhCombo(cboPhuongThucThanhToan, 548, 23, 154);
-            CauHinhSo(numGiamGia, 718, 23, 210);
-
-            pnlDongBan.Controls.Add(TaoNhan("Sản phẩm *", 4, 2));
-            pnlDongBan.Controls.Add(TaoNhan("Số lượng *", 264, 2));
-            pnlDongBan.Controls.Add(TaoNhan("Đơn giá", 348, 2));
-            pnlDongBan.Controls.Add(TaoNhan("Hạn bảo hành", 452, 2));
-            CauHinhCombo(cboSanPham, 4, 23, 244);
-            CauHinhSo(numSoLuong, 264, 23, 68);
-            CauHinhNgay(dtpHanBaoHanh, 452, 23, 126);
-            CauHinhNut(btnThemDong, "Thêm sản phẩm", 592, 20, 120, MauXanh());
-            CauHinhNut(btnXoaDong, "Xóa", 720, 20, 62, Color.Firebrick);
-            CauHinhNut(btnMoiDong, "Nhập mới", 790, 20, 78, Color.DimGray);
-            lblTongTien.ForeColor = MauXanh();
-
             CauHinhLuoi(dgvGioHang, headerStyle);
-            dgvGioHang.Columns.Add(TaoCot("Mã SP", "MaSanPham", 85));
-            dgvGioHang.Columns.Add(TaoCot("Tên sản phẩm", "TenSanPham", 280));
-            dgvGioHang.Columns.Add(TaoCot("Tồn", "TonKhoHienTai", 65));
-            dgvGioHang.Columns.Add(TaoCot("Số lượng", "SoLuong", 75));
-            DataGridViewTextBoxColumn cotGiaBan = TaoCot("Đơn giá", "DonGiaBan", 125);
-            cotGiaBan.DefaultCellStyle.Format = "N0";
-            dgvGioHang.Columns.Add(cotGiaBan);
-            DataGridViewTextBoxColumn cotThanhTien = TaoCot("Thành tiền", "ThanhTien", 140);
-            cotThanhTien.DefaultCellStyle.Format = "N0";
-            dgvGioHang.Columns.Add(cotThanhTien);
-            dgvGioHang.Columns.Add(TaoCot("Bảo hành đến", "HanBaoHanhHienThi", 115));
-
-            pnlThongTinHoaDon.Controls.Add(TaoNhan("Mã HĐ", 4, 2));
-            pnlThongTinHoaDon.Controls.Add(TaoNhan("Ngày lập", 98, 2));
-            pnlThongTinHoaDon.Controls.Add(TaoNhan("Khách hàng", 238, 2));
-            pnlThongTinHoaDon.Controls.Add(TaoNhan("Nhân viên", 418, 2));
-            pnlThongTinHoaDon.Controls.Add(TaoNhan("Thanh toán", 568, 2));
-            pnlThongTinHoaDon.Controls.Add(TaoNhan("Trạng thái", 704, 2));
-            CauHinhGiaTri(lblMaHoaDonChiTiet, 4, 23, 84);
-            CauHinhGiaTri(lblNgayLapChiTiet, 98, 23, 130);
-            CauHinhGiaTri(lblKhachHangChiTiet, 238, 23, 170);
-            CauHinhGiaTri(lblNhanVienChiTiet, 418, 23, 140);
-            CauHinhGiaTri(lblThanhToanChiTiet, 568, 23, 126);
-            CauHinhGiaTri(lblTrangThaiChiTiet, 704, 23, 128);
-            lblTienChiTiet.ForeColor = MauXanh();
-
-            CauHinhLuoi(dgvChiTietHoaDon, headerStyle);
-            dgvChiTietHoaDon.Columns.Add(TaoCot("Mã SP", "MaSanPham", 85));
-            dgvChiTietHoaDon.Columns.Add(TaoCot("Tên sản phẩm", "TenSanPham", 350));
-            dgvChiTietHoaDon.Columns.Add(TaoCot("Số lượng", "SoLuong", 80));
-            DataGridViewTextBoxColumn cotGiaChiTiet = TaoCot("Đơn giá", "DonGiaBan", 130);
-            cotGiaChiTiet.DefaultCellStyle.Format = "N0";
-            dgvChiTietHoaDon.Columns.Add(cotGiaChiTiet);
-            DataGridViewTextBoxColumn cotTienChiTiet = TaoCot("Thành tiền", "ThanhTien", 150);
-            cotTienChiTiet.DefaultCellStyle.Format = "N0";
-            dgvChiTietHoaDon.Columns.Add(cotTienChiTiet);
-            dgvChiTietHoaDon.Columns.Add(TaoCot("Bảo hành đến", "HanBaoHanhHienThi", 120));
-
-            CauHinhNut(btnLuuHoaDon, "Thanh toán", 438, 12, 118, MauXanh());
-            CauHinhNut(btnHuyHoaDon, "Hủy hóa đơn", 564, 12, 120, Color.Firebrick);
-            CauHinhNut(btnInHoaDon, "Xem báo cáo", 692, 12, 106, Color.FromArgb(44, 95, 138));
-            CauHinhNut(btnHoaDonMoi, "Hóa đơn mới", 806, 12, 110, Color.DimGray);
-        }
-
-        private static Label TaoNhan(string text, int x, int y)
-        {
-            return new Label
+            if (dgvGioHang.Columns.Count == 0)
             {
-                AutoSize = true,
-                Font = new Font("Segoe UI", 8.5F, FontStyle.Bold),
-                Location = new Point(x, y),
-                Text = text
-            };
+                dgvGioHang.Columns.Add(TaoCot("Mã SP", "MaSanPham", 85));
+                dgvGioHang.Columns.Add(TaoCot("Tên sản phẩm", "TenSanPham", 280));
+                dgvGioHang.Columns.Add(TaoCot("Tồn", "TonKhoHienTai", 65));
+                dgvGioHang.Columns.Add(TaoCot("Số lượng", "SoLuong", 75));
+                DataGridViewTextBoxColumn cotGiaBan = TaoCot("Đơn giá", "DonGiaBan", 125);
+                cotGiaBan.DefaultCellStyle.Format = "N0";
+                dgvGioHang.Columns.Add(cotGiaBan);
+                DataGridViewTextBoxColumn cotThanhTien = TaoCot("Thành tiền", "ThanhTien", 140);
+                cotThanhTien.DefaultCellStyle.Format = "N0";
+                dgvGioHang.Columns.Add(cotThanhTien);
+                dgvGioHang.Columns.Add(TaoCot("Bảo hành đến", "HanBaoHanhHienThi", 115));
+            }
         }
 
-        private static void CauHinhNgay(DateTimePicker control, int x, int y, int width)
-        {
-            control.Format = DateTimePickerFormat.Custom;
-            control.CustomFormat = "dd/MM/yyyy";
-            control.ShowCheckBox = true;
-            control.Checked = false;
-            control.Location = new Point(x, y);
-            control.Size = new Size(width, 23);
-        }
-
-        private static void CauHinhCombo(ComboBox control, int x, int y, int width)
-        {
-            control.DropDownStyle = ComboBoxStyle.DropDownList;
-            control.Location = new Point(x, y);
-            control.Size = new Size(width, 23);
-        }
-
-        private static void CauHinhSo(NumericUpDown control, int x, int y, int width)
-        {
-            control.Location = new Point(x, y);
-            control.Size = new Size(width, 23);
-            control.TextAlign = HorizontalAlignment.Right;
-        }
-
-        private static void CauHinhNut(Button button, string text, int x, int y, int width, Color color)
-        {
-            button.BackColor = color;
-            button.FlatStyle = FlatStyle.Flat;
-            button.FlatAppearance.BorderSize = 0;
-            button.ForeColor = Color.White;
-            button.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            button.Location = new Point(x, y);
-            button.Size = new Size(width, 32);
-            button.Text = text;
-            button.UseVisualStyleBackColor = false;
-        }
-
-        private static void CauHinhGiaTri(Label label, int x, int y, int width)
-        {
-            label.Location = new Point(x, y);
-            label.Size = new Size(width, 22);
-            label.AutoEllipsis = true;
-        }
-
-        private static void CauHinhLuoi(DataGridView grid, DataGridViewCellStyle headerStyle)
+        private static void CauHinhLuoi(Guna2DataGridView grid, DataGridViewCellStyle headerStyle)
         {
             grid.AllowUserToAddRows = false;
             grid.AllowUserToDeleteRows = false;
@@ -200,14 +66,20 @@ namespace FINAL_DotNet
             grid.BackgroundColor = Color.White;
             grid.BorderStyle = BorderStyle.None;
             grid.ColumnHeadersDefaultCellStyle = headerStyle;
-            grid.ColumnHeadersHeight = 34;
+            grid.ColumnHeadersHeight = 32;
             grid.Dock = DockStyle.Fill;
             grid.EnableHeadersVisualStyles = false;
             grid.MultiSelect = false;
             grid.ReadOnly = true;
             grid.RowHeadersVisible = false;
-            grid.RowTemplate.Height = 29;
+            grid.RowTemplate.Height = 28;
             grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            grid.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
+            grid.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(27, 39, 53);
+            grid.ThemeStyle.HeaderStyle.ForeColor = Color.White;
+            grid.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            grid.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(214, 182, 116);
+            grid.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(27, 39, 53);
         }
 
         private static DataGridViewTextBoxColumn TaoCot(string tieuDe, string thuocTinh, int width)
@@ -221,11 +93,6 @@ namespace FINAL_DotNet
             };
         }
 
-        private static Color MauXanh()
-        {
-            return Color.FromArgb(35, 125, 96);
-        }
-
         private void FrmBanHang_Load(object sender, EventArgs e)
         {
             if (!KiemTraPhienDangNhap(true))
@@ -237,17 +104,8 @@ namespace FINAL_DotNet
             dangLamMoi = true;
             try
             {
-                bool sanSang = TaiDuLieuLuaChon();
+                TaiDuLieuLuaChon();
                 LamMoiHoaDonNoiBo();
-                if (sanSang)
-                    TaiDanhSachHoaDon();
-                else
-                    lblSoKetQua.Text = "0 hóa đơn";
-                dgvHoaDon.ClearSelection();
-                splitChinh.SplitterDistance = Math.Max(
-                    splitChinh.Panel1MinSize,
-                    Math.Min(205, splitChinh.Height / 2));
-                if (moLichSuBanDau) tabBanHang.SelectedTab = tabLichSu;
             }
             finally
             {
@@ -287,13 +145,11 @@ namespace FINAL_DotNet
                         .OrderByDescending(kh => kh.Ten == "Khách lẻ")
                         .ThenBy(kh => kh.Ten)
                         .ToList();
+
                     cboKhachHang.DataSource = khachHang
                         .Where(kh => kh.DangHoatDong)
                         .Select(kh => kh.SaoChep())
                         .ToList();
-                    var khachHangLoc = khachHang.Select(kh => kh.SaoChep()).ToList();
-                    khachHangLoc.Insert(0, new LuaChonKhachHang { Id = null, Ten = "Tất cả khách hàng", DangHoatDong = true });
-                    cboLocKhachHang.DataSource = khachHangLoc;
 
                     cboSanPham.DataSource = db.SanPhams.AsNoTracking()
                         .Where(sp => sp.DangKinhDoanh)
@@ -313,176 +169,6 @@ namespace FINAL_DotNet
                 HienThiLoi("Không thể tải khách hàng và sản phẩm. Hãy kiểm tra kết nối CSDL.");
                 return false;
             }
-        }
-
-        private void TaiDanhSachHoaDon(int? hoaDonCanChonId = null)
-        {
-            decimal? tienTu;
-            decimal? tienDen;
-            if (!ThuLayKhoangTien(out tienTu, out tienDen)) return;
-
-            try
-            {
-                string tuKhoa = txtTuKhoa.Text.Trim();
-                int? maHoaDon = ThuDocMaHoaDon(tuKhoa);
-                int? khachHangId = (cboLocKhachHang.SelectedItem as LuaChonKhachHang)?.Id;
-                int trangThai = cboLocTrangThai.SelectedIndex;
-
-                using (var db = DatabaseConnection.CreateContext())
-                {
-                    IQueryable<HoaDon> truyVan = db.HoaDons
-                        .Include(hd => hd.KhachHang)
-                        .Include(hd => hd.NhanVien)
-                        .Include(hd => hd.ChiTietHoaDons.Select(ct => ct.SanPham))
-                        .AsNoTracking();
-                    if (dtpTuNgay.Checked)
-                    {
-                        DateTime tuNgay = dtpTuNgay.Value.Date;
-                        truyVan = truyVan.Where(hd => hd.NgayLap >= tuNgay);
-                    }
-                    if (dtpDenNgay.Checked)
-                    {
-                        DateTime denNgayKeTiep = dtpDenNgay.Value.Date.AddDays(1);
-                        truyVan = truyVan.Where(hd => hd.NgayLap < denNgayKeTiep);
-                    }
-                    if (khachHangId.HasValue)
-                        truyVan = truyVan.Where(hd => hd.KhachHangId == khachHangId.Value);
-                    if (trangThai == 1)
-                        truyVan = truyVan.Where(hd => hd.TrangThai == "DA_THANH_TOAN");
-                    else if (trangThai == 2)
-                        truyVan = truyVan.Where(hd => hd.TrangThai == "DA_HUY");
-                    if (tienTu.HasValue) truyVan = truyVan.Where(hd => hd.ThanhTien >= tienTu.Value);
-                    if (tienDen.HasValue) truyVan = truyVan.Where(hd => hd.ThanhTien <= tienDen.Value);
-                    if (!string.IsNullOrWhiteSpace(tuKhoa))
-                    {
-                        if (maHoaDon.HasValue)
-                            truyVan = truyVan.Where(hd => hd.HoaDonId == maHoaDon.Value);
-                        else
-                            truyVan = truyVan.Where(hd =>
-                                hd.KhachHang.HoTen.Contains(tuKhoa) ||
-                                hd.NhanVien.HoTen.Contains(tuKhoa) ||
-                                hd.ChiTietHoaDons.Any(ct => ct.SanPham.TenSanPham.Contains(tuKhoa)));
-                    }
-
-                    List<HoaDonHienThi> danhSach = truyVan
-                        .OrderByDescending(hd => hd.NgayLap)
-                        .ThenByDescending(hd => hd.HoaDonId)
-                        .ToList()
-                        .Select(hd => new HoaDonHienThi(hd))
-                        .ToList();
-                    dgvHoaDon.DataSource = danhSach;
-                    lblSoKetQua.Text = danhSach.Count + " hóa đơn";
-                }
-                if (hoaDonCanChonId.HasValue) ChonDongHoaDon(hoaDonCanChonId.Value);
-            }
-            catch (Exception)
-            {
-                HienThiLoi("Không thể tải lịch sử hóa đơn. Hãy kiểm tra kết nối CSDL.");
-            }
-        }
-
-        private bool ThuLayKhoangTien(out decimal? tienTu, out decimal? tienDen)
-        {
-            tienTu = null;
-            tienDen = null;
-            decimal giaTri;
-            if (!string.IsNullOrWhiteSpace(txtTienTu.Text))
-            {
-                if (!decimal.TryParse(txtTienTu.Text.Trim(), out giaTri) || giaTri < 0)
-                {
-                    HienThiLoi("Số tiền từ phải là số không âm.");
-                    return false;
-                }
-                tienTu = giaTri;
-            }
-            if (!string.IsNullOrWhiteSpace(txtTienDen.Text))
-            {
-                if (!decimal.TryParse(txtTienDen.Text.Trim(), out giaTri) || giaTri < 0)
-                {
-                    HienThiLoi("Số tiền đến phải là số không âm.");
-                    return false;
-                }
-                tienDen = giaTri;
-            }
-            if (tienTu.HasValue && tienDen.HasValue && tienTu.Value > tienDen.Value)
-            {
-                HienThiLoi("Số tiền từ không được lớn hơn số tiền đến.");
-                return false;
-            }
-            lblThongBao.Text = string.Empty;
-            return true;
-        }
-
-        private static int? ThuDocMaHoaDon(string giaTri)
-        {
-            if (string.IsNullOrWhiteSpace(giaTri) || !giaTri.Trim().StartsWith("HD", StringComparison.OrdinalIgnoreCase))
-                return null;
-            int id;
-            return int.TryParse(giaTri.Trim().Substring(2), out id) && id > 0 ? (int?)id : null;
-        }
-
-        private void ChonDongHoaDon(int id)
-        {
-            foreach (DataGridViewRow row in dgvHoaDon.Rows)
-            {
-                var item = row.DataBoundItem as HoaDonHienThi;
-                if (item?.HoaDonId != id) continue;
-                row.Selected = true;
-                dgvHoaDon.CurrentCell = row.Cells[0];
-                return;
-            }
-        }
-
-        private void dgvHoaDon_SelectionChanged(object sender, EventArgs e)
-        {
-            if (dangLamMoi) return;
-            var item = dgvHoaDon.CurrentRow?.DataBoundItem as HoaDonHienThi;
-            if (item == null) return;
-            hoaDonDangChonId = item.HoaDonId;
-            hoaDonDangChon = item;
-            lblMaHoaDonChiTiet.Text = item.MaHoaDon;
-            lblNgayLapChiTiet.Text = item.NgayLap.ToString("dd/MM/yyyy HH:mm");
-            lblKhachHangChiTiet.Text = item.TenKhachHang;
-            lblNhanVienChiTiet.Text = item.TenNhanVien;
-            lblThanhToanChiTiet.Text = item.PhuongThucThanhToan;
-            lblTrangThaiChiTiet.Text = item.TrangThaiHienThi;
-            lblTienChiTiet.Text = $"Tổng {item.TongTien:N0} - Giảm {item.GiamGia:N0} = {item.ThanhTien:N0} đ";
-            dgvChiTietHoaDon.DataSource = item.ChiTiet.Select(ct => ct.SaoChep()).ToList();
-            btnLuuHoaDon.Enabled = false;
-            btnHuyHoaDon.Enabled = item.TrangThai == "DA_THANH_TOAN";
-            btnInHoaDon.Enabled = item.TrangThai == "DA_THANH_TOAN";
-            if (moLichSuBanDau && tabBanHang.TabPages.Contains(tabLichSu))
-                tabBanHang.SelectedTab = tabLichSu;
-            lblThongBao.Text = string.Empty;
-        }
-
-        private void btnTimKiem_Click(object sender, EventArgs e)
-        {
-            if (dtpTuNgay.Checked && dtpDenNgay.Checked && dtpTuNgay.Value.Date > dtpDenNgay.Value.Date)
-            {
-                HienThiLoi("Ngày bắt đầu không được lớn hơn ngày kết thúc.");
-                return;
-            }
-            TaiDanhSachHoaDon();
-        }
-
-        private void txtTuKhoa_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode != Keys.Enter) return;
-            e.SuppressKeyPress = true;
-            btnTimKiem_Click(sender, EventArgs.Empty);
-        }
-
-        private void btnTaiLai_Click(object sender, EventArgs e)
-        {
-            txtTuKhoa.Clear();
-            txtTienTu.Clear();
-            txtTienDen.Clear();
-            dtpTuNgay.Checked = false;
-            dtpDenNgay.Checked = false;
-            if (cboLocKhachHang.Items.Count > 0) cboLocKhachHang.SelectedIndex = 0;
-            cboLocTrangThai.SelectedIndex = 0;
-            TaiDanhSachHoaDon();
         }
 
         private void cboSanPham_SelectedIndexChanged(object sender, EventArgs e)
@@ -740,7 +426,7 @@ namespace FINAL_DotNet
                     hoaDonMoiId = hoaDon.HoaDonId;
                 }
                 TaiDuLieuLuaChon();
-                TaiDanhSachHoaDon(hoaDonMoiId);
+                LamMoiHoaDon();
                 MessageBox.Show($"Đã thanh toán hóa đơn HD{hoaDonMoiId:000000}.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (DbUpdateException)
@@ -750,89 +436,6 @@ namespace FINAL_DotNet
             catch (Exception)
             {
                 HienThiLoi("Không thể lập hóa đơn. Hãy kiểm tra kết nối CSDL.");
-            }
-        }
-
-        private void btnHuyHoaDon_Click(object sender, EventArgs e)
-        {
-            if (!KiemTraPhienDangNhap(true) || !hoaDonDangChonId.HasValue)
-            {
-                HienThiLoi("Vui lòng chọn hóa đơn cần hủy.");
-                return;
-            }
-            int id = hoaDonDangChonId.Value;
-            if (MessageBox.Show(
-                $"Bạn có chắc muốn hủy hóa đơn HD{id:000000}? Tồn kho sẽ được hoàn lại.",
-                "Xác nhận hủy hóa đơn", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
-                return;
-            try
-            {
-                using (var db = DatabaseConnection.CreateContext())
-                using (var transaction = db.Database.BeginTransaction(IsolationLevel.Serializable))
-                {
-                    var hoaDon = db.HoaDons
-                        .Include(hd => hd.ChiTietHoaDons.Select(ct => ct.SanPham))
-                        .SingleOrDefault(hd => hd.HoaDonId == id);
-                    if (hoaDon == null)
-                    {
-                        HienThiLoi("Hóa đơn không còn tồn tại trong CSDL.");
-                        return;
-                    }
-                    if (hoaDon.TrangThai != "DA_THANH_TOAN")
-                    {
-                        HienThiLoi("Hóa đơn này đã được hủy trước đó.");
-                        return;
-                    }
-                    foreach (var dong in hoaDon.ChiTietHoaDons)
-                    {
-                        if ((long)dong.SanPham.SoLuongTon + dong.SoLuong > int.MaxValue)
-                        {
-                            HienThiLoi("Tồn kho sau hoàn tác vượt quá giới hạn cho phép.");
-                            return;
-                        }
-                    }
-                    foreach (var dong in hoaDon.ChiTietHoaDons)
-                        dong.SanPham.SoLuongTon += dong.SoLuong;
-                    hoaDon.TrangThai = "DA_HUY";
-                    db.SaveChanges();
-                    transaction.Commit();
-                }
-                TaiDuLieuLuaChon();
-                TaiDanhSachHoaDon(id);
-                MessageBox.Show("Đã hủy hóa đơn và hoàn lại tồn kho.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (DbUpdateException)
-            {
-                HienThiLoi("Không thể hủy hóa đơn vì dữ liệu vừa được thay đổi.");
-            }
-            catch (Exception)
-            {
-                HienThiLoi("Không thể hủy hóa đơn. Hãy kiểm tra kết nối CSDL.");
-            }
-        }
-
-        private void btnInHoaDon_Click(object sender, EventArgs e)
-        {
-            if (!KiemTraPhienDangNhap(true) || !hoaDonDangChonId.HasValue)
-            {
-                HienThiLoi("Vui lòng chọn hóa đơn đã thanh toán cần xem báo cáo.");
-                return;
-            }
-            try
-            {
-                CauHinhBaoCao cauHinh = BaoCaoService.TaoHoaDon(hoaDonDangChonId.Value);
-                using (var xemTruoc = new FrmXemBaoCao(cauHinh))
-                {
-                    xemTruoc.ShowDialog(this);
-                }
-            }
-            catch (InvalidOperationException ex)
-            {
-                HienThiLoi(ex.Message);
-            }
-            catch (Exception)
-            {
-                HienThiLoi("Không thể tạo báo cáo hóa đơn. Hãy kiểm tra kết nối CSDL và cấu hình ReportViewer.");
             }
         }
 
@@ -847,8 +450,6 @@ namespace FINAL_DotNet
 
         private void LamMoiHoaDonNoiBo()
         {
-            hoaDonDangChonId = null;
-            hoaDonDangChon = null;
             gioHang.Clear();
             if (cboKhachHang.Items.Count > 0) cboKhachHang.SelectedIndex = 0;
             lblNhanVienLap.Text = CurrentUserSession.DaDangNhap ? CurrentUserSession.HienTai.HoTen : string.Empty;
@@ -857,13 +458,6 @@ namespace FINAL_DotNet
             numGiamGia.Value = 0;
             TaiGioHang();
             LamMoiDongBan();
-            dgvHoaDon.ClearSelection();
-            dgvChiTietHoaDon.DataSource = null;
-            btnLuuHoaDon.Enabled = true;
-            btnHuyHoaDon.Enabled = false;
-            btnInHoaDon.Enabled = false;
-            if (!moLichSuBanDau && tabBanHang.TabPages.Contains(tabLapHoaDon))
-                tabBanHang.SelectedTab = tabLapHoaDon;
             lblThongBao.Text = string.Empty;
         }
 
@@ -900,50 +494,6 @@ namespace FINAL_DotNet
             public DateTime? HanBaoHanh { get; set; }
             public string HanBaoHanhHienThi => HanBaoHanh.HasValue ? HanBaoHanh.Value.ToString("dd/MM/yyyy") : "Không có";
             public DongBanHang SaoChep() => (DongBanHang)MemberwiseClone();
-        }
-
-        private sealed class HoaDonHienThi
-        {
-            public HoaDonHienThi(HoaDon hoaDon)
-            {
-                HoaDonId = hoaDon.HoaDonId;
-                MaHoaDon = $"HD{hoaDon.HoaDonId:000000}";
-                NgayLap = hoaDon.NgayLap;
-                NgayLapHienThi = hoaDon.NgayLap.ToString("dd/MM/yyyy HH:mm");
-                TenKhachHang = hoaDon.KhachHang.HoTen;
-                TenNhanVien = hoaDon.NhanVien.HoTen;
-                TongTien = hoaDon.TongTien;
-                GiamGia = hoaDon.GiamGia;
-                ThanhTien = hoaDon.ThanhTien;
-                PhuongThucThanhToan = hoaDon.PhuongThucThanhToan;
-                TrangThai = hoaDon.TrangThai;
-                TrangThaiHienThi = hoaDon.TrangThai == "DA_THANH_TOAN" ? "Đã thanh toán" : "Đã hủy";
-                ChiTiet = hoaDon.ChiTietHoaDons
-                    .OrderBy(ct => ct.ChiTietHoaDonId)
-                    .Select(ct => new DongBanHang
-                    {
-                        SanPhamId = ct.SanPhamId,
-                        MaSanPham = $"SP{ct.SanPhamId:000000}",
-                        TenSanPham = ct.SanPham.TenSanPham,
-                        TonKhoHienTai = ct.SanPham.SoLuongTon,
-                        SoLuong = ct.SoLuong,
-                        DonGiaBan = ct.DonGiaBan,
-                        HanBaoHanh = ct.HanBaoHanh
-                    }).ToList();
-            }
-            public int HoaDonId { get; }
-            public string MaHoaDon { get; }
-            public DateTime NgayLap { get; }
-            public string NgayLapHienThi { get; }
-            public string TenKhachHang { get; }
-            public string TenNhanVien { get; }
-            public decimal TongTien { get; }
-            public decimal GiamGia { get; }
-            public decimal ThanhTien { get; }
-            public string PhuongThucThanhToan { get; }
-            public string TrangThai { get; }
-            public string TrangThaiHienThi { get; }
-            public List<DongBanHang> ChiTiet { get; }
         }
     }
 }

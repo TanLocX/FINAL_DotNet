@@ -46,6 +46,11 @@ namespace FINAL_DotNet
 
         private static void ConfigureFilterBars(Form form)
         {
+            if (form is FrmBanHang || form is FrmHoaDon || form is FrmKhachHang || form is FrmBaoHanh || form is FrmQuanLyEmail || form is FrmThongKe)
+            {
+                return;
+            }
+
             foreach (Panel filter in FindControls<Panel>(form).Where(item =>
                 string.Equals(item.Name, "pnlBoLoc", StringComparison.OrdinalIgnoreCase)))
             {

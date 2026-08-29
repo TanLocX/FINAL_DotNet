@@ -7,25 +7,28 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-public partial class NhatKyGuiEmail
+namespace FINAL_DotNet
 {
-    public long NhatKyGuiEmailId { get; set; }
-    public int TaiKhoanId { get; set; }
-    public Nullable<int> KhachHangId { get; set; }
-    public Nullable<int> HoaDonId { get; set; }
-    public Nullable<int> MauEmailId { get; set; }
-    public System.DateTime ThoiGianGui { get; set; }
-    public string EmailNhan { get; set; }
-    public string TieuDe { get; set; }
-    public string LoaiGui { get; set; }
-    public string TrangThai { get; set; }
-    public string GhiChu { get; set; }
-
-    public virtual HoaDon HoaDon { get; set; }
-    public virtual KhachHang KhachHang { get; set; }
-    public virtual MauEmail MauEmail { get; set; }
-    public virtual TaiKhoan TaiKhoan { get; set; }
+    using System;
+    using System.Collections.Generic;
+    
+    public partial class NhatKyGuiEmail
+    {
+        public long NhatKyGuiEmailId { get; set; }
+        public int TaiKhoanId { get; set; }
+        public Nullable<int> KhachHangId { get; set; }
+        public Nullable<int> HoaDonId { get; set; }
+        public Nullable<int> MauEmailId { get; set; }
+        public System.DateTime ThoiGianGui { get; set; }
+        public string EmailNhan { get; set; }
+        public string TieuDe { get; set; }
+        public string LoaiGui { get; set; }
+        public string TrangThai { get; set; }
+        public string GhiChu { get; set; }
+    
+        public virtual HoaDon HoaDon { get; set; }
+        public virtual KhachHang KhachHang { get; set; }
+        public virtual MauEmail MauEmail { get; set; }
+        public virtual TaiKhoan TaiKhoan { get; set; }
+    }
 }

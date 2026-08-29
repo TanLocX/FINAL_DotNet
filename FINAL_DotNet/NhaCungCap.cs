@@ -7,25 +7,28 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-public partial class NhaCungCap
+namespace FINAL_DotNet
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public NhaCungCap()
+    using System;
+    using System.Collections.Generic;
+    
+    public partial class NhaCungCap
     {
-        this.PhieuNhaps = new HashSet<PhieuNhap>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public NhaCungCap()
+        {
+            this.PhieuNhaps = new HashSet<PhieuNhap>();
+        }
+    
+        public int NhaCungCapId { get; set; }
+        public string TenNhaCungCap { get; set; }
+        public string NguoiLienHe { get; set; }
+        public string SoDienThoai { get; set; }
+        public string Email { get; set; }
+        public string DiaChi { get; set; }
+        public bool DangHoatDong { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PhieuNhap> PhieuNhaps { get; set; }
     }
-
-    public int NhaCungCapId { get; set; }
-    public string TenNhaCungCap { get; set; }
-    public string NguoiLienHe { get; set; }
-    public string SoDienThoai { get; set; }
-    public string Email { get; set; }
-    public string DiaChi { get; set; }
-    public bool DangHoatDong { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<PhieuNhap> PhieuNhaps { get; set; }
 }

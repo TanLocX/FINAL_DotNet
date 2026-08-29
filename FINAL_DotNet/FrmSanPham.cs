@@ -26,6 +26,10 @@ namespace FINAL_DotNet
         public FrmSanPham()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
             KhoiTaoGiaoDienQr();
             cboLocTrangThai.SelectedIndex = 0;
             cboLocTonKho.SelectedIndex = 0;
@@ -647,12 +651,31 @@ namespace FINAL_DotNet
                 Text = "Chọn sản phẩm để sinh QR. Có thể lưu QR thành PNG hoặc đọc lại từ một file ảnh.",
                 TextAlign = ContentAlignment.TopLeft
             };
-            btnLuuMaQr = new Button();
-            btnDocMaQr = new Button();
-            CauHinhNut(btnLuuMaQr, "Lưu QR PNG", 0, 0, 125, MauXanh());
-            CauHinhNut(btnDocMaQr, "Đọc QR từ ảnh", 0, 0, 145, Color.FromArgb(45, 91, 123));
-            btnLuuMaQr.Enabled = false;
+            btnLuuMaQr = new Button
+            {
+                Text = "Lưu QR PNG",
+                Width = 125,
+                Height = 32,
+                BackColor = Color.FromArgb(35, 125, 96),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                Enabled = false
+            };
+            btnLuuMaQr.FlatAppearance.BorderSize = 0;
             btnLuuMaQr.Click += btnLuuMaQr_Click;
+
+            btnDocMaQr = new Button
+            {
+                Text = "Đọc QR từ ảnh",
+                Width = 145,
+                Height = 32,
+                BackColor = Color.FromArgb(45, 91, 123),
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold)
+            };
+            btnDocMaQr.FlatAppearance.BorderSize = 0;
             btnDocMaQr.Click += btnDocMaQr_Click;
 
             var nut = new FlowLayoutPanel

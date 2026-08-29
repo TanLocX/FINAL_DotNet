@@ -7,37 +7,40 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
-
-public partial class QL_CuaHangDaQuy_PNJEntities : DbContext
+namespace FINAL_DotNet
 {
-    public QL_CuaHangDaQuy_PNJEntities()
-        : base("name=QL_CuaHangDaQuy_PNJEntities")
+    using System;
+    using System.Data.Entity;
+    using System.Data.Entity.Infrastructure;
+    
+    public partial class QL_CuaHangDaQuy_PNJEntities : DbContext
     {
+        public QL_CuaHangDaQuy_PNJEntities()
+            : base("name=QL_CuaHangDaQuy_PNJEntities")
+        {
+        }
+    
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            throw new UnintentionalCodeFirstException();
+        }
+    
+        public virtual DbSet<ChatLieu> ChatLieux { get; set; }
+        public virtual DbSet<ChiTietChatLieu> ChiTietChatLieux { get; set; }
+        public virtual DbSet<ChiTietHoaDon> ChiTietHoaDons { get; set; }
+        public virtual DbSet<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
+        public virtual DbSet<ChiTietPhieuThuMua> ChiTietPhieuThuMuas { get; set; }
+        public virtual DbSet<DanhMuc> DanhMucs { get; set; }
+        public virtual DbSet<HoaDon> HoaDons { get; set; }
+        public virtual DbSet<KhachHang> KhachHangs { get; set; }
+        public virtual DbSet<MauEmail> MauEmails { get; set; }
+        public virtual DbSet<NhaCungCap> NhaCungCaps { get; set; }
+        public virtual DbSet<NhanVien> NhanViens { get; set; }
+        public virtual DbSet<NhatKyGuiEmail> NhatKyGuiEmails { get; set; }
+        public virtual DbSet<PhieuBaoHanh> PhieuBaoHanhs { get; set; }
+        public virtual DbSet<PhieuNhap> PhieuNhaps { get; set; }
+        public virtual DbSet<PhieuThuMua> PhieuThuMuas { get; set; }
+        public virtual DbSet<SanPham> SanPhams { get; set; }
+        public virtual DbSet<TaiKhoan> TaiKhoans { get; set; }
     }
-
-    protected override void OnModelCreating(DbModelBuilder modelBuilder)
-    {
-        throw new UnintentionalCodeFirstException();
-    }
-
-    public virtual DbSet<ChatLieu> ChatLieux { get; set; }
-    public virtual DbSet<ChiTietChatLieu> ChiTietChatLieux { get; set; }
-    public virtual DbSet<ChiTietHoaDon> ChiTietHoaDons { get; set; }
-    public virtual DbSet<ChiTietPhieuNhap> ChiTietPhieuNhaps { get; set; }
-    public virtual DbSet<ChiTietPhieuThuMua> ChiTietPhieuThuMuas { get; set; }
-    public virtual DbSet<DanhMuc> DanhMucs { get; set; }
-    public virtual DbSet<HoaDon> HoaDons { get; set; }
-    public virtual DbSet<KhachHang> KhachHangs { get; set; }
-    public virtual DbSet<MauEmail> MauEmails { get; set; }
-    public virtual DbSet<NhaCungCap> NhaCungCaps { get; set; }
-    public virtual DbSet<NhanVien> NhanViens { get; set; }
-    public virtual DbSet<NhatKyGuiEmail> NhatKyGuiEmails { get; set; }
-    public virtual DbSet<PhieuBaoHanh> PhieuBaoHanhs { get; set; }
-    public virtual DbSet<PhieuNhap> PhieuNhaps { get; set; }
-    public virtual DbSet<PhieuThuMua> PhieuThuMuas { get; set; }
-    public virtual DbSet<SanPham> SanPhams { get; set; }
-    public virtual DbSet<TaiKhoan> TaiKhoans { get; set; }
 }

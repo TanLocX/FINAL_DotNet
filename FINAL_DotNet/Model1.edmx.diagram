@@ -1,6 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
-    <edmx:Diagrams />
+    <edmx:Diagrams >
+      <Diagram DiagramId="8139f60770cb4fbdbbbc7ea1c3702d24" Name="Diagram1" ZoomLevel="10">
+        <EntityTypeShape EntityType="FINAL_DotNet.ChatLieu" Width="1.5" PointX="3" PointY="5.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.ChiTietChatLieu" Width="1.5" PointX="5.25" PointY="9.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.ChiTietHoaDon" Width="1.5" PointX="8.25" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.ChiTietPhieuNhap" Width="1.5" PointX="5.25" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.ChiTietPhieuThuMua" Width="1.5" PointX="5.25" PointY="12.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.DanhMuc" Width="1.5" PointX="0.75" PointY="9.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.HoaDon" Width="1.5" PointX="6" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.KhachHang" Width="1.5" PointX="3.75" PointY="19.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.MauEmail" Width="1.5" PointX="5.25" PointY="28.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.NhaCungCap" Width="1.5" PointX="0.75" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.NhanVien" Width="1.5" PointX="0.75" PointY="16.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.NhatKyGuiEmail" Width="1.5" PointX="8.25" PointY="14.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.PhieuBaoHanh" Width="1.5" PointX="10.5" PointY="9.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.PhieuNhap" Width="1.5" PointX="3" PointY="15.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.PhieuThuMua" Width="1.5" PointX="3" PointY="24" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.SanPham" Width="1.5" PointX="3" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="FINAL_DotNet.TaiKhoan" Width="1.5" PointX="3" PointY="28.75" IsExpanded="true" />
+        <AssociationConnector Association="FINAL_DotNet.FK_CTChatLieu_ChatLieu" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_CTThuMua_ChatLieu" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_CTChatLieu_SanPham" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_BaoHanh_CTHoaDon" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_CTHoaDon_HoaDon" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_CTHoaDon_SanPham" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_CTPhieuNhap_PhieuNhap" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_CTPhieuNhap_SanPham" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_CTThuMua_Phieu" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_CTThuMua_SanPham" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_SanPham_DanhMuc" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_HoaDon_KhachHang" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_HoaDon_NhanVien" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_NhatKyEmail_HoaDon" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_NhatKyEmail_KhachHang" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_PhieuThuMua_KhachHang" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_MauEmail_TaiKhoan" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_NhatKyEmail_MauEmail" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_PhieuNhap_NCC" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_PhieuNhap_NhanVien" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_PhieuThuMua_NhanVien" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_TaiKhoan_NhanVien" ManuallyRouted="false" />
+        <AssociationConnector Association="FINAL_DotNet.FK_NhatKyEmail_TaiKhoan" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

@@ -7,26 +7,29 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-public partial class MauEmail
+namespace FINAL_DotNet
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public MauEmail()
+    using System;
+    using System.Collections.Generic;
+    
+    public partial class MauEmail
     {
-        this.NhatKyGuiEmails = new HashSet<NhatKyGuiEmail>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public MauEmail()
+        {
+            this.NhatKyGuiEmails = new HashSet<NhatKyGuiEmail>();
+        }
+    
+        public int MauEmailId { get; set; }
+        public string TenMau { get; set; }
+        public string TieuDeMau { get; set; }
+        public string NoiDungMau { get; set; }
+        public bool DangHoatDong { get; set; }
+        public Nullable<int> TaiKhoanCapNhatId { get; set; }
+        public System.DateTime NgayCapNhat { get; set; }
+    
+        public virtual TaiKhoan TaiKhoan { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NhatKyGuiEmail> NhatKyGuiEmails { get; set; }
     }
-
-    public int MauEmailId { get; set; }
-    public string TenMau { get; set; }
-    public string TieuDeMau { get; set; }
-    public string NoiDungMau { get; set; }
-    public bool DangHoatDong { get; set; }
-    public Nullable<int> TaiKhoanCapNhatId { get; set; }
-    public System.DateTime NgayCapNhat { get; set; }
-
-    public virtual TaiKhoan TaiKhoan { get; set; }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<NhatKyGuiEmail> NhatKyGuiEmails { get; set; }
 }

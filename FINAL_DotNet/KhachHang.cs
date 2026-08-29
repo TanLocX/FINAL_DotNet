@@ -7,33 +7,36 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
-public partial class KhachHang
+namespace FINAL_DotNet
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public KhachHang()
+    using System;
+    using System.Collections.Generic;
+    
+    public partial class KhachHang
     {
-        this.HoaDons = new HashSet<HoaDon>();
-        this.NhatKyGuiEmails = new HashSet<NhatKyGuiEmail>();
-        this.PhieuThuMuas = new HashSet<PhieuThuMua>();
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public KhachHang()
+        {
+            this.HoaDons = new HashSet<HoaDon>();
+            this.NhatKyGuiEmails = new HashSet<NhatKyGuiEmail>();
+            this.PhieuThuMuas = new HashSet<PhieuThuMua>();
+        }
+    
+        public int KhachHangId { get; set; }
+        public string HoTen { get; set; }
+        public string SoDienThoai { get; set; }
+        public string Email { get; set; }
+        public string DiaChi { get; set; }
+        public Nullable<System.DateTime> NgaySinh { get; set; }
+        public bool ChoPhepNhanEmail { get; set; }
+        public int DiemTichLuy { get; set; }
+        public bool DangHoatDong { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<HoaDon> HoaDons { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<NhatKyGuiEmail> NhatKyGuiEmails { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<PhieuThuMua> PhieuThuMuas { get; set; }
     }
-
-    public int KhachHangId { get; set; }
-    public string HoTen { get; set; }
-    public string SoDienThoai { get; set; }
-    public string Email { get; set; }
-    public string DiaChi { get; set; }
-    public Nullable<System.DateTime> NgaySinh { get; set; }
-    public bool ChoPhepNhanEmail { get; set; }
-    public int DiemTichLuy { get; set; }
-    public bool DangHoatDong { get; set; }
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<HoaDon> HoaDons { get; set; }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<NhatKyGuiEmail> NhatKyGuiEmails { get; set; }
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-    public virtual ICollection<PhieuThuMua> PhieuThuMuas { get; set; }
 }

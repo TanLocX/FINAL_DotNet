@@ -27,22 +27,11 @@ namespace FINAL_DotNet
             switch (form.GetType().Name)
             {
                 case "FrmBanHang":
-                    ConfigureTransaction(form, "pnlDauHoaDon", "pnlDongBan", "pnlThongTinHoaDon", false);
-                    break;
                 case "FrmHoaDon":
-                    ConfigureTransaction(form, "pnlDauHoaDon", "pnlDongBan", "pnlThongTinHoaDon", true);
-                    break;
-                case "FrmNhapHang":
-                    ConfigureTransaction(form, "pnlDauPhieu", "pnlDongNhap", "pnlThongTinPhieu", false);
-                    break;
+                case "FrmKhachHang":
                 case "FrmBaoHanh":
-                    ConfigureWarranty(form);
-                    break;
-                case "FrmSanPham":
-                    ConfigureProducts(form);
-                    break;
                 case "FrmQuanLyEmail":
-                    ConfigureEmail(form);
+                case "FrmThongKe":
                     break;
                 case "FrmThuMua":
                     ConfigurePurchase(form);
