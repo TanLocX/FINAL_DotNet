@@ -49,7 +49,7 @@ namespace FINAL_DotNet
             this.pnlSidebar.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(39)))), ((int)(((byte)(53)))));
             this.pnlSidebar.Location = new System.Drawing.Point(0, 0);
             this.pnlSidebar.Name = "pnlSidebar";
-            this.pnlSidebar.Size = new System.Drawing.Size(235, 721);
+            this.pnlSidebar.Size = new System.Drawing.Size(235, 761);
             this.pnlSidebar.TabIndex = 0;
             // 
             // flowMenu
@@ -61,7 +61,7 @@ namespace FINAL_DotNet
             this.flowMenu.Location = new System.Drawing.Point(0, 76);
             this.flowMenu.Name = "flowMenu";
             this.flowMenu.Padding = new System.Windows.Forms.Padding(0, 4, 0, 8);
-            this.flowMenu.Size = new System.Drawing.Size(235, 515);
+            this.flowMenu.Size = new System.Drawing.Size(235, 555);
             this.flowMenu.TabIndex = 1;
             this.flowMenu.WrapContents = false;
             this.flowMenu.Paint += new System.Windows.Forms.PaintEventHandler(this.flowMenu_Paint);
@@ -77,7 +77,7 @@ namespace FINAL_DotNet
             this.pnlNguoiDung.Controls.Add(this.lblHoTen);
             this.pnlNguoiDung.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlNguoiDung.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(31)))), ((int)(((byte)(44)))));
-            this.pnlNguoiDung.Location = new System.Drawing.Point(0, 591);
+            this.pnlNguoiDung.Location = new System.Drawing.Point(0, 631);
             this.pnlNguoiDung.Margin = new System.Windows.Forms.Padding(8);
             this.pnlNguoiDung.Name = "pnlNguoiDung";
             this.pnlNguoiDung.Padding = new System.Windows.Forms.Padding(12);
@@ -172,7 +172,7 @@ namespace FINAL_DotNet
             this.pnlHeader.FillColor = System.Drawing.Color.White;
             this.pnlHeader.Location = new System.Drawing.Point(235, 0);
             this.pnlHeader.Name = "pnlHeader";
-            this.pnlHeader.Size = new System.Drawing.Size(1029, 76);
+            this.pnlHeader.Size = new System.Drawing.Size(1149, 76);
             this.pnlHeader.TabIndex = 1;
             // 
             // lblVaiTro
@@ -183,7 +183,7 @@ namespace FINAL_DotNet
             this.lblVaiTro.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
             this.lblVaiTro.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(137)))), ((int)(((byte)(100)))), ((int)(((byte)(28)))));
             this.lblVaiTro.IsClosable = false;
-            this.lblVaiTro.Location = new System.Drawing.Point(830, 22);
+            this.lblVaiTro.Location = new System.Drawing.Point(950, 22);
             this.lblVaiTro.Name = "lblVaiTro";
             this.lblVaiTro.Size = new System.Drawing.Size(171, 32);
             this.lblVaiTro.TabIndex = 1;
@@ -211,7 +211,7 @@ namespace FINAL_DotNet
             this.pnlContent.Location = new System.Drawing.Point(235, 76);
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Padding = new System.Windows.Forms.Padding(28);
-            this.pnlContent.Size = new System.Drawing.Size(1029, 645);
+            this.pnlContent.Size = new System.Drawing.Size(1149, 685);
             this.pnlContent.TabIndex = 2;
             // 
             // pnlChaoMung
@@ -228,7 +228,7 @@ namespace FINAL_DotNet
             this.pnlChaoMung.Location = new System.Drawing.Point(28, 28);
             this.pnlChaoMung.Name = "pnlChaoMung";
             this.pnlChaoMung.Padding = new System.Windows.Forms.Padding(30);
-            this.pnlChaoMung.Size = new System.Drawing.Size(973, 205);
+            this.pnlChaoMung.Size = new System.Drawing.Size(1093, 205);
             this.pnlChaoMung.TabIndex = 0;
             // 
             // lblMoTa
@@ -274,7 +274,7 @@ namespace FINAL_DotNet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 721);
+            this.ClientSize = new System.Drawing.Size(1384, 761);
             this.Controls.Add(this.pnlContent);
             this.Controls.Add(this.pnlHeader);
             this.Controls.Add(this.pnlSidebar);

@@ -318,7 +318,7 @@ namespace FINAL_DotNet
             }
         }
 
-        private static decimal GioiHan(NumericUpDown control, decimal value)
+        private static decimal GioiHan(Guna.UI2.WinForms.Guna2NumericUpDown control, decimal value)
         {
             return Math.Min(control.Maximum, Math.Max(control.Minimum, value));
         }

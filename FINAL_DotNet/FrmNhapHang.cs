@@ -18,6 +18,10 @@ namespace FINAL_DotNet
         public FrmNhapHang()
         {
             InitializeComponent();
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+            {
+                return;
+            }
             cboLocTrangThai.SelectedIndex = 0;
             numSoLuong.Maximum = int.MaxValue;
             numDonGiaNhap.Maximum = 9999999999999999M;

@@ -29,6 +29,8 @@ namespace FINAL_DotNet
                 case "FrmBanHang":
                 case "FrmHoaDon":
                 case "FrmKhachHang":
+                case "FrmSanPham":
+                case "FrmNhapHang":
                 case "FrmBaoHanh":
                 case "FrmQuanLyEmail":
                 case "FrmThongKe":

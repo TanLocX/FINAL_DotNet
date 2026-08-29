@@ -46,7 +46,7 @@ namespace FINAL_DotNet
 
         private static void ConfigureFilterBars(Form form)
         {
-            if (form is FrmBanHang || form is FrmHoaDon || form is FrmKhachHang || form is FrmBaoHanh || form is FrmQuanLyEmail || form is FrmThongKe)
+            if (form is FrmBanHang || form is FrmHoaDon || form is FrmKhachHang || form is FrmSanPham || form is FrmNhapHang || form is FrmBaoHanh || form is FrmQuanLyEmail || form is FrmThongKe)
             {
                 return;
             }
