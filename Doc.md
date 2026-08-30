@@ -38,7 +38,7 @@
 
 Hệ thống được xây dựng cho cửa hàng trang sức và đá quý, hỗ trợ:
 
-- Đăng nhập, đổi/reset mật khẩu và phân quyền.
+- Đăng nhập, Admin reset mật khẩu, bắt buộc đổi mật khẩu sau reset và phân quyền hai vai trò.
 - Quản lý riêng hồ sơ nhân viên và tài khoản đăng nhập.
 - Quản lý khách hàng, danh mục, nhà cung cấp và chất liệu.
 - Quản lý sản phẩm, thành phần chất liệu, giá và tồn kho.
@@ -483,9 +483,9 @@ Không sửa trực tiếp entity do EDMX sinh tự động.
 
 - Chỉ tài khoản `DangHoatDong = 1` và nhân viên `DangLamViec = 1` được đăng nhập.
 - Mật khẩu được hash/xác thực bằng BCrypt.
-- `ADMIN` quản lý tài khoản, reset mật khẩu, backup/restore và toàn bộ danh mục.
-- `NHANVIEN` thực hiện các nghiệp vụ được cấp quyền.
-- Phân quyền phải được kiểm tra cả trên giao diện và trong hàm xử lý.
+- `ADMIN` sử dụng toàn bộ nghiệp vụ; đồng thời quản lý nhân viên, tài khoản, danh mục, chất liệu, nhà cung cấp và backup/restore.
+- `NHANVIEN` sử dụng bán hàng, hóa đơn, khách hàng, sản phẩm, nhập hàng, bảo hành, email và thống kê. Ở form thu mua, nhân viên chỉ tra cứu, thống kê, xuất Excel, xem Report và tải mẫu; không được chọn, kiểm tra hoặc import file.
+- Nhóm form quản trị được ẩn trên menu của nhân viên và kiểm tra lại vai trò khi mở. Phân quyền hiện chỉ theo vai trò, chưa tách quyền xem/thêm/sửa/xóa cho từng chức năng.
 - Reset mật khẩu phải lưu hash mật khẩu tạm và đặt `PhaiDoiMatKhau = 1`.
 - Không cung cấp tự đăng ký tài khoản công khai; tài khoản do Admin cấp cho nhân viên.
 
@@ -557,6 +557,8 @@ Khi hủy phiếu nhập:
 - Mẫu email là tùy chọn; người dùng có thể tự soạn nội dung.
 - Mỗi lần gửi đều tạo `NhatKyGuiEmail` dù thành công hay thất bại.
 - Không lưu mật khẩu SMTP trong CSDL hoặc nhật ký.
+- Token hiện hỗ trợ: `HoTen`, `TenSanPham`, `Sdt`, `Email`, `TongTien`, `ThanhTien`, `NgayMua`, `HanBaoHanh`, `MaHoaDon`, `GhiChu`; chấp nhận dạng `{Token}` và `{{Token}}`.
+- Hẹn gửi dùng `System.Windows.Forms.Timer`, chỉ tồn tại trong bộ nhớ. Form và ứng dụng phải còn mở; đóng form/ứng dụng sẽ mất lịch đang chờ.
 
 ---
 
@@ -597,26 +599,26 @@ Khóa `IDENTITY` do SQL Server sinh. Ứng dụng kiểm tra khóa nghiệp vụ
 
 | Form | Chức năng |
 |---|---|
-| `FrmDangNhap` | Đăng nhập, hiện/ẩn mật khẩu |
-| `FrmDoiMatKhau` | Đổi mật khẩu bắt buộc/chủ động |
+| `Form1` | Đăng nhập, hiện/ẩn mật khẩu |
+| `FormDoiMatKhau` | Đổi mật khẩu bắt buộc khi `PhaiDoiMatKhau = 1`; không có menu đổi chủ động |
 | `FrmMain` | Menu chính và mở form con |
-| `FrmTaiKhoan` | CRUD tài khoản, phân quyền, reset mật khẩu |
-| `FrmNhanVien` | CRUD, tìm kiếm nhân viên |
-| `FrmKhachHang` | CRUD, tìm kiếm khách hàng |
-| `FrmDanhMuc` | CRUD danh mục |
-| `FrmNhaCungCap` | CRUD nhà cung cấp |
-| `FrmChatLieu` | CRUD chất liệu và giá tham khảo |
-| `FrmSanPham` | CRUD sản phẩm, thành phần chất liệu, ảnh; sinh, lưu và đọc QR để tìm sản phẩm |
+| `FrmTaiKhoan` | Tạo/cập nhật/khóa tài khoản, phân quyền và reset mật khẩu |
+| `FrmNhanVien` | Thêm, cập nhật, tìm kiếm và đổi trạng thái nhân viên |
+| `FrmKhachHang` | Thêm, cập nhật, tìm kiếm và đổi trạng thái khách hàng |
+| `FrmDanhMuc` | Thêm, cập nhật, tìm kiếm và đổi trạng thái danh mục |
+| `FrmNhaCungCap` | Thêm, cập nhật, tìm kiếm và đổi trạng thái nhà cung cấp |
+| `FrmChatLieu` | Thêm, cập nhật, tìm kiếm chất liệu và giá tham khảo |
+| `FrmSanPham` | Quản lý sản phẩm, thành phần chất liệu, ảnh; sinh, lưu và đọc QR để tìm sản phẩm |
 | `FrmBanHang` | Lập hóa đơn và chi tiết |
 | `FrmHoaDon` | Lịch sử, tìm kiếm, hủy và in hóa đơn |
 | `FrmNhapHang` | Lập phiếu nhập và lịch sử nhập |
-| `FrmThuMua` | Tải mẫu, xem trước/import Excel, tra cứu, thống kê, Excel và Report |
+| `FrmThuMua` | Tải mẫu, tra cứu, thống kê, Excel và Report; chỉ Admin xem trước/import Excel |
 | `FrmBaoHanh` | Tiếp nhận, xử lý và trả bảo hành |
-| `FrmQuanLyEmail` | Mẫu email, gửi email và nhật ký |
+| `FrmQuanLyEmail` | Cấu hình SMTP, mẫu email, gửi đơn/hàng loạt, hẹn gửi trong lúc form còn mở và nhật ký |
 | `FrmThongKe` | Thống kê, biểu đồ và xuất dữ liệu |
 | `FrmSaoLuuPhucHoi` | Backup và Restore |
 
-Main Form phải mở được các form con. Form quản lý có DataGridView, ComboBox khóa ngoại, Thêm/Sửa/Xóa/Làm mới và validation rõ ràng. Nút/chức năng được ẩn hoặc khóa theo vai trò.
+Main Form mở các form con. Tùy nghiệp vụ, form quản lý sử dụng DataGridView, ComboBox khóa ngoại, thao tác thêm/cập nhật/đổi trạng thái hoặc hủy chứng từ và validation. Không phải form nào cũng xóa vật lý. Nút/chức năng quản trị được ẩn hoặc khóa theo vai trò.
 
 ---
 
@@ -627,7 +629,7 @@ Main Form phải mở được các form con. Form quản lý có DataGridView, 
 - **Sản phẩm:** mã/tên, danh mục, chất liệu, khoảng giá, tồn kho, trạng thái kinh doanh.
 - **Hóa đơn:** khoảng ngày, khách hàng, nhân viên, sản phẩm, trạng thái, khoảng tiền.
 - **Phiếu nhập:** khoảng ngày, nhà cung cấp, nhân viên, sản phẩm, trạng thái.
-- **Phiếu thu mua:** mã phiếu/mã nguồn, khoảng ngày, khách hàng, nhân viên, chất liệu, sản phẩm và trạng thái.
+- **Phiếu thu mua:** từ khóa đối chiếu mã phiếu/mã nguồn, khách hàng, nhân viên, chất liệu hoặc sản phẩm; kết hợp khoảng ngày và trạng thái.
 - **Bảo hành:** mã phiếu, khách hàng, hóa đơn/sản phẩm, ngày tiếp nhận, hạn và trạng thái.
 - **Nhật ký email:** thời gian, email nhận, khách hàng, mẫu, loại gửi và trạng thái.
 
@@ -637,7 +639,7 @@ Main Form phải mở được các form con. Form quản lý có DataGridView, 
 - Top sản phẩm bán chạy; doanh thu theo danh mục, chất liệu và nhân viên.
 - Sản phẩm tồn thấp.
 - Tổng tiền nhập theo tháng/nhà cung cấp; số lượng nhập theo sản phẩm.
-- Số phiếu, tổng tiền hoàn thành, tổng trọng lượng và số khách hàng thu mua theo bộ lọc.
+- Riêng `FrmThuMua`: số phiếu, tổng tiền hoàn thành, tổng trọng lượng và số khách hàng theo bộ lọc.
 - Số phiếu bảo hành theo trạng thái; sản phẩm sắp hết hạn bảo hành.
 - Số email thành công/thất bại, tỷ lệ thành công và số email theo mẫu.
 
@@ -653,7 +655,7 @@ PhieuThuMua.TrangThai = HOAN_THANH
 
 Report hiện có: hóa đơn, phiếu nhập, phiếu thu mua và phiếu tiếp nhận bảo hành. Dùng RDLC + ReportViewer và dữ liệu chuẩn bị qua EF/LINQ hoặc DTO.
 
-Excel hiện xuất: sản phẩm, hóa đơn, nhập hàng, thu mua, bảo hành và nhật ký email. Phân hệ thu mua còn tạo file mẫu và đọc `.xlsx`; file phải có tiêu đề cột, định dạng ngày/số tiền và tên file rõ ràng.
+`FrmThongKe` xuất Excel cho sản phẩm, hóa đơn đã thanh toán, phiếu nhập hoàn thành, bảo hành và nhật ký email. `FrmThuMua` xuất danh sách đang lọc, tạo file mẫu và đọc `.xlsx`; việc chọn/kiểm tra/import file chỉ dành cho Admin. Form sản phẩm không có nút nhập/xuất Excel riêng.
 
 ---
 
@@ -691,7 +693,7 @@ if (chatLieuId.HasValue)
 - Reset bằng mật khẩu tạm và bắt buộc đổi ở lần đăng nhập sau.
 - Kiểm tra quyền trong cả giao diện lẫn nghiệp vụ.
 - Không hard-code hoặc lưu plaintext mật khẩu SMTP.
-- Có thể bảo vệ thông tin SMTP bằng DPAPI/Windows Credential Manager.
+- Cấu hình SMTP hiện được lưu ở biến môi trường cấp người dùng; chưa dùng DPAPI hoặc Windows Credential Manager.
 - Mã gửi email đặt trong service riêng, không đặt toàn bộ trong Form.
 - Không nối chuỗi dữ liệu người dùng vào SQL và không hiển thị lỗi nhạy cảm.
 
@@ -748,7 +750,7 @@ UNION ALL SELECT 'NhatKyGuiEmail', COUNT(*) FROM dbo.NhatKyGuiEmail;
 | Thiết kế CSDL | 10 | 17 bảng, PK/FK/UNIQUE/CHECK, mỗi bảng ≥6 dòng, script và `.bak` |
 | Entity Framework | 10 | EF6 Database First/EDMX, DbContext, CRUD, LINQ, transaction |
 | Thiết kế giao diện | 10 | Đăng nhập, Main Form, form con, bố cục rõ |
-| CRUD | 20 | CRUD các bảng quản lý và xử lý chứng từ |
+| CRUD | 20 | Thêm/cập nhật/đổi trạng thái các bảng quản lý; lập/hủy và xử lý chứng từ |
 | Hiển thị dữ liệu | 5 | DataGridView, ComboBox FK, Binding |
 | Tìm kiếm | 10 | Một hoặc nhiều tiêu chí |
 | Thống kê | 10 | Bán, nhập, thu mua, tồn, bảo hành, email |
@@ -1155,8 +1157,8 @@ Các quy tắc liên bảng như `GiamGia <= TongTien`, `HanBaoHanh >= NgayLap`,
 - [ ] Đăng nhập thành công mở Main Form.
 - [ ] Nút quên mật khẩu không mở form đăng ký.
 - [ ] Không có tự đăng ký công khai; phân quyền hoạt động thật.
-- [ ] Có DataGridView, ComboBox FK, CRUD và validation.
-- [ ] Có bán hàng, nhập hàng, import/tra cứu thu mua và bảo hành.
+- [ ] Có DataGridView, ComboBox FK, thao tác quản lý phù hợp và validation.
+- [ ] Có bán hàng, nhập hàng, import thu mua dành cho Admin, tra cứu thu mua và bảo hành.
 - [ ] Có mẫu email, gửi email và nhật ký gửi.
 - [ ] Có tìm kiếm, thống kê, Excel, Report, reset password và Backup/Restore.
 

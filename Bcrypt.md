@@ -39,5 +39,4 @@ Khi bạn gọi lệnh BCrypt.HashPassword("admin123"), thuật toán BCrypt s�
   4. Nó lặp lại quá trình tính toán 2048 vòng (Factor 11) giống y hệt lúc tạo.
   5. Nếu chuỗi kết quả vừa tính ra KHỚP Y HỆT với phần Hash cuối cùng của chuỗi trong CSDL → Mật khẩu đúng, cho phép đăng nhập!
 
-  Chính nhờ cơ chế "chứa luôn công thức giải trong chuỗi băm" này mà BCrypt rất dễ sử dụng (chỉ cần 1 dòng code) nhưng lại bảo mật tuyệt đối trước các đợt tấn công dò mật khẩu của     
-  hacker.
+  Chuỗi BCrypt chứa phiên bản, cost và salt cần cho bước kiểm tra nên ứng dụng không phải lưu salt ở cột riêng. Cơ chế salt và cost giúp tăng khả năng chống dò mật khẩu, nhưng không có giải pháp nào bảo mật tuyệt đối; mật khẩu yếu vẫn có thể bị dò và cost cần được lựa chọn phù hợp.
