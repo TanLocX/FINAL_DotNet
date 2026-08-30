@@ -382,7 +382,7 @@ namespace FINAL_DotNet
             };
             boCuc.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             boCuc.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            boCuc.RowStyles.Add(new RowStyle(SizeType.Absolute, 68F));
+            boCuc.RowStyles.Add(new RowStyle(SizeType.Absolute, 44F));
 
             var khungAnh = new Panel
             {
@@ -390,7 +390,7 @@ namespace FINAL_DotNet
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0, 0, 0, 5)
             };
-            Image anh = sanPham == null ? null : TaiAnhThuNho(sanPham.DuongDanAnh, 360, 250);
+            Image anh = sanPham == null ? null : TaiAnhThuNho(sanPham.DuongDanAnh, 360, 300);
             if (anh == null)
             {
                 khungAnh.Controls.Add(new Label
@@ -420,11 +420,10 @@ namespace FINAL_DotNet
                 ColumnCount = 1,
                 Dock = DockStyle.Fill,
                 Margin = Padding.Empty,
-                RowCount = 2
+                RowCount = 1
             };
             thongTin.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            thongTin.RowStyles.Add(new RowStyle(SizeType.Percent, 58F));
-            thongTin.RowStyles.Add(new RowStyle(SizeType.Percent, 42F));
+            thongTin.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             thongTin.Controls.Add(new Label
             {
                 AutoEllipsis = true,
@@ -434,15 +433,6 @@ namespace FINAL_DotNet
                 Text = sanPham?.TenSanPham ?? "Vị trí trưng bày",
                 TextAlign = ContentAlignment.MiddleLeft
             }, 0, 0);
-            thongTin.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Dock = DockStyle.Fill,
-                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(170, 130, 60),
-                Text = sanPham == null ? "--" : DinhDangTien(sanPham.GiaBan),
-                TextAlign = ContentAlignment.MiddleLeft
-            }, 0, 1);
 
             boCuc.Controls.Add(khungAnh, 0, 0);
             boCuc.Controls.Add(thongTin, 0, 1);
@@ -877,12 +867,10 @@ namespace FINAL_DotNet
             public SanPhamTrungBay(SanPham sanPham)
             {
                 TenSanPham = sanPham.TenSanPham;
-                GiaBan = sanPham.GiaBan;
                 DuongDanAnh = sanPham.DuongDanAnh;
             }
 
             public string TenSanPham { get; }
-            public decimal GiaBan { get; }
             public string DuongDanAnh { get; }
         }
 
