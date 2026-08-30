@@ -55,9 +55,10 @@ namespace FINAL_DotNet
 
         private void KhoiTaoBoSuuTapSanPham()
         {
+            Color mauNenToi = Color.FromArgb(18, 24, 32);
             tabBoSuuTap = new TabPage
             {
-                BackColor = Color.FromArgb(242, 245, 248),
+                BackColor = mauNenToi,
                 Name = "tabBoSuuTap",
                 Padding = new Padding(6),
                 Text = "Bộ sưu tập"
@@ -65,7 +66,7 @@ namespace FINAL_DotNet
 
             var boCuc = new TableLayoutPanel
             {
-                BackColor = Color.FromArgb(242, 245, 248),
+                BackColor = mauNenToi,
                 ColumnCount = 1,
                 Dock = DockStyle.Fill,
                 RowCount = 2
@@ -116,7 +117,7 @@ namespace FINAL_DotNet
 
             tblBoSuuTap = new TableLayoutPanel
             {
-                BackColor = Color.FromArgb(242, 245, 248),
+                BackColor = mauNenToi,
                 ColumnCount = 5,
                 Dock = DockStyle.Fill,
                 Margin = Padding.Empty,
