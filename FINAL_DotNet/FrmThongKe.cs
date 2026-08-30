@@ -381,8 +381,8 @@ namespace FINAL_DotNet
                 RowCount = 2
             };
             boCuc.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            boCuc.RowStyles.Add(new RowStyle(SizeType.Percent, 66F));
-            boCuc.RowStyles.Add(new RowStyle(SizeType.Percent, 34F));
+            boCuc.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            boCuc.RowStyles.Add(new RowStyle(SizeType.Absolute, 68F));
 
             var khungAnh = new Panel
             {
