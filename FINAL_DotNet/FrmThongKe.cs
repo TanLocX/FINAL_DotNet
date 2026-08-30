@@ -2,10 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using Guna.Charts.WinForms;
+using Guna.UI2.WinForms;
 
 namespace FINAL_DotNet
 {
@@ -15,6 +18,9 @@ namespace FINAL_DotNet
         private readonly bool moTabPhanTich;
         private bool dangKhoiTao = true;
         private DuLieuThongKe duLieuHienTai;
+        private readonly List<Image> anhBoSuuTap = new List<Image>();
+        private TabPage tabBoSuuTap;
+        private TableLayoutPanel tblBoSuuTap;
 
         private GunaChart chartDoanhThuNgay;
         private GunaChart chartSanPhamBanChay;
@@ -37,12 +43,97 @@ namespace FINAL_DotNet
             InitializeComponent();
             if (System.ComponentModel.LicenseManager.UsageMode != System.ComponentModel.LicenseUsageMode.Designtime)
             {
+                KhoiTaoBoSuuTapSanPham();
                 KhoiTaoCacBieuDoGuna();
                 cboKhoangThoiGian.SelectedIndex = 2;
                 ApDungKhoangThoiGian(2);
                 dangKhoiTao = false;
+                FormClosed += FrmThongKe_FormClosed;
                 LuxuryDarkGoldTheme.Apply(this);
             }
+        }
+
+        private void KhoiTaoBoSuuTapSanPham()
+        {
+            tabBoSuuTap = new TabPage
+            {
+                BackColor = Color.FromArgb(242, 245, 248),
+                Name = "tabBoSuuTap",
+                Padding = new Padding(6),
+                Text = "Bộ sưu tập"
+            };
+
+            var boCuc = new TableLayoutPanel
+            {
+                BackColor = Color.FromArgb(242, 245, 248),
+                ColumnCount = 1,
+                Dock = DockStyle.Fill,
+                RowCount = 2
+            };
+            boCuc.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            boCuc.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
+            boCuc.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+
+            var tieuDe = new Guna2Panel
+            {
+                BorderColor = Color.FromArgb(217, 197, 153),
+                BorderRadius = 10,
+                BorderThickness = 1,
+                Dock = DockStyle.Fill,
+                FillColor = Color.White,
+                Margin = new Padding(4, 3, 4, 7)
+            };
+            var noiDungTieuDe = new TableLayoutPanel
+            {
+                BackColor = Color.Transparent,
+                ColumnCount = 1,
+                Dock = DockStyle.Fill,
+                Padding = new Padding(14, 4, 14, 3),
+                RowCount = 2
+            };
+            noiDungTieuDe.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            noiDungTieuDe.RowStyles.Add(new RowStyle(SizeType.Percent, 58F));
+            noiDungTieuDe.RowStyles.Add(new RowStyle(SizeType.Percent, 42F));
+            noiDungTieuDe.Controls.Add(new Label
+            {
+                AutoEllipsis = true,
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(170, 130, 60),
+                Text = "BỘ SƯU TẬP SẢN PHẨM",
+                TextAlign = ContentAlignment.MiddleLeft
+            }, 0, 0);
+            noiDungTieuDe.Controls.Add(new Label
+            {
+                AutoEllipsis = true,
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 9F),
+                ForeColor = Color.FromArgb(95, 106, 119),
+                Text = "Mười thiết kế trang sức nổi bật đang có tại cửa hàng",
+                TextAlign = ContentAlignment.MiddleLeft
+            }, 0, 1);
+            tieuDe.Controls.Add(noiDungTieuDe);
+
+            tblBoSuuTap = new TableLayoutPanel
+            {
+                BackColor = Color.FromArgb(242, 245, 248),
+                ColumnCount = 5,
+                Dock = DockStyle.Fill,
+                Margin = Padding.Empty,
+                RowCount = 2
+            };
+            for (int cot = 0; cot < 5; cot++)
+                tblBoSuuTap.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+            tblBoSuuTap.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tblBoSuuTap.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+
+            boCuc.Controls.Add(tieuDe, 0, 0);
+            boCuc.Controls.Add(tblBoSuuTap, 0, 1);
+            tabBoSuuTap.Controls.Add(boCuc);
+            TabPage[] cacTabHienCo = tabChinh.TabPages.Cast<TabPage>().ToArray();
+            tabChinh.TabPages.Clear();
+            tabChinh.TabPages.Add(tabBoSuuTap);
+            tabChinh.TabPages.AddRange(cacTabHienCo);
         }
 
         private void KhoiTaoCacBieuDoGuna()
@@ -86,7 +177,7 @@ namespace FINAL_DotNet
                 return;
             }
 
-            if (moTabPhanTich) tabChinh.SelectedTab = tabPhanTich;
+            tabChinh.SelectedTab = moTabPhanTich ? tabPhanTich : tabBoSuuTap;
             TaiVaHienThiDuLieu();
         }
 
@@ -248,7 +339,175 @@ namespace FINAL_DotNet
             dgvTonThap.DataSource = duLieu.TonThap;
             dgvSapHetHan.DataSource = duLieu.BaoHanhSapHetHan;
             DinhDangBangVanHanh();
+            HienThiBoSuuTap(duLieu.SanPhamTrungBay);
         }
+
+        private void HienThiBoSuuTap(IList<SanPhamTrungBay> sanPhams)
+        {
+            tblBoSuuTap.SuspendLayout();
+            while (tblBoSuuTap.Controls.Count > 0)
+            {
+                Control theCu = tblBoSuuTap.Controls[0];
+                tblBoSuuTap.Controls.RemoveAt(0);
+                theCu.Dispose();
+            }
+            GiaiPhongAnhBoSuuTap();
+            for (int viTri = 0; viTri < 10; viTri++)
+            {
+                SanPhamTrungBay sanPham = viTri < sanPhams.Count ? sanPhams[viTri] : null;
+                tblBoSuuTap.Controls.Add(TaoTheSanPham(sanPham), viTri % 5, viTri / 5);
+            }
+            tblBoSuuTap.ResumeLayout(true);
+        }
+
+        private Control TaoTheSanPham(SanPhamTrungBay sanPham)
+        {
+            var the = new Guna2Panel
+            {
+                BorderColor = Color.FromArgb(226, 232, 240),
+                BorderRadius = 10,
+                BorderThickness = 1,
+                Dock = DockStyle.Fill,
+                FillColor = Color.White,
+                Margin = new Padding(5)
+            };
+            var boCuc = new TableLayoutPanel
+            {
+                BackColor = Color.White,
+                ColumnCount = 1,
+                Dock = DockStyle.Fill,
+                Padding = new Padding(7),
+                RowCount = 2
+            };
+            boCuc.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            boCuc.RowStyles.Add(new RowStyle(SizeType.Percent, 66F));
+            boCuc.RowStyles.Add(new RowStyle(SizeType.Percent, 34F));
+
+            var khungAnh = new Panel
+            {
+                BackColor = Color.FromArgb(248, 250, 252),
+                Dock = DockStyle.Fill,
+                Margin = new Padding(0, 0, 0, 5)
+            };
+            Image anh = sanPham == null ? null : TaiAnhThuNho(sanPham.DuongDanAnh, 360, 250);
+            if (anh == null)
+            {
+                khungAnh.Controls.Add(new Label
+                {
+                    Dock = DockStyle.Fill,
+                    Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(148, 163, 184),
+                    Text = sanPham == null ? "CHƯA CÓ SẢN PHẨM" : "CHƯA CÓ ẢNH",
+                    TextAlign = ContentAlignment.MiddleCenter
+                });
+            }
+            else
+            {
+                anhBoSuuTap.Add(anh);
+                khungAnh.Controls.Add(new PictureBox
+                {
+                    Dock = DockStyle.Fill,
+                    Image = anh,
+                    SizeMode = PictureBoxSizeMode.Zoom,
+                    TabStop = false
+                });
+            }
+
+            var thongTin = new TableLayoutPanel
+            {
+                BackColor = Color.White,
+                ColumnCount = 1,
+                Dock = DockStyle.Fill,
+                Margin = Padding.Empty,
+                RowCount = 2
+            };
+            thongTin.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            thongTin.RowStyles.Add(new RowStyle(SizeType.Percent, 58F));
+            thongTin.RowStyles.Add(new RowStyle(SizeType.Percent, 42F));
+            thongTin.Controls.Add(new Label
+            {
+                AutoEllipsis = true,
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(27, 39, 53),
+                Text = sanPham?.TenSanPham ?? "Vị trí trưng bày",
+                TextAlign = ContentAlignment.MiddleLeft
+            }, 0, 0);
+            thongTin.Controls.Add(new Label
+            {
+                AutoEllipsis = true,
+                Dock = DockStyle.Fill,
+                Font = new Font("Segoe UI", 9.5F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(170, 130, 60),
+                Text = sanPham == null ? "--" : DinhDangTien(sanPham.GiaBan),
+                TextAlign = ContentAlignment.MiddleLeft
+            }, 0, 1);
+
+            boCuc.Controls.Add(khungAnh, 0, 0);
+            boCuc.Controls.Add(thongTin, 0, 1);
+            the.Controls.Add(boCuc);
+            return the;
+        }
+
+        private static Image TaiAnhThuNho(string duongDan, int rong, int cao)
+        {
+            string tepAnh = TimTepAnh(duongDan);
+            if (tepAnh == null) return null;
+            try
+            {
+                using (var stream = new FileStream(tepAnh, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var anhNguon = Image.FromStream(stream))
+                {
+                    var anhThuNho = new Bitmap(rong, cao);
+                    using (Graphics ve = Graphics.FromImage(anhThuNho))
+                    {
+                        ve.Clear(Color.FromArgb(248, 250, 252));
+                        ve.CompositingQuality = CompositingQuality.HighQuality;
+                        ve.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        ve.SmoothingMode = SmoothingMode.HighQuality;
+                        float tyLe = Math.Min((float)rong / anhNguon.Width, (float)cao / anhNguon.Height);
+                        int rongAnh = (int)Math.Round(anhNguon.Width * tyLe);
+                        int caoAnh = (int)Math.Round(anhNguon.Height * tyLe);
+                        int x = (rong - rongAnh) / 2;
+                        int y = (cao - caoAnh) / 2;
+                        ve.DrawImage(anhNguon, new Rectangle(x, y, rongAnh, caoAnh));
+                    }
+                    return anhThuNho;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static string TimTepAnh(string duongDan)
+        {
+            if (string.IsNullOrWhiteSpace(duongDan) || Path.IsPathRooted(duongDan)) return null;
+            string chuanHoa = duongDan.Replace('/', Path.DirectorySeparatorChar)
+                .Replace('\\', Path.DirectorySeparatorChar);
+            string ungVien = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, chuanHoa));
+            if (File.Exists(ungVien)) return ungVien;
+            DirectoryInfo thuMuc = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
+            while (thuMuc != null)
+            {
+                if (File.Exists(Path.Combine(thuMuc.FullName, "FINAL_DotNet.csproj")))
+                {
+                    ungVien = Path.GetFullPath(Path.Combine(thuMuc.FullName, chuanHoa));
+                    return File.Exists(ungVien) ? ungVien : null;
+                }
+                thuMuc = thuMuc.Parent;
+            }
+            return null;
+        }
+
+        private void GiaiPhongAnhBoSuuTap()
+        {
+            foreach (Image anh in anhBoSuuTap) anh.Dispose();
+            anhBoSuuTap.Clear();
+        }
+
+        private void FrmThongKe_FormClosed(object sender, FormClosedEventArgs e) => GiaiPhongAnhBoSuuTap();
 
         private static string DinhDangTien(decimal giaTri) => giaTri.ToString("N0", VanHoaVietNam) + " đ";
 
@@ -448,6 +707,7 @@ namespace FINAL_DotNet
             public List<ThongKeEmailTheoMau> EmailTheoMau { get; private set; }
             public List<DongTonThap> TonThap { get; private set; }
             public List<DongBaoHanhSapHetHan> BaoHanhSapHetHan { get; private set; }
+            public List<SanPhamTrungBay> SanPhamTrungBay { get; private set; }
             private List<DongSanPhamXuat> SanPhamXuat { get; set; }
             private List<DongHoaDonXuat> HoaDonXuat { get; set; }
             private List<DongNhapHangXuat> NhapHangXuat { get; set; }
@@ -545,6 +805,13 @@ namespace FINAL_DotNet
                     .OrderBy(sp => sp.SoLuongTon).ThenBy(sp => sp.TenSanPham)
                     .Select(sp => new DongTonThap(sp)).ToList();
                 ketQua.BaoHanhSapHetHan = sapHetHan.Select(ct => new DongBaoHanhSapHetHan(ct)).ToList();
+                ketQua.SanPhamTrungBay = sanPhams
+                    .Where(sp => !string.IsNullOrWhiteSpace(sp.DuongDanAnh))
+                    .OrderByDescending(sp => sp.DangKinhDoanh)
+                    .ThenBy(sp => sp.SanPhamId)
+                    .Take(10)
+                    .Select(sp => new SanPhamTrungBay(sp))
+                    .ToList();
 
                 ketQua.SanPhamXuat = sanPhams.Select(sp => new DongSanPhamXuat(sp)).ToList();
                 ketQua.HoaDonXuat = hoaDons.OrderByDescending(hd => hd.NgayLap).Select(hd => new DongHoaDonXuat(hd)).ToList();
@@ -602,6 +869,20 @@ namespace FINAL_DotNet
             public string TenSanPham { get; }
             public string DanhMuc { get; }
             public int SoLuongTon { get; }
+        }
+
+        private sealed class SanPhamTrungBay
+        {
+            public SanPhamTrungBay(SanPham sanPham)
+            {
+                TenSanPham = sanPham.TenSanPham;
+                GiaBan = sanPham.GiaBan;
+                DuongDanAnh = sanPham.DuongDanAnh;
+            }
+
+            public string TenSanPham { get; }
+            public decimal GiaBan { get; }
+            public string DuongDanAnh { get; }
         }
 
         private sealed class DongBaoHanhSapHetHan
