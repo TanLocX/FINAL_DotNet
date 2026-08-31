@@ -80,7 +80,7 @@ namespace FINAL_DotNet
             this.pnlDauHoaDon.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.pnlDauHoaDon.Name = "pnlDauHoaDon";
             this.pnlDauHoaDon.Padding = new System.Windows.Forms.Padding(8);
-            this.pnlDauHoaDon.Size = new System.Drawing.Size(1000, 60);
+            this.pnlDauHoaDon.Size = new System.Drawing.Size(1000, 75);
             this.pnlDauHoaDon.TabIndex = 0;
             // 
             // lblTieuDeKhachHang
@@ -235,11 +235,11 @@ namespace FINAL_DotNet
             this.pnlDongBan.Controls.Add(this.lblTongTien);
             this.pnlDongBan.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlDongBan.FillColor = System.Drawing.Color.White;
-            this.pnlDongBan.Location = new System.Drawing.Point(0, 60);
+            this.pnlDongBan.Location = new System.Drawing.Point(0, 75);
             this.pnlDongBan.Margin = new System.Windows.Forms.Padding(0, 4, 0, 4);
             this.pnlDongBan.Name = "pnlDongBan";
             this.pnlDongBan.Padding = new System.Windows.Forms.Padding(8);
-            this.pnlDongBan.Size = new System.Drawing.Size(1000, 76);
+            this.pnlDongBan.Size = new System.Drawing.Size(1000, 86);
             this.pnlDongBan.TabIndex = 1;
             // 
             // lblTieuDeSanPham
@@ -340,6 +340,7 @@ namespace FINAL_DotNet
             // dtpHanBaoHanh
             // 
             this.dtpHanBaoHanh.BorderRadius = 6;
+            this.dtpHanBaoHanh.Checked = true;
             this.dtpHanBaoHanh.CustomFormat = "dd/MM/yyyy";
             this.dtpHanBaoHanh.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
             this.dtpHanBaoHanh.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -360,7 +361,7 @@ namespace FINAL_DotNet
             this.lblTonKho.BackColor = System.Drawing.Color.Transparent;
             this.lblTonKho.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.lblTonKho.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.lblTonKho.Location = new System.Drawing.Point(8, 55);
+            this.lblTonKho.Location = new System.Drawing.Point(8, 65);
             this.lblTonKho.Name = "lblTonKho";
             this.lblTonKho.Size = new System.Drawing.Size(240, 18);
             this.lblTonKho.TabIndex = 4;
@@ -433,7 +434,7 @@ namespace FINAL_DotNet
             this.lblTongTien.BackColor = System.Drawing.Color.Transparent;
             this.lblTongTien.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.lblTongTien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(125)))), ((int)(((byte)(96)))));
-            this.lblTongTien.Location = new System.Drawing.Point(620, 50);
+            this.lblTongTien.Location = new System.Drawing.Point(620, 62);
             this.lblTongTien.Name = "lblTongTien";
             this.lblTongTien.Size = new System.Drawing.Size(370, 22);
             this.lblTongTien.TabIndex = 13;
@@ -446,10 +447,10 @@ namespace FINAL_DotNet
             this.tabBanHang.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabBanHang.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.tabBanHang.ItemSize = new System.Drawing.Size(160, 32);
-            this.tabBanHang.Location = new System.Drawing.Point(0, 136);
+            this.tabBanHang.Location = new System.Drawing.Point(0, 161);
             this.tabBanHang.Name = "tabBanHang";
             this.tabBanHang.SelectedIndex = 0;
-            this.tabBanHang.Size = new System.Drawing.Size(1000, 456);
+            this.tabBanHang.Size = new System.Drawing.Size(1000, 431);
             this.tabBanHang.TabButtonHoverState.BorderColor = System.Drawing.Color.Empty;
             this.tabBanHang.TabButtonHoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(238)))), ((int)(((byte)(242)))), ((int)(((byte)(246)))));
             this.tabBanHang.TabButtonHoverState.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
@@ -477,7 +478,7 @@ namespace FINAL_DotNet
             this.tabLapHoaDon.Location = new System.Drawing.Point(4, 36);
             this.tabLapHoaDon.Name = "tabLapHoaDon";
             this.tabLapHoaDon.Padding = new System.Windows.Forms.Padding(6);
-            this.tabLapHoaDon.Size = new System.Drawing.Size(992, 416);
+            this.tabLapHoaDon.Size = new System.Drawing.Size(992, 391);
             this.tabLapHoaDon.TabIndex = 0;
             this.tabLapHoaDon.Text = "Lập hóa đơn";
             // 
@@ -514,7 +515,7 @@ namespace FINAL_DotNet
             this.dgvGioHang.ReadOnly = true;
             this.dgvGioHang.RowHeadersVisible = false;
             this.dgvGioHang.RowTemplate.Height = 28;
-            this.dgvGioHang.Size = new System.Drawing.Size(980, 404);
+            this.dgvGioHang.Size = new System.Drawing.Size(980, 379);
             this.dgvGioHang.TabIndex = 0;
             this.dgvGioHang.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(250)))), ((int)(((byte)(252)))));
             this.dgvGioHang.ThemeStyle.HeaderStyle.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(39)))), ((int)(((byte)(53)))));
@@ -554,6 +555,7 @@ namespace FINAL_DotNet
             this.lblThongBao.Name = "lblThongBao";
             this.lblThongBao.Size = new System.Drawing.Size(550, 46);
             this.lblThongBao.TabIndex = 0;
+            this.lblThongBao.Text = null;
             this.lblThongBao.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnLuuHoaDon

@@ -19,8 +19,6 @@ namespace FINAL_DotNet
         private bool dangKhoiTao = true;
         private DuLieuThongKe duLieuHienTai;
         private readonly List<Image> anhBoSuuTap = new List<Image>();
-        private TabPage tabBoSuuTap;
-        private TableLayoutPanel tblBoSuuTap;
 
         private GunaChart chartDoanhThuNgay;
         private GunaChart chartSanPhamBanChay;
@@ -43,7 +41,6 @@ namespace FINAL_DotNet
             InitializeComponent();
             if (System.ComponentModel.LicenseManager.UsageMode != System.ComponentModel.LicenseUsageMode.Designtime)
             {
-                KhoiTaoBoSuuTapSanPham();
                 KhoiTaoCacBieuDoGuna();
                 cboKhoangThoiGian.SelectedIndex = 2;
                 ApDungKhoangThoiGian(2);
@@ -51,90 +48,6 @@ namespace FINAL_DotNet
                 FormClosed += FrmThongKe_FormClosed;
                 LuxuryDarkGoldTheme.Apply(this);
             }
-        }
-
-        private void KhoiTaoBoSuuTapSanPham()
-        {
-            Color mauNenToi = Color.FromArgb(18, 24, 32);
-            tabBoSuuTap = new TabPage
-            {
-                BackColor = mauNenToi,
-                Name = "tabBoSuuTap",
-                Padding = new Padding(6),
-                Text = "Bộ sưu tập"
-            };
-
-            var boCuc = new TableLayoutPanel
-            {
-                BackColor = mauNenToi,
-                ColumnCount = 1,
-                Dock = DockStyle.Fill,
-                RowCount = 2
-            };
-            boCuc.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            boCuc.RowStyles.Add(new RowStyle(SizeType.Absolute, 62F));
-            boCuc.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-
-            var tieuDe = new Guna2Panel
-            {
-                BorderColor = Color.FromArgb(217, 197, 153),
-                BorderRadius = 10,
-                BorderThickness = 1,
-                Dock = DockStyle.Fill,
-                FillColor = Color.White,
-                Margin = new Padding(4, 3, 4, 7)
-            };
-            var noiDungTieuDe = new TableLayoutPanel
-            {
-                BackColor = Color.Transparent,
-                ColumnCount = 1,
-                Dock = DockStyle.Fill,
-                Padding = new Padding(14, 4, 14, 3),
-                RowCount = 2
-            };
-            noiDungTieuDe.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            noiDungTieuDe.RowStyles.Add(new RowStyle(SizeType.Percent, 58F));
-            noiDungTieuDe.RowStyles.Add(new RowStyle(SizeType.Percent, 42F));
-            noiDungTieuDe.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Dock = DockStyle.Fill,
-                Font = new Font("Segoe UI", 14F, FontStyle.Bold),
-                ForeColor = Color.FromArgb(170, 130, 60),
-                Text = "BỘ SƯU TẬP SẢN PHẨM",
-                TextAlign = ContentAlignment.MiddleLeft
-            }, 0, 0);
-            noiDungTieuDe.Controls.Add(new Label
-            {
-                AutoEllipsis = true,
-                Dock = DockStyle.Fill,
-                Font = new Font("Segoe UI", 9F),
-                ForeColor = Color.FromArgb(95, 106, 119),
-                Text = "Mười thiết kế trang sức nổi bật đang có tại cửa hàng",
-                TextAlign = ContentAlignment.MiddleLeft
-            }, 0, 1);
-            tieuDe.Controls.Add(noiDungTieuDe);
-
-            tblBoSuuTap = new TableLayoutPanel
-            {
-                BackColor = mauNenToi,
-                ColumnCount = 5,
-                Dock = DockStyle.Fill,
-                Margin = Padding.Empty,
-                RowCount = 2
-            };
-            for (int cot = 0; cot < 5; cot++)
-                tblBoSuuTap.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
-            tblBoSuuTap.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tblBoSuuTap.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-
-            boCuc.Controls.Add(tieuDe, 0, 0);
-            boCuc.Controls.Add(tblBoSuuTap, 0, 1);
-            tabBoSuuTap.Controls.Add(boCuc);
-            TabPage[] cacTabHienCo = tabChinh.TabPages.Cast<TabPage>().ToArray();
-            tabChinh.TabPages.Clear();
-            tabChinh.TabPages.Add(tabBoSuuTap);
-            tabChinh.TabPages.AddRange(cacTabHienCo);
         }
 
         private void KhoiTaoCacBieuDoGuna()

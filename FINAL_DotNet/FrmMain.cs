@@ -17,9 +17,9 @@ namespace FINAL_DotNet
         public FrmMain()
         {
             InitializeComponent();
-            Color mauNenToi = Color.FromArgb(18, 24, 32);
-            pnlContent.BackColor = mauNenToi;
-            pnlContent.FillColor = mauNenToi;
+            //Color mauNenToi = Color.FromArgb(18, 24, 32);
+            //pnlContent.BackColor = mauNenToi;
+            //pnlContent.FillColor = mauNenToi;
             LuxuryDarkGoldTheme.Apply(this);
         }
 

@@ -30,6 +30,13 @@ namespace FINAL_DotNet
             this.lblTrangThaiTai = new Guna.UI2.WinForms.Guna2HtmlLabel();
 
             this.tabChinh = new Guna.UI2.WinForms.Guna2TabControl();
+            this.tabBoSuuTap = new System.Windows.Forms.TabPage();
+            this.tblBoCucBoSuuTap = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlTieuDeBoSuuTap = new Guna.UI2.WinForms.Guna2Panel();
+            this.tblNoiDungTieuDeBoSuuTap = new System.Windows.Forms.TableLayoutPanel();
+            this.lblTieuDeBoSuuTap = new System.Windows.Forms.Label();
+            this.lblMoTaBoSuuTap = new System.Windows.Forms.Label();
+            this.tblBoSuuTap = new System.Windows.Forms.TableLayoutPanel();
             this.tabTongQuan = new System.Windows.Forms.TabPage();
             this.tabPhanTich = new System.Windows.Forms.TabPage();
             this.tabXuatDuLieu = new System.Windows.Forms.TabPage();
@@ -132,6 +139,11 @@ namespace FINAL_DotNet
             this.pnlBoLoc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNguongTon)).BeginInit();
             this.tabChinh.SuspendLayout();
+            this.tabBoSuuTap.SuspendLayout();
+            this.tblBoCucBoSuuTap.SuspendLayout();
+            this.pnlTieuDeBoSuuTap.SuspendLayout();
+            this.tblNoiDungTieuDeBoSuuTap.SuspendLayout();
+            this.tblBoSuuTap.SuspendLayout();
             this.tabTongQuan.SuspendLayout();
             this.tabPhanTich.SuspendLayout();
             this.tabXuatDuLieu.SuspendLayout();
@@ -360,6 +372,7 @@ namespace FINAL_DotNet
             // tabChinh
             // 
             this.tabChinh.Alignment = System.Windows.Forms.TabAlignment.Top;
+            this.tabChinh.Controls.Add(this.tabBoSuuTap);
             this.tabChinh.Controls.Add(this.tabTongQuan);
             this.tabChinh.Controls.Add(this.tabPhanTich);
             this.tabChinh.Controls.Add(this.tabXuatDuLieu);
@@ -389,7 +402,109 @@ namespace FINAL_DotNet
             this.tabChinh.TabButtonSize = new System.Drawing.Size(160, 38);
             this.tabChinh.TabIndex = 1;
             this.tabChinh.TabMenuBackColor = System.Drawing.Color.FromArgb(242, 245, 248);
-
+            // 
+            // tabBoSuuTap
+            // 
+            this.tabBoSuuTap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(245)))), ((int)(((byte)(248)))));
+            this.tabBoSuuTap.Controls.Add(this.tblBoCucBoSuuTap);
+            this.tabBoSuuTap.Location = new System.Drawing.Point(4, 42);
+            this.tabBoSuuTap.Name = "tabBoSuuTap";
+            this.tabBoSuuTap.Padding = new System.Windows.Forms.Padding(6);
+            this.tabBoSuuTap.Size = new System.Drawing.Size(1022, 582);
+            this.tabBoSuuTap.TabIndex = 0;
+            this.tabBoSuuTap.Text = "Bộ sưu tập";
+            // 
+            // tblBoCucBoSuuTap
+            // 
+            this.tblBoCucBoSuuTap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(245)))), ((int)(((byte)(248)))));
+            this.tblBoCucBoSuuTap.ColumnCount = 1;
+            this.tblBoCucBoSuuTap.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblBoCucBoSuuTap.Controls.Add(this.pnlTieuDeBoSuuTap, 0, 0);
+            this.tblBoCucBoSuuTap.Controls.Add(this.tblBoSuuTap, 0, 1);
+            this.tblBoCucBoSuuTap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblBoCucBoSuuTap.Location = new System.Drawing.Point(6, 6);
+            this.tblBoCucBoSuuTap.Name = "tblBoCucBoSuuTap";
+            this.tblBoCucBoSuuTap.RowCount = 2;
+            this.tblBoCucBoSuuTap.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
+            this.tblBoCucBoSuuTap.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblBoCucBoSuuTap.Size = new System.Drawing.Size(1010, 570);
+            this.tblBoCucBoSuuTap.TabIndex = 0;
+            // 
+            // pnlTieuDeBoSuuTap
+            // 
+            this.pnlTieuDeBoSuuTap.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(217)))), ((int)(((byte)(197)))), ((int)(((byte)(153)))));
+            this.pnlTieuDeBoSuuTap.BorderRadius = 10;
+            this.pnlTieuDeBoSuuTap.BorderThickness = 1;
+            this.pnlTieuDeBoSuuTap.Controls.Add(this.tblNoiDungTieuDeBoSuuTap);
+            this.pnlTieuDeBoSuuTap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlTieuDeBoSuuTap.FillColor = System.Drawing.Color.White;
+            this.pnlTieuDeBoSuuTap.Location = new System.Drawing.Point(4, 3);
+            this.pnlTieuDeBoSuuTap.Margin = new System.Windows.Forms.Padding(4, 3, 4, 7);
+            this.pnlTieuDeBoSuuTap.Name = "pnlTieuDeBoSuuTap";
+            this.pnlTieuDeBoSuuTap.Size = new System.Drawing.Size(1002, 52);
+            this.pnlTieuDeBoSuuTap.TabIndex = 0;
+            // 
+            // tblNoiDungTieuDeBoSuuTap
+            // 
+            this.tblNoiDungTieuDeBoSuuTap.BackColor = System.Drawing.Color.Transparent;
+            this.tblNoiDungTieuDeBoSuuTap.ColumnCount = 1;
+            this.tblNoiDungTieuDeBoSuuTap.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblNoiDungTieuDeBoSuuTap.Controls.Add(this.lblTieuDeBoSuuTap, 0, 0);
+            this.tblNoiDungTieuDeBoSuuTap.Controls.Add(this.lblMoTaBoSuuTap, 0, 1);
+            this.tblNoiDungTieuDeBoSuuTap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblNoiDungTieuDeBoSuuTap.Location = new System.Drawing.Point(0, 0);
+            this.tblNoiDungTieuDeBoSuuTap.Name = "tblNoiDungTieuDeBoSuuTap";
+            this.tblNoiDungTieuDeBoSuuTap.Padding = new System.Windows.Forms.Padding(14, 4, 14, 3);
+            this.tblNoiDungTieuDeBoSuuTap.RowCount = 2;
+            this.tblNoiDungTieuDeBoSuuTap.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 58F));
+            this.tblNoiDungTieuDeBoSuuTap.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 42F));
+            this.tblNoiDungTieuDeBoSuuTap.Size = new System.Drawing.Size(1002, 52);
+            this.tblNoiDungTieuDeBoSuuTap.TabIndex = 0;
+            // 
+            // lblTieuDeBoSuuTap
+            // 
+            this.lblTieuDeBoSuuTap.AutoEllipsis = true;
+            this.lblTieuDeBoSuuTap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblTieuDeBoSuuTap.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold);
+            this.lblTieuDeBoSuuTap.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(130)))), ((int)(((byte)(60)))));
+            this.lblTieuDeBoSuuTap.Location = new System.Drawing.Point(17, 4);
+            this.lblTieuDeBoSuuTap.Name = "lblTieuDeBoSuuTap";
+            this.lblTieuDeBoSuuTap.Size = new System.Drawing.Size(968, 26);
+            this.lblTieuDeBoSuuTap.TabIndex = 0;
+            this.lblTieuDeBoSuuTap.Text = "BỘ SƯU TẬP SẢN PHẨM";
+            this.lblTieuDeBoSuuTap.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblMoTaBoSuuTap
+            // 
+            this.lblMoTaBoSuuTap.AutoEllipsis = true;
+            this.lblMoTaBoSuuTap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblMoTaBoSuuTap.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblMoTaBoSuuTap.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(106)))), ((int)(((byte)(119)))));
+            this.lblMoTaBoSuuTap.Location = new System.Drawing.Point(17, 30);
+            this.lblMoTaBoSuuTap.Name = "lblMoTaBoSuuTap";
+            this.lblMoTaBoSuuTap.Size = new System.Drawing.Size(968, 19);
+            this.lblMoTaBoSuuTap.TabIndex = 1;
+            this.lblMoTaBoSuuTap.Text = "Mười thiết kế trang sức nổi bật đang có tại cửa hàng";
+            this.lblMoTaBoSuuTap.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // tblBoSuuTap
+            // 
+            this.tblBoSuuTap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(245)))), ((int)(((byte)(248)))));
+            this.tblBoSuuTap.ColumnCount = 5;
+            this.tblBoSuuTap.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tblBoSuuTap.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tblBoSuuTap.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tblBoSuuTap.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tblBoSuuTap.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tblBoSuuTap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblBoSuuTap.Location = new System.Drawing.Point(0, 62);
+            this.tblBoSuuTap.Margin = new System.Windows.Forms.Padding(0);
+            this.tblBoSuuTap.Name = "tblBoSuuTap";
+            this.tblBoSuuTap.RowCount = 2;
+            this.tblBoSuuTap.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tblBoSuuTap.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tblBoSuuTap.Size = new System.Drawing.Size(1010, 508);
+            this.tblBoSuuTap.TabIndex = 1;
             // 
             // tabTongQuan
             // 
@@ -399,7 +514,7 @@ namespace FINAL_DotNet
             this.tabTongQuan.Name = "tabTongQuan";
             this.tabTongQuan.Padding = new System.Windows.Forms.Padding(6);
             this.tabTongQuan.Size = new System.Drawing.Size(1022, 582);
-            this.tabTongQuan.TabIndex = 0;
+            this.tabTongQuan.TabIndex = 1;
             this.tabTongQuan.Text = "Tổng quan";
 
             // 
@@ -1661,6 +1776,11 @@ namespace FINAL_DotNet
             this.pnlChartBaoHanh.ResumeLayout(false);
             this.pnlChartEmail.ResumeLayout(false);
             this.tblLuoiXuat.ResumeLayout(false);
+            this.tblBoSuuTap.ResumeLayout(false);
+            this.tblNoiDungTieuDeBoSuuTap.ResumeLayout(false);
+            this.pnlTieuDeBoSuuTap.ResumeLayout(false);
+            this.tblBoCucBoSuuTap.ResumeLayout(false);
+            this.tabBoSuuTap.ResumeLayout(false);
             this.ResumeLayout(false);
         }
 
@@ -1679,6 +1799,13 @@ namespace FINAL_DotNet
         private Guna.UI2.WinForms.Guna2HtmlLabel lblTrangThaiTai;
 
         private Guna.UI2.WinForms.Guna2TabControl tabChinh;
+        private System.Windows.Forms.TabPage tabBoSuuTap;
+        private System.Windows.Forms.TableLayoutPanel tblBoCucBoSuuTap;
+        private Guna.UI2.WinForms.Guna2Panel pnlTieuDeBoSuuTap;
+        private System.Windows.Forms.TableLayoutPanel tblNoiDungTieuDeBoSuuTap;
+        private System.Windows.Forms.Label lblTieuDeBoSuuTap;
+        private System.Windows.Forms.Label lblMoTaBoSuuTap;
+        private System.Windows.Forms.TableLayoutPanel tblBoSuuTap;
         private System.Windows.Forms.TabPage tabTongQuan;
         private System.Windows.Forms.TabPage tabPhanTich;
         private System.Windows.Forms.TabPage tabXuatDuLieu;
