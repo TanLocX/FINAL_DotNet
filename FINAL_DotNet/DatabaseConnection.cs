@@ -18,48 +18,51 @@ namespace FINAL_DotNet
         private const string Metadata =
             "res://*/Model1.csdl|res://*/Model1.ssdl|res://*/Model1.msl";
 
-        public static QL_CuaHangDaQuy_PNJEntities CreateContext()
+        public static QL_CuaHangDaQuy_PNJEntities CreateContext(string targetDatabase = null)
         {
-            string entityConnectionString = BuildEntityConnectionString();
-            return entityConnectionString == null
-                ? new QL_CuaHangDaQuy_PNJEntities()
-                : new QL_CuaHangDaQuy_PNJEntities(entityConnectionString);
-        }
-
-        public static SqlConnection CreateSqlConnection(string initialCatalog = null)
-        {
-            string entityConnectionString = BuildEntityConnectionString();
-            if (entityConnectionString == null)
+            string entityConnectionString = BuildEntityConnectionString(targetDatabase);
+            if (string.IsNullOrWhiteSpace(targetDatabase) && entityConnectionString == null)
             {
-                ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings["QL_CuaHangDaQuy_PNJEntities"];
-                if (setting == null || string.IsNullOrWhiteSpace(setting.ConnectionString))
-                    throw new InvalidOperationException("Không tìm thấy cấu hình kết nối QL_CuaHangDaQuy_PNJEntities.");
-                entityConnectionString = setting.ConnectionString;
+                return new QL_CuaHangDaQuy_PNJEntities();
             }
-
-            var entityBuilder = new EntityConnectionStringBuilder(entityConnectionString);
-            var sqlBuilder = new SqlConnectionStringBuilder(entityBuilder.ProviderConnectionString);
-            if (!string.IsNullOrWhiteSpace(initialCatalog)) sqlBuilder.InitialCatalog = initialCatalog.Trim();
-            sqlBuilder.ApplicationName = "FINAL_DotNet Backup Restore";
-            return new SqlConnection(sqlBuilder.ConnectionString);
+            return new QL_CuaHangDaQuy_PNJEntities(entityConnectionString);
         }
 
         public static string GetDatabaseName()
         {
-            using (SqlConnection connection = CreateSqlConnection())
-                return new SqlConnectionStringBuilder(connection.ConnectionString).InitialCatalog;
+            using (var db = CreateContext())
+            {
+                return db.Database.Connection.Database;
+            }
         }
 
-        private static string BuildEntityConnectionString()
+        private static string BuildEntityConnectionString(string targetDatabase = null)
         {
             string server = GetEnvironmentValue("PNJ_DB_SERVER");
             if (server == null)
             {
-                // Không cấu hình biến môi trường: dùng kết nối localhost trong App.config.
-                return null;
+                if (string.IsNullOrWhiteSpace(targetDatabase))
+                {
+                    // Không cấu hình biến môi trường và không đổi DB: dùng kết nối localhost trong App.config.
+                    return null;
+                }
+
+                ConnectionStringSettings setting = ConfigurationManager.ConnectionStrings["QL_CuaHangDaQuy_PNJEntities"];
+                if (setting == null || string.IsNullOrWhiteSpace(setting.ConnectionString))
+                    throw new InvalidOperationException("Không tìm thấy cấu hình kết nối QL_CuaHangDaQuy_PNJEntities.");
+
+                var entityBuilder = new EntityConnectionStringBuilder(setting.ConnectionString);
+                var sqlBuilder = new SqlConnectionStringBuilder(entityBuilder.ProviderConnectionString)
+                {
+                    InitialCatalog = targetDatabase.Trim()
+                };
+                entityBuilder.ProviderConnectionString = sqlBuilder.ConnectionString;
+                return entityBuilder.ConnectionString;
             }
 
-            string database = GetEnvironmentValue("PNJ_DB_NAME") ?? "QL_CuaHangDaQuy_PNJ";
+            string database = !string.IsNullOrWhiteSpace(targetDatabase)
+                ? targetDatabase.Trim()
+                : (GetEnvironmentValue("PNJ_DB_NAME") ?? "QL_CuaHangDaQuy_PNJ");
             string username = GetEnvironmentValue("PNJ_DB_USER");
             string password = Environment.GetEnvironmentVariable("PNJ_DB_PASSWORD");
 
@@ -69,7 +72,7 @@ namespace FINAL_DotNet
                     "Cần cấu hình đồng thời PNJ_DB_USER và PNJ_DB_PASSWORD.");
             }
 
-            var sqlBuilder = new SqlConnectionStringBuilder
+            var sqlBuilderEnv = new SqlConnectionStringBuilder
             {
                 DataSource = server,
                 InitialCatalog = database,
@@ -81,22 +84,22 @@ namespace FINAL_DotNet
 
             if (username == null)
             {
-                sqlBuilder.IntegratedSecurity = true;
+                sqlBuilderEnv.IntegratedSecurity = true;
             }
             else
             {
-                sqlBuilder.UserID = username;
-                sqlBuilder.Password = password;
+                sqlBuilderEnv.UserID = username;
+                sqlBuilderEnv.Password = password;
             }
 
-            var entityBuilder = new EntityConnectionStringBuilder
+            var entityBuilderEnv = new EntityConnectionStringBuilder
             {
                 Metadata = Metadata,
                 Provider = "System.Data.SqlClient",
-                ProviderConnectionString = sqlBuilder.ConnectionString
+                ProviderConnectionString = sqlBuilderEnv.ConnectionString
             };
 
-            return entityBuilder.ConnectionString;
+            return entityBuilderEnv.ConnectionString;
         }
 
         private static string GetEnvironmentValue(string name)

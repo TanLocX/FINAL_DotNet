@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace FINAL_DotNet
@@ -33,6 +32,33 @@ namespace FINAL_DotNet
         public string KichThuocHienThi => KichThuocMb.ToString("N1", CultureInfo.GetCultureInfo("vi-VN")) + " MB";
     }
 
+    internal sealed class ThongTinMayChuDto
+    {
+        public string TenMayChu { get; set; }
+        public string PhienBan { get; set; }
+        public string ThuMuc { get; set; }
+        public int CoQuyenSaoLuu { get; set; }
+        public int CoQuyenPhucHoi { get; set; }
+    }
+
+    internal sealed class BanSaoLuuLichSuDto
+    {
+        public int backup_set_id { get; set; }
+        public DateTime backup_start_date { get; set; }
+        public DateTime? backup_finish_date { get; set; }
+        public decimal KichThuocMb { get; set; }
+        public string physical_device_name { get; set; }
+        public string user_name { get; set; }
+        public bool is_copy_only { get; set; }
+    }
+
+    internal sealed class RestoreHeaderInfoDto
+    {
+        public string DatabaseName { get; set; }
+        public short? BackupType { get; set; }
+        public int? Position { get; set; }
+    }
+
     internal static class SaoLuuPhucHoiService
     {
         private const int ThoiGianChoLenhGiay = 0;
@@ -41,26 +67,25 @@ namespace FINAL_DotNet
         {
             string tenCoSoDuLieu = LayTenCoSoDuLieu();
             var ketQua = new ThongTinMayChuSaoLuu { TenCoSoDuLieu = tenCoSoDuLieu };
-            using (SqlConnection connection = DatabaseConnection.CreateSqlConnection())
-            using (SqlCommand command = connection.CreateCommand())
+
+            using (var db = DatabaseConnection.CreateContext())
             {
-                command.CommandText = @"
+                const string sql = @"
 SELECT
     CONVERT(nvarchar(256), SERVERPROPERTY('ServerName')) AS TenMayChu,
     CONVERT(nvarchar(128), SERVERPROPERTY('ProductVersion')) AS PhienBan,
     CONVERT(nvarchar(4000), SERVERPROPERTY('InstanceDefaultBackupPath')) AS ThuMuc,
     CASE WHEN IS_SRVROLEMEMBER('sysadmin') = 1 OR IS_MEMBER('db_owner') = 1 OR IS_MEMBER('db_backupoperator') = 1 THEN 1 ELSE 0 END AS CoQuyenSaoLuu,
     CASE WHEN IS_SRVROLEMEMBER('sysadmin') = 1 OR IS_SRVROLEMEMBER('dbcreator') = 1 OR USER_NAME() = 'dbo' THEN 1 ELSE 0 END AS CoQuyenPhucHoi;";
-                connection.Open();
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    if (!reader.Read()) throw new InvalidOperationException("Không đọc được thông tin SQL Server.");
-                    ketQua.TenMayChu = reader["TenMayChu"] as string ?? connection.DataSource;
-                    ketQua.PhienBanSqlServer = reader["PhienBan"] as string ?? string.Empty;
-                    ketQua.ThuMucSaoLuuMacDinh = reader["ThuMuc"] as string ?? string.Empty;
-                    ketQua.CoQuyenSaoLuu = Convert.ToInt32(reader["CoQuyenSaoLuu"], CultureInfo.InvariantCulture) == 1;
-                    ketQua.CoQuyenPhucHoi = Convert.ToInt32(reader["CoQuyenPhucHoi"], CultureInfo.InvariantCulture) == 1;
-                }
+
+                ThongTinMayChuDto dto = db.Database.SqlQuery<ThongTinMayChuDto>(sql).FirstOrDefault();
+                if (dto == null) throw new InvalidOperationException("Không đọc được thông tin SQL Server.");
+
+                ketQua.TenMayChu = dto.TenMayChu ?? db.Database.Connection.DataSource;
+                ketQua.PhienBanSqlServer = dto.PhienBan ?? string.Empty;
+                ketQua.ThuMucSaoLuuMacDinh = dto.ThuMuc ?? string.Empty;
+                ketQua.CoQuyenSaoLuu = dto.CoQuyenSaoLuu == 1;
+                ketQua.CoQuyenPhucHoi = dto.CoQuyenPhucHoi == 1;
             }
 
             if (string.IsNullOrWhiteSpace(ketQua.ThuMucSaoLuuMacDinh))
@@ -81,11 +106,9 @@ SELECT
         public static List<BanSaoLuuHienThi> LayLichSuSaoLuu(int soLuong = 50)
         {
             string tenCoSoDuLieu = LayTenCoSoDuLieu();
-            var ketQua = new List<BanSaoLuuHienThi>();
-            using (SqlConnection connection = DatabaseConnection.CreateSqlConnection("master"))
-            using (SqlCommand command = connection.CreateCommand())
+            using (var db = DatabaseConnection.CreateContext("master"))
             {
-                command.CommandText = @"
+                const string sql = @"
 SELECT TOP (@SoLuong)
     bs.backup_set_id,
     bs.backup_start_date,
@@ -104,27 +127,24 @@ OUTER APPLY
 ) AS media
 WHERE bs.database_name = @TenCoSoDuLieu AND bs.type = 'D'
 ORDER BY bs.backup_finish_date DESC, bs.backup_set_id DESC;";
-                command.Parameters.Add("@SoLuong", SqlDbType.Int).Value = Math.Max(1, Math.Min(200, soLuong));
-                command.Parameters.Add("@TenCoSoDuLieu", SqlDbType.NVarChar, 128).Value = tenCoSoDuLieu;
-                connection.Open();
-                using (SqlDataReader reader = command.ExecuteReader())
+
+                var dtoList = db.Database.SqlQuery<BanSaoLuuLichSuDto>(
+                    sql,
+                    new SqlParameter("@SoLuong", Math.Max(1, Math.Min(200, soLuong))),
+                    new SqlParameter("@TenCoSoDuLieu", tenCoSoDuLieu)
+                ).ToList();
+
+                return dtoList.Select(item => new BanSaoLuuHienThi
                 {
-                    while (reader.Read())
-                    {
-                        ketQua.Add(new BanSaoLuuHienThi
-                        {
-                            BackupSetId = Convert.ToInt32(reader["backup_set_id"], CultureInfo.InvariantCulture),
-                            BatDau = Convert.ToDateTime(reader["backup_start_date"], CultureInfo.InvariantCulture),
-                            HoanTat = reader["backup_finish_date"] == DBNull.Value ? null : (DateTime?)Convert.ToDateTime(reader["backup_finish_date"], CultureInfo.InvariantCulture),
-                            KichThuocMb = Convert.ToDecimal(reader["KichThuocMb"], CultureInfo.InvariantCulture),
-                            DuongDan = reader["physical_device_name"] as string ?? string.Empty,
-                            NguoiThucHien = reader["user_name"] as string ?? string.Empty,
-                            LoaiBanSao = Convert.ToBoolean(reader["is_copy_only"], CultureInfo.InvariantCulture) ? "Copy-only" : "Đầy đủ"
-                        });
-                    }
-                }
+                    BackupSetId = item.backup_set_id,
+                    BatDau = item.backup_start_date,
+                    HoanTat = item.backup_finish_date,
+                    KichThuocMb = item.KichThuocMb,
+                    DuongDan = item.physical_device_name ?? string.Empty,
+                    NguoiThucHien = item.user_name ?? string.Empty,
+                    LoaiBanSao = item.is_copy_only ? "Copy-only" : "Đầy đủ"
+                }).ToList();
             }
-            return ketQua;
         }
 
         public static string TaoTenFileSaoLuu(string tienTo = "PNJ")
@@ -159,23 +179,23 @@ ORDER BY bs.backup_finish_date DESC, bs.backup_set_id DESC;";
             string tenDaTrichDan = TrichDanDinhDanh(tenCoSoDuLieu);
             try
             {
-                using (SqlConnection connection = DatabaseConnection.CreateSqlConnection("master"))
+                using (var db = DatabaseConnection.CreateContext("master"))
                 {
-                    GanTienTrinh(connection, baoTienTrinh);
-                    connection.Open();
-                    using (SqlCommand command = connection.CreateCommand())
-                    {
-                        command.CommandTimeout = ThoiGianChoLenhGiay;
-                        command.CommandText = @"
+                    GanTienTrinh(db, baoTienTrinh);
+                    db.Database.CommandTimeout = ThoiGianChoLenhGiay;
+
+                    string restoreSql = @"
 DECLARE @DuongDan nvarchar(4000) = @pDuongDan;
 ALTER DATABASE " + tenDaTrichDan + @" SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
 RESTORE DATABASE " + tenDaTrichDan + @" FROM DISK = @DuongDan
 WITH FILE = @pViTri, REPLACE, RECOVERY, CHECKSUM, STATS = 5;
 ALTER DATABASE " + tenDaTrichDan + @" SET MULTI_USER;";
-                        command.Parameters.Add("@pDuongDan", SqlDbType.NVarChar, 4000).Value = duongDanBanSao.Trim();
-                        command.Parameters.Add("@pViTri", SqlDbType.Int).Value = viTriBanSao;
-                        command.ExecuteNonQuery();
-                    }
+
+                    db.Database.ExecuteSqlCommand(
+                        TransactionalBehavior.DoNotEnsureTransaction,
+                        restoreSql,
+                        new SqlParameter("@pDuongDan", duongDanBanSao.Trim()),
+                        new SqlParameter("@pViTri", viTriBanSao));
                 }
             }
             catch
@@ -216,23 +236,25 @@ ALTER DATABASE " + tenDaTrichDan + @" SET MULTI_USER;";
             string tenDaTrichDan = TrichDanDinhDanh(tenCoSoDuLieu);
             string tuyChonNen = nenDuLieu ? ", COMPRESSION" : ", NO_COMPRESSION";
             baoTienTrinh?.Invoke("Đang sao lưu CSDL đến " + duongDan + (nenDuLieu ? " (có nén)..." : "..."));
-            using (SqlConnection connection = DatabaseConnection.CreateSqlConnection())
+
+            using (var db = DatabaseConnection.CreateContext())
             {
-                GanTienTrinh(connection, baoTienTrinh);
-                connection.Open();
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandTimeout = ThoiGianChoLenhGiay;
-                    command.CommandText = @"
+                GanTienTrinh(db, baoTienTrinh);
+                db.Database.CommandTimeout = ThoiGianChoLenhGiay;
+
+                string backupSql = @"
 DECLARE @DuongDan nvarchar(4000) = @pDuongDan;
 BACKUP DATABASE " + tenDaTrichDan + @" TO DISK = @DuongDan
 WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5" + tuyChonNen + @", NAME = @pTenBanSao, DESCRIPTION = @pMoTa;";
-                    command.Parameters.Add("@pDuongDan", SqlDbType.NVarChar, 4000).Value = duongDan;
-                    command.Parameters.Add("@pTenBanSao", SqlDbType.NVarChar, 128).Value = "PNJ Manager - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                    command.Parameters.Add("@pMoTa", SqlDbType.NVarChar, 255).Value = "Bản sao copy-only được tạo bởi PNJ Manager";
-                    command.ExecuteNonQuery();
-                }
+
+                db.Database.ExecuteSqlCommand(
+                    TransactionalBehavior.DoNotEnsureTransaction,
+                    backupSql,
+                    new SqlParameter("@pDuongDan", duongDan),
+                    new SqlParameter("@pTenBanSao", "PNJ Manager - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")),
+                    new SqlParameter("@pMoTa", "Bản sao copy-only được tạo bởi PNJ Manager"));
             }
+
             baoTienTrinh?.Invoke("Đang xác minh tính toàn vẹn của file .bak...");
             int viTri = DocVaKiemTraBanSao(duongDan, tenCoSoDuLieu);
             XacMinhBanSao(duongDan, viTri);
@@ -241,27 +263,23 @@ WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5" + tuyChonNen + @", NAME = @pTenBanS
 
         private static int DocVaKiemTraBanSao(string duongDan, string tenCoSoDuLieu)
         {
-            using (SqlConnection connection = DatabaseConnection.CreateSqlConnection("master"))
-            using (SqlCommand command = connection.CreateCommand())
+            using (var db = DatabaseConnection.CreateContext("master"))
             {
-                command.CommandTimeout = ThoiGianChoLenhGiay;
-                command.CommandText = "RESTORE HEADERONLY FROM DISK = @pDuongDan;";
-                command.Parameters.Add("@pDuongDan", SqlDbType.NVarChar, 4000).Value = duongDan.Trim();
-                connection.Open();
+                db.Database.CommandTimeout = ThoiGianChoLenhGiay;
+                var rows = db.Database.SqlQuery<RestoreHeaderInfoDto>(
+                    "RESTORE HEADERONLY FROM DISK = @pDuongDan;",
+                    new SqlParameter("@pDuongDan", duongDan.Trim())
+                ).ToList();
+
                 int viTriHopLe = 0;
-                using (SqlDataReader reader = command.ExecuteReader())
+                foreach (var row in rows)
                 {
-                    int cotDatabaseName = reader.GetOrdinal("DatabaseName");
-                    int cotBackupType = reader.GetOrdinal("BackupType");
-                    int cotPosition = reader.GetOrdinal("Position");
-                    while (reader.Read())
+                    if (row.BackupType == 1 && string.Equals(row.DatabaseName, tenCoSoDuLieu, StringComparison.OrdinalIgnoreCase))
                     {
-                        string databaseName = reader.IsDBNull(cotDatabaseName) ? string.Empty : reader.GetString(cotDatabaseName);
-                        int backupType = Convert.ToInt32(reader.GetValue(cotBackupType), CultureInfo.InvariantCulture);
-                        if (backupType == 1 && string.Equals(databaseName, tenCoSoDuLieu, StringComparison.OrdinalIgnoreCase))
-                            viTriHopLe = Convert.ToInt32(reader.GetValue(cotPosition), CultureInfo.InvariantCulture);
+                        viTriHopLe = row.Position.GetValueOrDefault(1);
                     }
                 }
+
                 if (viTriHopLe == 0)
                     throw new InvalidOperationException("File .bak không chứa bản sao đầy đủ của CSDL " + tenCoSoDuLieu + ".");
                 return viTriHopLe;
@@ -270,15 +288,14 @@ WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5" + tuyChonNen + @", NAME = @pTenBanS
 
         private static void XacMinhBanSao(string duongDan, int viTri)
         {
-            using (SqlConnection connection = DatabaseConnection.CreateSqlConnection("master"))
-            using (SqlCommand command = connection.CreateCommand())
+            using (var db = DatabaseConnection.CreateContext("master"))
             {
-                command.CommandTimeout = ThoiGianChoLenhGiay;
-                command.CommandText = "RESTORE VERIFYONLY FROM DISK = @pDuongDan WITH FILE = @pViTri;";
-                command.Parameters.Add("@pDuongDan", SqlDbType.NVarChar, 4000).Value = duongDan.Trim();
-                command.Parameters.Add("@pViTri", SqlDbType.Int).Value = viTri;
-                connection.Open();
-                command.ExecuteNonQuery();
+                db.Database.CommandTimeout = ThoiGianChoLenhGiay;
+                db.Database.ExecuteSqlCommand(
+                    TransactionalBehavior.DoNotEnsureTransaction,
+                    "RESTORE VERIFYONLY FROM DISK = @pDuongDan WITH FILE = @pViTri;",
+                    new SqlParameter("@pDuongDan", duongDan.Trim()),
+                    new SqlParameter("@pViTri", viTri));
             }
         }
 
@@ -286,14 +303,13 @@ WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5" + tuyChonNen + @", NAME = @pTenBanS
         {
             try
             {
-                using (SqlConnection connection = DatabaseConnection.CreateSqlConnection("master"))
-                using (SqlCommand command = connection.CreateCommand())
+                using (var db = DatabaseConnection.CreateContext("master"))
                 {
-                    command.CommandTimeout = 30;
-                    command.CommandText = "IF DB_ID(@pTen) IS NOT NULL ALTER DATABASE " + TrichDanDinhDanh(tenCoSoDuLieu) + " SET MULTI_USER WITH ROLLBACK IMMEDIATE;";
-                    command.Parameters.Add("@pTen", SqlDbType.NVarChar, 128).Value = tenCoSoDuLieu;
-                    connection.Open();
-                    command.ExecuteNonQuery();
+                    db.Database.CommandTimeout = 30;
+                    db.Database.ExecuteSqlCommand(
+                        TransactionalBehavior.DoNotEnsureTransaction,
+                        "IF DB_ID(@pTen) IS NOT NULL ALTER DATABASE " + TrichDanDinhDanh(tenCoSoDuLieu) + " SET MULTI_USER WITH ROLLBACK IMMEDIATE;",
+                        new SqlParameter("@pTen", tenCoSoDuLieu));
                 }
             }
             catch
@@ -302,9 +318,12 @@ WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5" + tuyChonNen + @", NAME = @pTenBanS
             }
         }
 
-        private static void GanTienTrinh(SqlConnection connection, Action<string> baoTienTrinh)
+        private static void GanTienTrinh(QL_CuaHangDaQuy_PNJEntities db, Action<string> baoTienTrinh)
         {
             if (baoTienTrinh == null) return;
+            var connection = db.Database.Connection as SqlConnection;
+            if (connection == null) return;
+
             connection.FireInfoMessageEventOnUserErrors = true;
             connection.InfoMessage += (sender, args) =>
             {
@@ -352,6 +371,6 @@ WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5" + tuyChonNen + @", NAME = @pTenBanS
             return ten.Trim();
         }
 
-        private static string TrichDanDinhDanh(string ten) => "[" + ten.Replace("]", "]]" ) + "]";
+        private static string TrichDanDinhDanh(string ten) => "[" + ten.Replace("]", "]]") + "]";
     }
 }
