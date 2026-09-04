@@ -322,26 +322,31 @@ namespace FINAL_DotNet
         {
             using (var dialog = new Form
             {
-                Text = "Xác nhận phục hồi CSDL",
+                Text = "Xác nhận phục hồi cơ sở dữ liệu",
                 StartPosition = FormStartPosition.CenterParent,
                 FormBorderStyle = FormBorderStyle.FixedDialog,
                 MaximizeBox = false,
                 MinimizeBox = false,
-                ClientSize = new Size(560, 235),
+                ClientSize = new Size(560, 245),
                 BackColor = Color.White,
                 Font = new Font("Segoe UI", 9F)
             })
             {
                 var noiDung = new Label
                 {
-                    Location = new Point(18, 16), Size = new Size(524, 112),
-                    ForeColor = Color.Firebrick,
-                    Text = "CẢNH BÁO: Phục hồi sẽ ngắt toàn bộ kết nối và thay thế dữ liệu hiện tại.\n\n" +
-                           "File: " + duongDan + "\n\nNhập PHUC HOI để tiếp tục."
+                    Location = new Point(20, 16),
+                    Size = new Size(520, 120),
+                    ForeColor = Color.FromArgb(180, 40, 40),
+                    Font = new Font("Segoe UI", 9F),
+                    Text = "CẢNH BÁO QUAN TRỌNG TỪ HỆ THỐNG:\n" +
+                           "Quá trình phục hồi sẽ ngắt toàn bộ phiên kết nối hiện tại và ghi đè cơ sở dữ liệu bằng nội dung từ tệp sao lưu đã chọn.\n\n" +
+                           "Tệp nguồn: " + duongDan + "\n\n" +
+                           "Để xác nhận tiến hành, vui lòng nhập chính xác từ khóa 'PHUC HOI' vào ô bên dưới:"
                 };
-                var xacNhan = new TextBox { Location = new Point(18, 138), Size = new Size(524, 25) };
-                var huy = new Button { Text = "Hủy", DialogResult = DialogResult.Cancel, Location = new Point(344, 184), Size = new Size(92, 32) };
-                var dongY = new Button { Text = "Phục hồi", DialogResult = DialogResult.OK, Location = new Point(446, 184), Size = new Size(96, 32), BackColor = Color.Firebrick, ForeColor = Color.White, FlatStyle = FlatStyle.Flat };
+                var xacNhan = new TextBox { Location = new Point(20, 146), Size = new Size(520, 26), Font = new Font("Segoe UI", 10F, FontStyle.Bold) };
+                var huy = new Button { Text = "Hủy bỏ", DialogResult = DialogResult.Cancel, Location = new Point(330, 192), Size = new Size(100, 34), FlatStyle = FlatStyle.Flat };
+                huy.FlatAppearance.BorderColor = Color.FromArgb(203, 213, 225);
+                var dongY = new Button { Text = "Tiến hành phục hồi", DialogResult = DialogResult.OK, Location = new Point(440, 192), Size = new Size(100, 34), BackColor = Color.FromArgb(198, 40, 40), ForeColor = Color.White, FlatStyle = FlatStyle.Flat, Font = new Font("Segoe UI", 9F, FontStyle.Bold) };
                 dongY.FlatAppearance.BorderSize = 0;
                 dialog.Controls.AddRange(new Control[] { noiDung, xacNhan, huy, dongY });
                 dialog.AcceptButton = dongY;
@@ -390,6 +395,7 @@ namespace FINAL_DotNet
             txtTenFileSaoLuu.Enabled = !dangBan;
             txtDuongDanPhucHoi.Enabled = !dangBan;
             dgvLichSu.Enabled = !dangBan;
+            prgTienTrinh.Visible = dangBan;
             lblTienTrinh.Text = noiDung;
         }
 

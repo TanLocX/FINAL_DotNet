@@ -446,30 +446,6 @@ namespace FINAL_DotNet
             }
         }
 
-        private void btnTheme_Click(object sender, EventArgs e)
-        {
-            string currentThemeName = LuxuryDarkGoldTheme.IsThemeEnabled ? "Luxury Dark Gold" : "PNJ Modern Slate";
-            string targetThemeName = LuxuryDarkGoldTheme.IsThemeEnabled ? "PNJ Modern Slate" : "Luxury Dark Gold";
-
-            var result = MessageBox.Show(
-                $"Chủ đề giao diện hiện tại: {currentThemeName}\n\nBạn có muốn đổi sang chủ đề: {targetThemeName}?",
-                "Tùy chỉnh giao diện",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (result == DialogResult.Yes)
-            {
-                LuxuryDarkGoldTheme.IsThemeEnabled = !LuxuryDarkGoldTheme.IsThemeEnabled;
-                MessageBox.Show(
-                    $"Đã đổi sang chủ đề '{targetThemeName}'.\n\nCác màn hình tiếp theo khi mở sẽ áp dụng chủ đề mới.",
-                    "Đổi giao diện thành công",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-
-                btnTheme.Text = LuxuryDarkGoldTheme.IsThemeEnabled ? "Dark Gold" : "Giao diện";
-            }
-        }
-
         private void btnExit_Click(object sender, EventArgs e)
         {
             Close();

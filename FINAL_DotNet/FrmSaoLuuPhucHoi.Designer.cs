@@ -97,9 +97,9 @@ namespace FINAL_DotNet
             this.lblTieuDeThongTin.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(140)))), ((int)(((byte)(60)))));
             this.lblTieuDeThongTin.Location = new System.Drawing.Point(18, 10);
             this.lblTieuDeThongTin.Name = "lblTieuDeThongTin";
-            this.lblTieuDeThongTin.Size = new System.Drawing.Size(350, 23);
+            this.lblTieuDeThongTin.Size = new System.Drawing.Size(420, 23);
             this.lblTieuDeThongTin.TabIndex = 0;
-            this.lblTieuDeThongTin.Text = "QUẢN TRỊ BACKUP / RESTORE SQL SERVER";
+            this.lblTieuDeThongTin.Text = "QUẢN TRỊ SAO LƯU & PHỤC HỒI DỮ LIỆU SQL SERVER";
             // 
             // lblLabelMayChu
             // 
@@ -243,9 +243,9 @@ namespace FINAL_DotNet
             this.lblTieuDeSaoLuu.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(140)))), ((int)(((byte)(60)))));
             this.lblTieuDeSaoLuu.Location = new System.Drawing.Point(18, 12);
             this.lblTieuDeSaoLuu.Name = "lblTieuDeSaoLuu";
-            this.lblTieuDeSaoLuu.Size = new System.Drawing.Size(126, 23);
+            this.lblTieuDeSaoLuu.Size = new System.Drawing.Size(180, 23);
             this.lblTieuDeSaoLuu.TabIndex = 0;
-            this.lblTieuDeSaoLuu.Text = "Tạo bản sao lưu";
+            this.lblTieuDeSaoLuu.Text = "Sao lưu cơ sở dữ liệu";
             // 
             // lblMoTaSaoLuu
             // 
@@ -259,7 +259,7 @@ namespace FINAL_DotNet
             this.lblMoTaSaoLuu.Name = "lblMoTaSaoLuu";
             this.lblMoTaSaoLuu.Size = new System.Drawing.Size(400, 42);
             this.lblMoTaSaoLuu.TabIndex = 1;
-            this.lblMoTaSaoLuu.Text = "Đường dẫn lưu trên máy chủ SQL. SQL Server phải có quyền ghi vào thư mục này.";
+            this.lblMoTaSaoLuu.Text = "Sao lưu cơ sở dữ liệu định kỳ ra tệp .bak nhằm bảo đảm an toàn dữ liệu và dự phòng thảm họa.";
             // 
             // lblLabelThuMuc
             // 
@@ -269,9 +269,9 @@ namespace FINAL_DotNet
             this.lblLabelThuMuc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.lblLabelThuMuc.Location = new System.Drawing.Point(18, 86);
             this.lblLabelThuMuc.Name = "lblLabelThuMuc";
-            this.lblLabelThuMuc.Size = new System.Drawing.Size(155, 15);
+            this.lblLabelThuMuc.Size = new System.Drawing.Size(195, 15);
             this.lblLabelThuMuc.TabIndex = 2;
-            this.lblLabelThuMuc.Text = "Thư mục trên máy chủ SQL";
+            this.lblLabelThuMuc.Text = "Thư mục lưu trữ trên máy chủ SQL";
             // 
             // txtThuMucSaoLuu
             // 
@@ -283,7 +283,7 @@ namespace FINAL_DotNet
             this.txtThuMucSaoLuu.Location = new System.Drawing.Point(18, 106);
             this.txtThuMucSaoLuu.Name = "txtThuMucSaoLuu";
             this.txtThuMucSaoLuu.PlaceholderText = "C:\\Backup\\SQL";
-            this.txtThuMucSaoLuu.Size = new System.Drawing.Size(262, 32);
+            this.txtThuMucSaoLuu.Size = new System.Drawing.Size(232, 32);
             this.txtThuMucSaoLuu.TabIndex = 3;
             // 
             // btnChonThuMuc
@@ -295,9 +295,9 @@ namespace FINAL_DotNet
             this.btnChonThuMuc.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.btnChonThuMuc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnChonThuMuc.ForeColor = System.Drawing.Color.White;
-            this.btnChonThuMuc.Location = new System.Drawing.Point(286, 106);
+            this.btnChonThuMuc.Location = new System.Drawing.Point(256, 106);
             this.btnChonThuMuc.Name = "btnChonThuMuc";
-            this.btnChonThuMuc.Size = new System.Drawing.Size(42, 32);
+            this.btnChonThuMuc.Size = new System.Drawing.Size(40, 32);
             this.btnChonThuMuc.TabIndex = 4;
             this.btnChonThuMuc.Text = "...";
             this.btnChonThuMuc.Click += new System.EventHandler(this.btnChonThuMuc_Click);
@@ -311,9 +311,9 @@ namespace FINAL_DotNet
             this.btnMoThuMuc.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.btnMoThuMuc.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
             this.btnMoThuMuc.ForeColor = System.Drawing.Color.White;
-            this.btnMoThuMuc.Location = new System.Drawing.Point(334, 106);
+            this.btnMoThuMuc.Location = new System.Drawing.Point(302, 106);
             this.btnMoThuMuc.Name = "btnMoThuMuc";
-            this.btnMoThuMuc.Size = new System.Drawing.Size(84, 32);
+            this.btnMoThuMuc.Size = new System.Drawing.Size(116, 32);
             this.btnMoThuMuc.TabIndex = 5;
             this.btnMoThuMuc.Text = "Mở thư mục";
             this.btnMoThuMuc.Click += new System.EventHandler(this.btnMoThuMuc_Click);
@@ -326,9 +326,9 @@ namespace FINAL_DotNet
             this.lblLabelTenFile.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(71)))), ((int)(((byte)(85)))), ((int)(((byte)(105)))));
             this.lblLabelTenFile.Location = new System.Drawing.Point(18, 148);
             this.lblLabelTenFile.Name = "lblLabelTenFile";
-            this.lblLabelTenFile.Size = new System.Drawing.Size(73, 15);
+            this.lblLabelTenFile.Size = new System.Drawing.Size(120, 15);
             this.lblLabelTenFile.TabIndex = 6;
-            this.lblLabelTenFile.Text = "Tên file .bak";
+            this.lblLabelTenFile.Text = "Tên tệp sao lưu (.bak)";
             // 
             // txtTenFileSaoLuu
             // 
@@ -340,7 +340,7 @@ namespace FINAL_DotNet
             this.txtTenFileSaoLuu.Location = new System.Drawing.Point(18, 168);
             this.txtTenFileSaoLuu.Name = "txtTenFileSaoLuu";
             this.txtTenFileSaoLuu.PlaceholderText = "backup_file.bak";
-            this.txtTenFileSaoLuu.Size = new System.Drawing.Size(306, 32);
+            this.txtTenFileSaoLuu.Size = new System.Drawing.Size(278, 32);
             this.txtTenFileSaoLuu.TabIndex = 7;
             // 
             // btnTaoTenMoi
@@ -352,11 +352,11 @@ namespace FINAL_DotNet
             this.btnTaoTenMoi.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.btnTaoTenMoi.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnTaoTenMoi.ForeColor = System.Drawing.Color.White;
-            this.btnTaoTenMoi.Location = new System.Drawing.Point(330, 168);
+            this.btnTaoTenMoi.Location = new System.Drawing.Point(302, 168);
             this.btnTaoTenMoi.Name = "btnTaoTenMoi";
-            this.btnTaoTenMoi.Size = new System.Drawing.Size(88, 32);
+            this.btnTaoTenMoi.Size = new System.Drawing.Size(116, 32);
             this.btnTaoTenMoi.TabIndex = 8;
-            this.btnTaoTenMoi.Text = "Tên mới";
+            this.btnTaoTenMoi.Text = "Tạo tên mới";
             this.btnTaoTenMoi.Click += new System.EventHandler(this.btnTaoTenMoi_Click);
             // 
             // chkNenBanSao
@@ -374,7 +374,7 @@ namespace FINAL_DotNet
             this.chkNenBanSao.Name = "chkNenBanSao";
             this.chkNenBanSao.Size = new System.Drawing.Size(325, 19);
             this.chkNenBanSao.TabIndex = 9;
-            this.chkNenBanSao.Text = "Nén dữ liệu (COMPRESSION) - Tiết kiệm 80% ổ đĩa";
+            this.chkNenBanSao.Text = "Nén dữ liệu (COMPRESSION) - Tiết kiệm dung lượng";
             // 
             // lblLuuYSaoLuu
             // 
@@ -388,7 +388,7 @@ namespace FINAL_DotNet
             this.lblLuuYSaoLuu.Name = "lblLuuYSaoLuu";
             this.lblLuuYSaoLuu.Size = new System.Drawing.Size(400, 56);
             this.lblLuuYSaoLuu.TabIndex = 10;
-            this.lblLuuYSaoLuu.Text = "Bản sao dùng COPY_ONLY và CHECKSUM, sau đó được kiểm tra bằng RESTORE VERIFYONLY. Thao tác không làm gián đoạn chuỗi backup định kỳ của SQL Server.";
+            this.lblLuuYSaoLuu.Text = "Tệp sao lưu sử dụng cơ chế COPY_ONLY kèm kiểm tra toàn vẹn CHECKSUM. Thao tác chạy nền độc lập và không làm gián đoạn các phiên bán hàng POS.";
             // 
             // btnSaoLuu
             // 
@@ -405,7 +405,7 @@ namespace FINAL_DotNet
             this.btnSaoLuu.Name = "btnSaoLuu";
             this.btnSaoLuu.Size = new System.Drawing.Size(400, 42);
             this.btnSaoLuu.TabIndex = 11;
-            this.btnSaoLuu.Text = "Sao lưu và xác minh";
+            this.btnSaoLuu.Text = "Tiến hành sao lưu CSDL";
             this.btnSaoLuu.Click += new System.EventHandler(this.btnSaoLuu_Click);
             // 
             // pnlCardPhucHoi
@@ -439,9 +439,9 @@ namespace FINAL_DotNet
             this.lblTieuDePhucHoi.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(140)))), ((int)(((byte)(60)))));
             this.lblTieuDePhucHoi.Location = new System.Drawing.Point(18, 12);
             this.lblTieuDePhucHoi.Name = "lblTieuDePhucHoi";
-            this.lblTieuDePhucHoi.Size = new System.Drawing.Size(155, 23);
+            this.lblTieuDePhucHoi.Size = new System.Drawing.Size(200, 23);
             this.lblTieuDePhucHoi.TabIndex = 0;
-            this.lblTieuDePhucHoi.Text = "Lịch sử và phục hồi";
+            this.lblTieuDePhucHoi.Text = "Lịch sử & Phục hồi CSDL";
             // 
             // lblSoBanSao
             // 
@@ -470,7 +470,7 @@ namespace FINAL_DotNet
             this.btnXoaBanSao.Name = "btnXoaBanSao";
             this.btnXoaBanSao.Size = new System.Drawing.Size(108, 28);
             this.btnXoaBanSao.TabIndex = 2;
-            this.btnXoaBanSao.Text = "Xóa file .bak";
+            this.btnXoaBanSao.Text = "Xóa tệp .bak";
             this.btnXoaBanSao.Click += new System.EventHandler(this.btnXoaBanSao_Click);
             // 
             // dgvLichSu
@@ -516,7 +516,7 @@ namespace FINAL_DotNet
             this.colThoiGian.HeaderText = "Thời gian";
             this.colThoiGian.Name = "colThoiGian";
             this.colThoiGian.ReadOnly = true;
-            this.colThoiGian.Width = 135;
+            this.colThoiGian.Width = 140;
             // 
             // colKichThuoc
             // 
@@ -524,7 +524,7 @@ namespace FINAL_DotNet
             this.colKichThuoc.HeaderText = "Dung lượng";
             this.colKichThuoc.Name = "colKichThuoc";
             this.colKichThuoc.ReadOnly = true;
-            this.colKichThuoc.Width = 90;
+            this.colKichThuoc.Width = 105;
             // 
             // colLoai
             // 
@@ -553,7 +553,7 @@ namespace FINAL_DotNet
             this.lblLabelDuongDanPhucHoi.Name = "lblLabelDuongDanPhucHoi";
             this.lblLabelDuongDanPhucHoi.Size = new System.Drawing.Size(425, 15);
             this.lblLabelDuongDanPhucHoi.TabIndex = 4;
-            this.lblLabelDuongDanPhucHoi.Text = "File .bak phục hồi (chọn từ lịch sử hoặc nhập đường dẫn máy chủ)";
+            this.lblLabelDuongDanPhucHoi.Text = "Tệp .bak phục hồi (chọn từ danh sách lịch sử hoặc duyệt từ máy chủ):";
             // 
             // txtDuongDanPhucHoi
             // 
@@ -596,7 +596,7 @@ namespace FINAL_DotNet
             this.lblCanhBaoPhucHoi.Name = "lblCanhBaoPhucHoi";
             this.lblCanhBaoPhucHoi.Size = new System.Drawing.Size(516, 56);
             this.lblCanhBaoPhucHoi.TabIndex = 7;
-            this.lblCanhBaoPhucHoi.Text = "Restore sẽ ngắt kết nối của cả nhóm. Hệ thống luôn tạo một bản sao an toàn trước khi thay thế dữ liệu.";
+            this.lblCanhBaoPhucHoi.Text = "Lưu ý quan trọng: Quá trình phục hồi sẽ ngắt các kết nối hiện hành và hoàn nguyên cơ sở dữ liệu theo bản sao lưu được chọn. Bản sao lưu an toàn luôn được tự động tạo trước khi bắt đầu.";
             // 
             // btnPhucHoi
             // 
@@ -613,7 +613,7 @@ namespace FINAL_DotNet
             this.btnPhucHoi.Name = "btnPhucHoi";
             this.btnPhucHoi.Size = new System.Drawing.Size(516, 42);
             this.btnPhucHoi.TabIndex = 8;
-            this.btnPhucHoi.Text = "Phục hồi và khởi động lại";
+            this.btnPhucHoi.Text = "Phục hồi cơ sở dữ liệu";
             this.btnPhucHoi.Click += new System.EventHandler(this.btnPhucHoi_Click);
             // 
             // pnlTienTrinh
@@ -644,6 +644,7 @@ namespace FINAL_DotNet
             this.prgTienTrinh.Size = new System.Drawing.Size(964, 12);
             this.prgTienTrinh.TabIndex = 1;
             this.prgTienTrinh.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SystemDefault;
+            this.prgTienTrinh.Visible = false;
             // 
             // lblTienTrinh
             // 

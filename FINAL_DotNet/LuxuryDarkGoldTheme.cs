@@ -37,30 +37,16 @@ namespace FINAL_DotNet
         private static readonly ConditionalWeakTable<Control, ThemeState> States =
             new ConditionalWeakTable<Control, ThemeState>();
 
-        private static bool isThemeEnabled;
-
         internal static bool IsThemeEnabled
         {
-            get => isThemeEnabled;
-            set => isThemeEnabled = value;
+            get => false;
+            set { /* Disabled: Clean native Guna2 luxury theme is enforced */ }
         }
 
         internal static void Apply(Form form)
         {
-            if (!IsThemeEnabled) return;
-
-            if (form == null || IsExcluded(form))
-            {
-                return;
-            }
-
-            form.SuspendLayout();
-            FluentDesktopLayout.Apply(form);
-            form.BackColor = Background;
-            form.ForeColor = TextPrimary;
-            form.Font = FontOf(9.75F);
-            ApplyControl(form);
-            form.ResumeLayout(true);
+            // Neutralized: Form styling is handled natively by Guna2 controls
+            return;
         }
 
         internal static void ActivateNavigation(Button selected, Control root)
