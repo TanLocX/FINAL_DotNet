@@ -25,6 +25,9 @@ namespace FINAL_DotNet
             this.pnlLogo = new Guna.UI2.WinForms.Guna2Panel();
             this.lblThuongHieu = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.pnlHeader = new Guna.UI2.WinForms.Guna2Panel();
+            this.btnHelp = new Guna.UI2.WinForms.Guna2Button();
+            this.btnTheme = new Guna.UI2.WinForms.Guna2Button();
+            this.btnExit = new Guna.UI2.WinForms.Guna2Button();
             this.lblVaiTro = new Guna.UI2.WinForms.Guna2Chip();
             this.lblTieuDeTrang = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.pnlContent = new Guna.UI2.WinForms.Guna2Panel();
@@ -184,6 +187,9 @@ namespace FINAL_DotNet
             this.pnlHeader.BackColor = System.Drawing.Color.White;
             this.pnlHeader.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
             this.pnlHeader.BorderThickness = 1;
+            this.pnlHeader.Controls.Add(this.btnHelp);
+            this.pnlHeader.Controls.Add(this.btnTheme);
+            this.pnlHeader.Controls.Add(this.btnExit);
             this.pnlHeader.Controls.Add(this.lblVaiTro);
             this.pnlHeader.Controls.Add(this.lblTieuDeTrang);
             this.pnlHeader.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
@@ -195,6 +201,57 @@ namespace FINAL_DotNet
             this.pnlHeader.Size = new System.Drawing.Size(1199, 76);
             this.pnlHeader.TabIndex = 1;
             // 
+            // btnHelp
+            // 
+            this.btnHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnHelp.Animated = true;
+            this.btnHelp.BorderRadius = 6;
+            this.btnHelp.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnHelp.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            this.btnHelp.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnHelp.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.btnHelp.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.btnHelp.Location = new System.Drawing.Point(885, 22);
+            this.btnHelp.Name = "btnHelp";
+            this.btnHelp.Size = new System.Drawing.Size(112, 32);
+            this.btnHelp.TabIndex = 2;
+            this.btnHelp.Text = "Trợ giúp (F1)";
+            this.btnHelp.Click += new System.EventHandler(this.btnHelp_Click);
+            // 
+            // btnTheme
+            // 
+            this.btnTheme.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTheme.Animated = true;
+            this.btnTheme.BorderRadius = 6;
+            this.btnTheme.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnTheme.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(241)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            this.btnTheme.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnTheme.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(65)))), ((int)(((byte)(85)))));
+            this.btnTheme.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(232)))), ((int)(((byte)(240)))));
+            this.btnTheme.Location = new System.Drawing.Point(1005, 22);
+            this.btnTheme.Name = "btnTheme";
+            this.btnTheme.Size = new System.Drawing.Size(92, 32);
+            this.btnTheme.TabIndex = 3;
+            this.btnTheme.Text = "Giao diện";
+            this.btnTheme.Click += new System.EventHandler(this.btnTheme_Click);
+            // 
+            // btnExit
+            // 
+            this.btnExit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExit.Animated = true;
+            this.btnExit.BorderRadius = 6;
+            this.btnExit.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnExit.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(239)))), ((int)(((byte)(68)))), ((int)(((byte)(68)))));
+            this.btnExit.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
+            this.btnExit.ForeColor = System.Drawing.Color.White;
+            this.btnExit.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(38)))), ((int)(((byte)(38)))));
+            this.btnExit.Location = new System.Drawing.Point(1105, 22);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(74, 32);
+            this.btnExit.TabIndex = 4;
+            this.btnExit.Text = "Thoát";
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
             // lblVaiTro
             // 
             this.lblVaiTro.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -203,9 +260,9 @@ namespace FINAL_DotNet
             this.lblVaiTro.Font = new System.Drawing.Font("Segoe UI", 8.5F, System.Drawing.FontStyle.Bold);
             this.lblVaiTro.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(137)))), ((int)(((byte)(100)))), ((int)(((byte)(28)))));
             this.lblVaiTro.IsClosable = false;
-            this.lblVaiTro.Location = new System.Drawing.Point(1000, 22);
+            this.lblVaiTro.Location = new System.Drawing.Point(720, 22);
             this.lblVaiTro.Name = "lblVaiTro";
-            this.lblVaiTro.Size = new System.Drawing.Size(171, 32);
+            this.lblVaiTro.Size = new System.Drawing.Size(155, 32);
             this.lblVaiTro.TabIndex = 1;
             this.lblVaiTro.Text = "VAI TRÒ";
             // 
@@ -324,6 +381,9 @@ namespace FINAL_DotNet
         private Guna.UI2.WinForms.Guna2HtmlLabel lblHoTen;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblThuongHieu;
         private Guna.UI2.WinForms.Guna2Panel pnlHeader;
+        private Guna.UI2.WinForms.Guna2Button btnHelp;
+        private Guna.UI2.WinForms.Guna2Button btnTheme;
+        private Guna.UI2.WinForms.Guna2Button btnExit;
         private Guna.UI2.WinForms.Guna2Chip lblVaiTro;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblTieuDeTrang;
         private Guna.UI2.WinForms.Guna2Panel pnlContent;

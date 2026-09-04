@@ -16,6 +16,7 @@ namespace FINAL_DotNet
         public FrmSaoLuuPhucHoi()
         {
             InitializeComponent();
+            dgvLichSu.AutoGenerateColumns = false;
             if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
             {
                 return;
@@ -92,8 +93,31 @@ namespace FINAL_DotNet
                             "  |  Phục hồi: " + (thongTinMayChu.CoQuyenPhucHoi ? "Có quyền" : "Thiếu quyền");
             lblQuyen.ForeColor = thongTinMayChu.CoQuyenSaoLuu && thongTinMayChu.CoQuyenPhucHoi
                 ? Color.FromArgb(35, 125, 96) : Color.Firebrick;
-            if (!string.IsNullOrWhiteSpace(thongTinMayChu.ThuMucSaoLuuMacDinh) && string.IsNullOrWhiteSpace(txtThuMucSaoLuu.Text))
-                txtThuMucSaoLuu.Text = thongTinMayChu.ThuMucSaoLuuMacDinh;
+
+            if (string.IsNullOrWhiteSpace(txtThuMucSaoLuu.Text))
+            {
+                string safeDir = !string.IsNullOrWhiteSpace(thongTinMayChu.ThuMucSaoLuuMacDinh)
+                    ? thongTinMayChu.ThuMucSaoLuuMacDinh
+                    : @"C:\PNJ_Backups";
+                try
+                {
+                    if (!Directory.Exists(safeDir)) Directory.CreateDirectory(safeDir);
+                }
+                catch
+                {
+                    safeDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "PNJ_Backups");
+                    try
+                    {
+                        if (!Directory.Exists(safeDir)) Directory.CreateDirectory(safeDir);
+                    }
+                    catch
+                    {
+                        // Ignore directory creation errors if path is remote
+                    }
+                }
+                txtThuMucSaoLuu.Text = safeDir;
+            }
+
             btnSaoLuu.Enabled = thongTinMayChu.CoQuyenSaoLuu;
             btnPhucHoi.Enabled = thongTinMayChu.CoQuyenPhucHoi;
         }
@@ -102,7 +126,15 @@ namespace FINAL_DotNet
         {
             dgvLichSu.DataSource = danhSach;
             lblSoBanSao.Text = danhSach.Count + " bản sao gần nhất";
-            dgvLichSu.ClearSelection();
+            if (danhSach != null && danhSach.Count > 0)
+            {
+                dgvLichSu.Rows[0].Selected = true;
+                txtDuongDanPhucHoi.Text = danhSach[0].DuongDan;
+            }
+            else
+            {
+                dgvLichSu.ClearSelection();
+            }
         }
 
         private void CapNhatTienTrinh(string noiDung)
@@ -322,7 +354,20 @@ namespace FINAL_DotNet
         private void dgvLichSu_SelectionChanged(object sender, EventArgs e)
         {
             var item = dgvLichSu.CurrentRow?.DataBoundItem as BanSaoLuuHienThi;
-            if (item != null) txtDuongDanPhucHoi.Text = item.DuongDan;
+            if (item != null && !string.IsNullOrWhiteSpace(item.DuongDan))
+            {
+                txtDuongDanPhucHoi.Text = item.DuongDan;
+            }
+        }
+
+        private void dgvLichSu_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            var item = dgvLichSu.Rows[e.RowIndex].DataBoundItem as BanSaoLuuHienThi;
+            if (item != null && !string.IsNullOrWhiteSpace(item.DuongDan))
+            {
+                txtDuongDanPhucHoi.Text = item.DuongDan;
+            }
         }
 
         private async void btnTaiLai_Click(object sender, EventArgs e) => await TaiThongTinVaLichSu();

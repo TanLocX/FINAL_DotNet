@@ -141,9 +141,9 @@ namespace FINAL_DotNet
                         })
                         .ToList();
 
-                    cboCustomer.DataSource = customerOptions;
                     cboCustomer.DisplayMember = "DisplayName";
                     cboCustomer.ValueMember = "Id";
+                    cboCustomer.DataSource = customerOptions;
 
                     productOptions = db.SanPhams
                         .AsNoTracking()
@@ -152,16 +152,16 @@ namespace FINAL_DotNet
                         .Select(sp => new ProductOption
                         {
                             Id = sp.SanPhamId,
-                            Code = $"SP{sp.SanPhamId:000000}",
+                            Code = "SP" + sp.SanPhamId.ToString().PadLeft(6, '0'),
                             Name = sp.TenSanPham,
                             Price = sp.GiaBan,
                             InStock = sp.SoLuongTon
                         })
                         .ToList();
 
-                    cboProductSelector.DataSource = productOptions;
                     cboProductSelector.DisplayMember = "DisplayName";
                     cboProductSelector.ValueMember = "Id";
+                    cboProductSelector.DataSource = productOptions;
                 }
             }
             catch (Exception ex)
@@ -530,8 +530,18 @@ namespace FINAL_DotNet
         private void ResetOrderInternal()
         {
             cartItems.Clear();
-            if (customerOptions.Count > 0) cboCustomer.SelectedIndex = 0;
-            if (productOptions.Count > 0) cboProductSelector.SelectedIndex = 0;
+            if (customerOptions.Count > 0)
+            {
+                cboCustomer.SelectedIndex = 0;
+                var cust = cboCustomer.SelectedItem as CustomerOption;
+                if (cust != null) lblCustomerInfo.Text = $"SĐT: {cust.Phone} | Tích lũy: {cust.RewardPoints:N0} điểm";
+            }
+            if (productOptions.Count > 0)
+            {
+                cboProductSelector.SelectedIndex = 0;
+                var prod = cboProductSelector.SelectedItem as ProductOption;
+                if (prod != null) lblProductInStock.Text = $"Tồn kho: {prod.InStock:N0} | Đơn giá: {prod.Price:N0} đ";
+            }
 
             string staffName = CurrentUserSession.DaDangNhap ? CurrentUserSession.HienTai.HoTen : "--";
             lblCashierInfo.Text = $"{staffName} | {DateTime.Now:dd/MM/yyyy HH:mm}";
@@ -574,6 +584,7 @@ namespace FINAL_DotNet
             public string Phone { get; set; }
             public int RewardPoints { get; set; }
             public string DisplayName => string.IsNullOrWhiteSpace(Phone) ? Name : $"{Name} ({Phone})";
+            public override string ToString() => DisplayName;
         }
 
         private sealed class ProductOption
@@ -584,6 +595,7 @@ namespace FINAL_DotNet
             public decimal Price { get; set; }
             public int InStock { get; set; }
             public string DisplayName => $"{Code} - {Name} ({Price:N0} đ | Kho: {InStock})";
+            public override string ToString() => DisplayName;
         }
     }
 }

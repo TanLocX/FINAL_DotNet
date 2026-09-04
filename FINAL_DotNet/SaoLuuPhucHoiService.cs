@@ -156,6 +156,20 @@ ORDER BY bs.backup_finish_date DESC, bs.backup_set_id DESC;";
 
         public static string TaoSaoLuu(string thuMucTrenMayChu, string tenFile, bool nenDuLieu = true, Action<string> baoTienTrinh = null)
         {
+            if (!string.IsNullOrWhiteSpace(thuMucTrenMayChu))
+            {
+                try
+                {
+                    if (!Directory.Exists(thuMucTrenMayChu))
+                    {
+                        Directory.CreateDirectory(thuMucTrenMayChu);
+                    }
+                }
+                catch
+                {
+                    // Ignore if remote server or restricted
+                }
+            }
             string duongDan = KetHopDuongDan(thuMucTrenMayChu, tenFile);
             TaoSaoLuuTaiDuongDan(duongDan, nenDuLieu, baoTienTrinh);
             return duongDan;

@@ -321,6 +321,9 @@
     <Compile Include="XlsxExportService.cs" />
     <Compile Include="XlsxImportService.cs" />
     <Compile Include="PosService.cs" />
+    <Compile Include="FrmHelpDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

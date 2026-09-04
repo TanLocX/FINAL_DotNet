@@ -17,10 +17,18 @@ namespace FINAL_DotNet
         public FrmMain()
         {
             InitializeComponent();
-            //Color mauNenToi = Color.FromArgb(18, 24, 32);
-            //pnlContent.BackColor = mauNenToi;
-            //pnlContent.FillColor = mauNenToi;
+            KeyPreview = true;
+            KeyDown += FrmMain_KeyDown;
             LuxuryDarkGoldTheme.Apply(this);
+        }
+
+        private void FrmMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F1)
+            {
+                OpenHelpDialog();
+                e.Handled = true;
+            }
         }
 
         public bool DaYeuCauDangXuat => dangXuat;
@@ -422,6 +430,48 @@ namespace FINAL_DotNet
 
             dangXuat = true;
             DialogResult = DialogResult.Retry;
+            Close();
+        }
+
+        private void btnHelp_Click(object sender, EventArgs e)
+        {
+            OpenHelpDialog();
+        }
+
+        private void OpenHelpDialog()
+        {
+            using (var helpDialog = new FrmHelpDialog())
+            {
+                helpDialog.ShowDialog(this);
+            }
+        }
+
+        private void btnTheme_Click(object sender, EventArgs e)
+        {
+            string currentThemeName = LuxuryDarkGoldTheme.IsThemeEnabled ? "Luxury Dark Gold" : "PNJ Modern Slate";
+            string targetThemeName = LuxuryDarkGoldTheme.IsThemeEnabled ? "PNJ Modern Slate" : "Luxury Dark Gold";
+
+            var result = MessageBox.Show(
+                $"Chủ đề giao diện hiện tại: {currentThemeName}\n\nBạn có muốn đổi sang chủ đề: {targetThemeName}?",
+                "Tùy chỉnh giao diện",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                LuxuryDarkGoldTheme.IsThemeEnabled = !LuxuryDarkGoldTheme.IsThemeEnabled;
+                MessageBox.Show(
+                    $"Đã đổi sang chủ đề '{targetThemeName}'.\n\nCác màn hình tiếp theo khi mở sẽ áp dụng chủ đề mới.",
+                    "Đổi giao diện thành công",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                btnTheme.Text = LuxuryDarkGoldTheme.IsThemeEnabled ? "Dark Gold" : "Giao diện";
+            }
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
             Close();
         }
 
