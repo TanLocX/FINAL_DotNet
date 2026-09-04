@@ -12,11 +12,11 @@ namespace FINAL_DotNet
         private readonly TextBox txtNhapLaiMatKhau;
         private readonly Label lblThongBao;
 
-        public FormDoiMatKhau(int taiKhoanId)
+        public FormDoiMatKhau(int taiKhoanId, bool batBuoc = false)
         {
             this.taiKhoanId = taiKhoanId;
 
-            Text = "Đổi mật khẩu - Hệ thống PNJ";
+            Text = batBuoc ? "Đổi mật khẩu bắt buộc - Hệ thống PNJ" : "Đổi mật khẩu tài khoản - Hệ thống PNJ";
             StartPosition = FormStartPosition.CenterParent;
             ClientSize = new Size(420, 245);
             FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -28,7 +28,7 @@ namespace FINAL_DotNet
                 AutoSize = true,
                 Font = new Font("Segoe UI", 14F, FontStyle.Bold),
                 Location = new Point(28, 22),
-                Text = "ĐỔI MẬT KHẨU BẮT BUỘC"
+                Text = batBuoc ? "ĐỔI MẬT KHẨU BẮT BUỘC" : "ĐỔI MẬT KHẨU TÀI KHOẢN"
             };
 
             var lblMatKhauMoi = new Label

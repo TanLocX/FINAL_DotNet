@@ -37,7 +37,13 @@ namespace FINAL_DotNet
         private static readonly ConditionalWeakTable<Control, ThemeState> States =
             new ConditionalWeakTable<Control, ThemeState>();
 
-        private const bool IsThemeEnabled = false;
+        private static bool isThemeEnabled;
+
+        internal static bool IsThemeEnabled
+        {
+            get => isThemeEnabled;
+            set => isThemeEnabled = value;
+        }
 
         internal static void Apply(Form form)
         {

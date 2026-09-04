@@ -350,7 +350,7 @@ namespace FINAL_DotNet
             pnlChaoMung.Visible = true;
             lblTieuDeTrang.Text = menu.TieuDeTrang;
             lblNoiDungChinh.Text = menu.TieuDeTrang;
-            lblMoTa.Text = "Màn hình chức năng sẽ được bổ sung trong commit nghiệp vụ tiếp theo.";
+            lblMoTa.Text = "Chào mừng bạn đến với Hệ thống Quản trị & Bán lẻ Trang sức PNJ. Vui lòng chọn phân hệ trên thanh điều hướng.";
         }
 
         private void MoFormCon(Form formCon, string tieuDeTrang, bool chiDanhChoQuanTri)
@@ -394,6 +394,19 @@ namespace FINAL_DotNet
         private void HienThiTongQuan()
         {
             MoFormCon(new FrmThongKe(false), "Tổng quan hệ thống", false);
+        }
+
+        private void btnDoiMatKhau_Click(object sender, EventArgs e)
+        {
+            if (phienDangNhap == null) return;
+            using (var form = new FormDoiMatKhau(phienDangNhap.TaiKhoanId, false))
+            {
+                if (form.ShowDialog(this) == DialogResult.OK)
+                {
+                    MessageBox.Show("Mật khẩu tài khoản đã được cập nhật thành công.", "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
         }
 
         private void btnDangXuat_Click(object sender, EventArgs e)

@@ -18,6 +18,7 @@ namespace FINAL_DotNet
             this.pnlSidebar = new Guna.UI2.WinForms.Guna2Panel();
             this.flowMenu = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlNguoiDung = new Guna.UI2.WinForms.Guna2Panel();
+            this.btnDoiMatKhau = new Guna.UI2.WinForms.Guna2Button();
             this.btnDangXuat = new Guna.UI2.WinForms.Guna2Button();
             this.lblTenDangNhap = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblHoTen = new Guna.UI2.WinForms.Guna2HtmlLabel();
@@ -72,24 +73,43 @@ namespace FINAL_DotNet
             this.pnlNguoiDung.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(60)))), ((int)(((byte)(80)))));
             this.pnlNguoiDung.BorderRadius = 10;
             this.pnlNguoiDung.BorderThickness = 1;
+            this.pnlNguoiDung.Controls.Add(this.btnDoiMatKhau);
             this.pnlNguoiDung.Controls.Add(this.btnDangXuat);
             this.pnlNguoiDung.Controls.Add(this.lblTenDangNhap);
             this.pnlNguoiDung.Controls.Add(this.lblHoTen);
             this.pnlNguoiDung.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlNguoiDung.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(31)))), ((int)(((byte)(44)))));
-            this.pnlNguoiDung.Location = new System.Drawing.Point(0, 681);
+            this.pnlNguoiDung.Location = new System.Drawing.Point(0, 646);
             this.pnlNguoiDung.Margin = new System.Windows.Forms.Padding(8);
             this.pnlNguoiDung.Name = "pnlNguoiDung";
             this.pnlNguoiDung.Padding = new System.Windows.Forms.Padding(12);
-            this.pnlNguoiDung.Size = new System.Drawing.Size(235, 130);
+            this.pnlNguoiDung.Size = new System.Drawing.Size(235, 165);
             this.pnlNguoiDung.TabIndex = 2;
+            // 
+            // btnDoiMatKhau
+            // 
+            this.btnDoiMatKhau.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDoiMatKhau.Animated = true;
+            this.btnDoiMatKhau.BorderRadius = 6;
+            this.btnDoiMatKhau.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDoiMatKhau.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(36)))), ((int)(((byte)(50)))), ((int)(((byte)(68)))));
+            this.btnDoiMatKhau.Font = new System.Drawing.Font("Segoe UI", 8.5F);
+            this.btnDoiMatKhau.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
+            this.btnDoiMatKhau.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(60)))), ((int)(((byte)(80)))));
+            this.btnDoiMatKhau.Location = new System.Drawing.Point(12, 75);
+            this.btnDoiMatKhau.Name = "btnDoiMatKhau";
+            this.btnDoiMatKhau.Size = new System.Drawing.Size(211, 34);
+            this.btnDoiMatKhau.TabIndex = 2;
+            this.btnDoiMatKhau.Text = "Đổi mật khẩu";
+            this.btnDoiMatKhau.Click += new System.EventHandler(this.btnDoiMatKhau_Click);
             // 
             // btnDangXuat
             // 
             this.btnDangXuat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDangXuat.Animated = true;
-            this.btnDangXuat.BorderRadius = 8;
+            this.btnDangXuat.BorderRadius = 6;
             this.btnDangXuat.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnDangXuat.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
             this.btnDangXuat.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
@@ -97,12 +117,12 @@ namespace FINAL_DotNet
             this.btnDangXuat.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btnDangXuat.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
             this.btnDangXuat.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnDangXuat.ForeColor = System.Drawing.Color.White;
+            this.btnDangXuat.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(39)))), ((int)(((byte)(53)))));
             this.btnDangXuat.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(195)))), ((int)(((byte)(160)))), ((int)(((byte)(95)))));
-            this.btnDangXuat.Location = new System.Drawing.Point(12, 78);
+            this.btnDangXuat.Location = new System.Drawing.Point(12, 116);
             this.btnDangXuat.Name = "btnDangXuat";
-            this.btnDangXuat.Size = new System.Drawing.Size(211, 38);
-            this.btnDangXuat.TabIndex = 2;
+            this.btnDangXuat.Size = new System.Drawing.Size(211, 34);
+            this.btnDangXuat.TabIndex = 3;
             this.btnDangXuat.Text = "Đăng xuất";
             this.btnDangXuat.Click += new System.EventHandler(this.btnDangXuat_Click);
             // 
@@ -298,6 +318,7 @@ namespace FINAL_DotNet
         private Guna.UI2.WinForms.Guna2Panel pnlLogo;
         private System.Windows.Forms.FlowLayoutPanel flowMenu;
         private Guna.UI2.WinForms.Guna2Panel pnlNguoiDung;
+        private Guna.UI2.WinForms.Guna2Button btnDoiMatKhau;
         private Guna.UI2.WinForms.Guna2Button btnDangXuat;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblTenDangNhap;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblHoTen;

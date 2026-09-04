@@ -1,499 +1,589 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Guna.UI2.WinForms;
 
 namespace FINAL_DotNet
 {
     public partial class FrmBanHang : Form
     {
-        private const decimal GiaTriTienToiDa = 9999999999999999.99M;
-        private readonly List<DongBanHang> gioHang = new List<DongBanHang>();
-        private bool dangLamMoi;
+        private readonly List<PosCartItem> cartItems = new List<PosCartItem>();
+        private List<ProductOption> productOptions = new List<ProductOption>();
+        private List<CustomerOption> customerOptions = new List<CustomerOption>();
+        private bool isInitializing;
 
         public FrmBanHang()
         {
             InitializeComponent();
-            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
-            {
-                return;
-            }
-            KhoiTaoGiaoDienTuyBien();
-            cboPhuongThucThanhToan.SelectedIndex = 0;
-            numSoLuong.Maximum = int.MaxValue;
-            numGiamGia.Maximum = 9999999999999999M;
-            LuxuryDarkGoldTheme.Apply(this);
+            ConfigureCartGrid();
+            cboPaymentMethod.SelectedIndex = 0;
+            dtpProductWarranty.Value = DateTime.Today.AddYears(1);
+            numDiscount.Maximum = 1000000000M;
+            numCustomerCash.Maximum = 1000000000M;
+            numProductQty.Maximum = 10000;
         }
 
-        private void KhoiTaoGiaoDienTuyBien()
+        private void ConfigureCartGrid()
         {
-            DataGridViewCellStyle headerStyle = new DataGridViewCellStyle
-            {
-                BackColor = Color.FromArgb(27, 39, 53),
-                ForeColor = Color.White,
-                Font = new Font("Segoe UI", 9F, FontStyle.Bold)
-            };
-            headerStyle.SelectionBackColor = headerStyle.BackColor;
+            dgvCart.Columns.Clear();
+            dgvCart.AutoGenerateColumns = false;
 
-            CauHinhLuoi(dgvGioHang, headerStyle);
-            if (dgvGioHang.Columns.Count == 0)
+            dgvCart.Columns.Add(new DataGridViewTextBoxColumn
             {
-                dgvGioHang.Columns.Add(TaoCot("Mã SP", "MaSanPham", 85));
-                dgvGioHang.Columns.Add(TaoCot("Tên sản phẩm", "TenSanPham", 280));
-                dgvGioHang.Columns.Add(TaoCot("Tồn", "TonKhoHienTai", 65));
-                dgvGioHang.Columns.Add(TaoCot("Số lượng", "SoLuong", 75));
-                DataGridViewTextBoxColumn cotGiaBan = TaoCot("Đơn giá", "DonGiaBan", 125);
-                cotGiaBan.DefaultCellStyle.Format = "N0";
-                dgvGioHang.Columns.Add(cotGiaBan);
-                DataGridViewTextBoxColumn cotThanhTien = TaoCot("Thành tiền", "ThanhTien", 140);
-                cotThanhTien.DefaultCellStyle.Format = "N0";
-                dgvGioHang.Columns.Add(cotThanhTien);
-                dgvGioHang.Columns.Add(TaoCot("Bảo hành đến", "HanBaoHanhHienThi", 115));
-            }
-        }
+                Name = "ColIndex",
+                HeaderText = "STT",
+                Width = 45,
+                ReadOnly = true,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            });
 
-        private static void CauHinhLuoi(Guna2DataGridView grid, DataGridViewCellStyle headerStyle)
-        {
-            grid.AllowUserToAddRows = false;
-            grid.AllowUserToDeleteRows = false;
-            grid.AllowUserToResizeRows = false;
-            grid.AutoGenerateColumns = false;
-            grid.BackgroundColor = Color.White;
-            grid.BorderStyle = BorderStyle.None;
-            grid.ColumnHeadersDefaultCellStyle = headerStyle;
-            grid.ColumnHeadersHeight = 32;
-            grid.Dock = DockStyle.Fill;
-            grid.EnableHeadersVisualStyles = false;
-            grid.MultiSelect = false;
-            grid.ReadOnly = true;
-            grid.RowHeadersVisible = false;
-            grid.RowTemplate.Height = 28;
-            grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            grid.Theme = Guna.UI2.WinForms.Enums.DataGridViewPresetThemes.Default;
-            grid.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(27, 39, 53);
-            grid.ThemeStyle.HeaderStyle.ForeColor = Color.White;
-            grid.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            grid.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(214, 182, 116);
-            grid.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(27, 39, 53);
-        }
-
-        private static DataGridViewTextBoxColumn TaoCot(string tieuDe, string thuocTinh, int width)
-        {
-            return new DataGridViewTextBoxColumn
+            dgvCart.Columns.Add(new DataGridViewTextBoxColumn
             {
-                HeaderText = tieuDe,
-                DataPropertyName = thuocTinh,
-                Width = width,
+                Name = "ColProductCode",
+                DataPropertyName = "ProductCode",
+                HeaderText = "Mã SP",
+                Width = 85,
+                ReadOnly = true,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            });
+
+            dgvCart.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColProductName",
+                DataPropertyName = "ProductName",
+                HeaderText = "Tên món trang sức",
+                Width = 240,
                 ReadOnly = true
-            };
+            });
+
+            dgvCart.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColUnitPrice",
+                DataPropertyName = "UnitPrice",
+                HeaderText = "Đơn giá",
+                Width = 110,
+                ReadOnly = true,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N0" }
+            });
+
+            dgvCart.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColQuantity",
+                DataPropertyName = "Quantity",
+                HeaderText = "Số lượng",
+                Width = 75,
+                ReadOnly = true,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            });
+
+            dgvCart.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColLineTotal",
+                DataPropertyName = "LineTotal",
+                HeaderText = "Thành tiền",
+                Width = 120,
+                ReadOnly = true,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleRight, Format = "N0" }
+            });
+
+            dgvCart.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                Name = "ColWarranty",
+                DataPropertyName = "WarrantyDisplay",
+                HeaderText = "Bảo hành",
+                Width = 95,
+                ReadOnly = true,
+                DefaultCellStyle = { Alignment = DataGridViewContentAlignment.MiddleCenter }
+            });
         }
 
         private void FrmBanHang_Load(object sender, EventArgs e)
         {
-            if (!KiemTraPhienDangNhap(true))
+            if (!CurrentUserSession.DaDangNhap)
             {
+                MessageBox.Show("Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.", "Chưa đăng nhập",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 BeginInvoke(new Action(Close));
                 return;
             }
 
-            dangLamMoi = true;
+            isInitializing = true;
             try
             {
-                TaiDuLieuLuaChon();
-                LamMoiHoaDonNoiBo();
+                LoadCustomersAndProducts();
+                ResetOrderInternal();
             }
             finally
             {
-                dangLamMoi = false;
+                isInitializing = false;
             }
         }
 
-        private bool KiemTraPhienDangNhap(bool hienThongBao)
-        {
-            bool hopLe = CurrentUserSession.DaDangNhap;
-            if (!hopLe && hienThongBao)
-            {
-                MessageBox.Show(
-                    "Phiên đăng nhập đã kết thúc. Vui lòng đăng nhập lại.",
-                    "Chưa đăng nhập",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-            }
-            return hopLe;
-        }
-
-        private bool TaiDuLieuLuaChon()
+        private void LoadCustomersAndProducts()
         {
             try
             {
                 using (var db = DatabaseConnection.CreateContext())
                 {
-                    var khachHang = db.KhachHangs.AsNoTracking()
-                        .OrderBy(kh => kh.HoTen)
-                        .Select(kh => new LuaChonKhachHang
+                    customerOptions = db.KhachHangs
+                        .AsNoTracking()
+                        .Where(kh => kh.DangHoatDong)
+                        .OrderByDescending(kh => kh.HoTen == "Khách lẻ")
+                        .ThenBy(kh => kh.HoTen)
+                        .Select(kh => new CustomerOption
                         {
                             Id = kh.KhachHangId,
-                            Ten = kh.HoTen,
-                            SoDienThoai = kh.SoDienThoai,
-                            DangHoatDong = kh.DangHoatDong
-                        }).ToList()
-                        .OrderByDescending(kh => kh.Ten == "Khách lẻ")
-                        .ThenBy(kh => kh.Ten)
+                            Name = kh.HoTen,
+                            Phone = kh.SoDienThoai,
+                            RewardPoints = kh.DiemTichLuy
+                        })
                         .ToList();
 
-                    cboKhachHang.DataSource = khachHang
-                        .Where(kh => kh.DangHoatDong)
-                        .Select(kh => kh.SaoChep())
-                        .ToList();
+                    cboCustomer.DataSource = customerOptions;
+                    cboCustomer.DisplayMember = "DisplayName";
+                    cboCustomer.ValueMember = "Id";
 
-                    cboSanPham.DataSource = db.SanPhams.AsNoTracking()
+                    productOptions = db.SanPhams
+                        .AsNoTracking()
                         .Where(sp => sp.DangKinhDoanh)
                         .OrderBy(sp => sp.TenSanPham)
-                        .Select(sp => new LuaChonSanPham
+                        .Select(sp => new ProductOption
                         {
                             Id = sp.SanPhamId,
-                            Ten = sp.TenSanPham,
-                            GiaBan = sp.GiaBan,
-                            SoLuongTon = sp.SoLuongTon
-                        }).ToList();
+                            Code = $"SP{sp.SanPhamId:000000}",
+                            Name = sp.TenSanPham,
+                            Price = sp.GiaBan,
+                            InStock = sp.SoLuongTon
+                        })
+                        .ToList();
+
+                    cboProductSelector.DataSource = productOptions;
+                    cboProductSelector.DisplayMember = "DisplayName";
+                    cboProductSelector.ValueMember = "Id";
                 }
-                return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                HienThiLoi("Không thể tải khách hàng và sản phẩm. Hãy kiểm tra kết nối CSDL.");
-                return false;
+                ShowNotification("Không thể tải danh mục: " + ex.Message, true);
             }
         }
 
-        private void cboSanPham_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboCustomer_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (dangLamMoi) return;
-            var sanPham = cboSanPham.SelectedItem as LuaChonSanPham;
-            if (sanPham == null) return;
-            lblTonKho.Text = "Tồn kho: " + sanPham.SoLuongTon;
-            lblDonGiaBan.Text = sanPham.GiaBan.ToString("N0") + " đ";
+            if (isInitializing) return;
+            var customer = cboCustomer.SelectedItem as CustomerOption;
+            if (customer != null)
+            {
+                lblCustomerInfo.Text = $"SĐT: {customer.Phone} | Tích lũy: {customer.RewardPoints:N0} điểm";
+            }
         }
 
-        private void btnThemDong_Click(object sender, EventArgs e)
+        private void cboProductSelector_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var sanPham = cboSanPham.SelectedItem as LuaChonSanPham;
-            if (sanPham == null)
+            if (isInitializing) return;
+            var product = cboProductSelector.SelectedItem as ProductOption;
+            if (product != null)
             {
-                HienThiLoi("Vui lòng chọn sản phẩm.");
+                lblProductInStock.Text = $"Tồn kho: {product.InStock:N0} | Đơn giá: {product.Price:N0} đ";
+            }
+        }
+
+        private void btnQuickAdd_Click(object sender, EventArgs e)
+        {
+            var product = cboProductSelector.SelectedItem as ProductOption;
+            if (product == null)
+            {
+                ShowNotification("Vui lòng chọn một sản phẩm.", true);
                 return;
             }
-            int soLuong = Decimal.ToInt32(numSoLuong.Value);
-            if (soLuong <= 0)
+
+            int qtyToAdd = (int)numProductQty.Value;
+            if (qtyToAdd <= 0)
             {
-                HienThiLoi("Số lượng bán phải lớn hơn 0.");
+                ShowNotification("Số lượng thêm phải lớn hơn 0.", true);
                 return;
             }
-            if (sanPham.SoLuongTon < soLuong)
+
+            DateTime? warrantyDate = dtpProductWarranty.Checked ? (DateTime?)dtpProductWarranty.Value.Date : null;
+            if (warrantyDate.HasValue && warrantyDate.Value < DateTime.Today)
             {
-                HienThiLoi($"Sản phẩm chỉ còn {sanPham.SoLuongTon} trong kho.");
+                ShowNotification("Hạn bảo hành không được trước ngày hôm nay.", true);
                 return;
             }
-            DateTime? hanBaoHanh = dtpHanBaoHanh.Checked ? (DateTime?)dtpHanBaoHanh.Value.Date : null;
-            if (hanBaoHanh.HasValue && hanBaoHanh.Value < DateTime.Today)
+
+            AddProductToCart(product.Id, qtyToAdd, warrantyDate);
+        }
+
+        private void AddProductToCart(int productId, int quantity, DateTime? warrantyDate)
+        {
+            var product = productOptions.FirstOrDefault(p => p.Id == productId);
+            if (product == null)
             {
-                HienThiLoi("Hạn bảo hành không được nhỏ hơn ngày bán.");
+                ShowNotification("Sản phẩm không có trong danh mục đang kinh doanh.", true);
                 return;
             }
-            decimal thanhTien;
-            try { thanhTien = checked(soLuong * sanPham.GiaBan); }
-            catch (OverflowException)
+
+            var existingItem = cartItems.FirstOrDefault(item => item.ProductId == productId);
+            int currentQtyInCart = existingItem != null ? existingItem.Quantity : 0;
+            int requestedTotalQty = currentQtyInCart + quantity;
+
+            if (product.InStock < requestedTotalQty)
             {
-                HienThiLoi("Thành tiền vượt quá giới hạn cho phép.");
+                ShowNotification($"Sản phẩm '{product.Name}' chỉ còn {product.InStock} trong kho (trong giỏ đã có {currentQtyInCart}).", true);
                 return;
             }
-            if (thanhTien > GiaTriTienToiDa)
+
+            if (existingItem != null)
             {
-                HienThiLoi("Thành tiền vượt quá giới hạn lưu trữ của CSDL.");
-                return;
-            }
-            var dong = gioHang.SingleOrDefault(item => item.SanPhamId == sanPham.Id);
-            if (dong == null)
-            {
-                gioHang.Add(new DongBanHang
-                {
-                    SanPhamId = sanPham.Id,
-                    MaSanPham = $"SP{sanPham.Id:000000}",
-                    TenSanPham = sanPham.Ten,
-                    TonKhoHienTai = sanPham.SoLuongTon,
-                    SoLuong = soLuong,
-                    DonGiaBan = sanPham.GiaBan,
-                    HanBaoHanh = hanBaoHanh
-                });
+                existingItem.Quantity = requestedTotalQty;
+                if (warrantyDate.HasValue) existingItem.WarrantyExpiryDate = warrantyDate;
             }
             else
             {
-                dong.SoLuong = soLuong;
-                dong.DonGiaBan = sanPham.GiaBan;
-                dong.HanBaoHanh = hanBaoHanh;
-            }
-            if (!TaiGioHang()) return;
-            LamMoiDongBan();
-            lblThongBao.Text = string.Empty;
-        }
-
-        private void dgvGioHang_SelectionChanged(object sender, EventArgs e)
-        {
-            if (dangLamMoi) return;
-            var dong = dgvGioHang.CurrentRow?.DataBoundItem as DongBanHang;
-            if (dong == null) return;
-            ChonSanPham(dong.SanPhamId);
-            numSoLuong.Value = Math.Min(numSoLuong.Maximum, dong.SoLuong);
-            dtpHanBaoHanh.Checked = dong.HanBaoHanh.HasValue;
-            if (dong.HanBaoHanh.HasValue) dtpHanBaoHanh.Value = dong.HanBaoHanh.Value;
-            btnThemDong.Text = "Cập nhật dòng";
-        }
-
-        private void ChonSanPham(int sanPhamId)
-        {
-            for (int i = 0; i < cboSanPham.Items.Count; i++)
-            {
-                if ((cboSanPham.Items[i] as LuaChonSanPham)?.Id != sanPhamId) continue;
-                cboSanPham.SelectedIndex = i;
-                return;
-            }
-        }
-
-        private void btnXoaDong_Click(object sender, EventArgs e)
-        {
-            var dong = dgvGioHang.CurrentRow?.DataBoundItem as DongBanHang;
-            if (dong == null)
-            {
-                HienThiLoi("Vui lòng chọn dòng sản phẩm cần xóa.");
-                return;
-            }
-            gioHang.RemoveAll(item => item.SanPhamId == dong.SanPhamId);
-            TaiGioHang();
-            LamMoiDongBan();
-        }
-
-        private void btnMoiDong_Click(object sender, EventArgs e) => LamMoiDongBan();
-        private void numGiamGia_ValueChanged(object sender, EventArgs e) => CapNhatTongTien();
-
-        private bool TaiGioHang()
-        {
-            decimal tongTien;
-            try { tongTien = gioHang.Sum(dong => dong.ThanhTien); }
-            catch (OverflowException)
-            {
-                HienThiLoi("Tổng tiền hóa đơn vượt quá giới hạn cho phép.");
-                return false;
-            }
-            if (tongTien > GiaTriTienToiDa)
-            {
-                HienThiLoi("Tổng tiền hóa đơn vượt quá giới hạn lưu trữ của CSDL.");
-                return false;
-            }
-            dgvGioHang.DataSource = null;
-            dgvGioHang.DataSource = gioHang.Select(dong => dong.SaoChep()).ToList();
-            dgvGioHang.ClearSelection();
-            lblSoDong.Text = gioHang.Count + " sản phẩm";
-            CapNhatTongTien();
-            return true;
-        }
-
-        private void CapNhatTongTien()
-        {
-            decimal tongTien;
-            try { tongTien = gioHang.Sum(dong => dong.ThanhTien); }
-            catch (OverflowException) { tongTien = GiaTriTienToiDa; }
-            decimal giamGia = numGiamGia.Value;
-            decimal thanhTien = Math.Max(0, tongTien - giamGia);
-            lblTongTien.Text = $"Tổng: {tongTien:N0} đ   |   Phải trả: {thanhTien:N0} đ";
-        }
-
-        private void LamMoiDongBan()
-        {
-            dgvGioHang.ClearSelection();
-            if (cboSanPham.Items.Count > 0) cboSanPham.SelectedIndex = 0;
-            var sanPham = cboSanPham.SelectedItem as LuaChonSanPham;
-            numSoLuong.Value = 1;
-            dtpHanBaoHanh.Checked = true;
-            dtpHanBaoHanh.Value = DateTime.Today.AddYears(1);
-            lblTonKho.Text = sanPham == null ? "Tồn kho: --" : "Tồn kho: " + sanPham.SoLuongTon;
-            lblDonGiaBan.Text = sanPham == null ? "--" : sanPham.GiaBan.ToString("N0") + " đ";
-            btnThemDong.Text = "Thêm sản phẩm";
-        }
-
-        private void btnLuuHoaDon_Click(object sender, EventArgs e)
-        {
-            if (!KiemTraPhienDangNhap(true)) return;
-            var khachHang = cboKhachHang.SelectedItem as LuaChonKhachHang;
-            if (khachHang?.Id == null)
-            {
-                HienThiLoi("Vui lòng chọn khách hàng.");
-                return;
-            }
-            if (gioHang.Count == 0)
-            {
-                HienThiLoi("Hóa đơn phải có ít nhất một sản phẩm.");
-                return;
-            }
-            if (!TaiGioHang()) return;
-            decimal tongTien = gioHang.Sum(dong => dong.ThanhTien);
-            decimal giamGia = numGiamGia.Value;
-            if (giamGia > tongTien)
-            {
-                HienThiLoi("Giảm giá không được lớn hơn tổng tiền.");
-                return;
-            }
-            string phuongThuc = cboPhuongThucThanhToan.Text.Trim();
-            if (string.IsNullOrWhiteSpace(phuongThuc))
-            {
-                HienThiLoi("Vui lòng chọn phương thức thanh toán.");
-                return;
-            }
-
-            try
-            {
-                int hoaDonMoiId;
-                using (var db = DatabaseConnection.CreateContext())
-                using (var transaction = db.Database.BeginTransaction(IsolationLevel.Serializable))
+                cartItems.Add(new PosCartItem
                 {
-                    int nhanVienId = CurrentUserSession.HienTai.NhanVienId;
-                    if (!db.NhanViens.Any(nv => nv.NhanVienId == nhanVienId && nv.DangLamViec))
+                    ProductId = product.Id,
+                    ProductCode = product.Code,
+                    ProductName = product.Name,
+                    CurrentStock = product.InStock,
+                    UnitPrice = product.Price,
+                    Quantity = quantity,
+                    WarrantyExpiryDate = warrantyDate
+                });
+            }
+
+            RefreshCartView();
+            ShowNotification($"Đã thêm '{product.Name}' vào giỏ hàng.", false);
+            numProductQty.Value = 1;
+        }
+
+        private void btnScanQr_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.Title = "Chọn ảnh mã QR sản phẩm";
+                dialog.Filter = "Ảnh QR Code (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg";
+                if (dialog.ShowDialog(this) != DialogResult.OK) return;
+
+                try
+                {
+                    using (var bitmap = new Bitmap(dialog.FileName))
                     {
-                        HienThiLoi("Nhân viên của phiên đăng nhập không còn hoạt động.");
-                        return;
-                    }
-                    if (!db.KhachHangs.Any(kh => kh.KhachHangId == khachHang.Id.Value && kh.DangHoatDong))
-                    {
-                        HienThiLoi("Khách hàng đã ngừng hoạt động. Hãy tải lại danh sách.");
-                        return;
-                    }
-                    var ids = gioHang.Select(dong => dong.SanPhamId).ToList();
-                    var sanPhams = db.SanPhams.Where(sp => ids.Contains(sp.SanPhamId)).ToList();
-                    if (sanPhams.Count != ids.Count || sanPhams.Any(sp => !sp.DangKinhDoanh))
-                    {
-                        HienThiLoi("Có sản phẩm không còn kinh doanh. Hãy tải lại danh sách.");
-                        return;
-                    }
-                    foreach (var dong in gioHang)
-                    {
-                        var sanPham = sanPhams.Single(sp => sp.SanPhamId == dong.SanPhamId);
-                        if (sanPham.SoLuongTon < dong.SoLuong)
+                        string qrContent = QrCodeService.DocMaQr(bitmap);
+                        if (string.IsNullOrWhiteSpace(qrContent))
                         {
-                            HienThiLoi($"Tồn kho {sanPham.TenSanPham} chỉ còn {sanPham.SoLuongTon}.");
+                            ShowNotification("Không nhận diện được mã QR hợp lệ từ file ảnh đã chọn.", true);
                             return;
                         }
-                        if (sanPham.GiaBan != dong.DonGiaBan)
+
+                        // Match product code (e.g. SP000001) or ID
+                        var matchedProduct = productOptions.FirstOrDefault(p =>
+                            string.Equals(p.Code, qrContent, StringComparison.OrdinalIgnoreCase) ||
+                            p.Id.ToString() == qrContent ||
+                            string.Equals(p.Name, qrContent, StringComparison.OrdinalIgnoreCase));
+
+                        if (matchedProduct == null)
                         {
-                            HienThiLoi($"Giá bán {sanPham.TenSanPham} vừa thay đổi. Hãy tạo lại dòng sản phẩm.");
+                            ShowNotification($"Mã QR '{qrContent}' không khớp với bất kỳ sản phẩm nào đang kinh doanh.", true);
                             return;
                         }
+
+                        // Auto add 1 item to cart
+                        AddProductToCart(matchedProduct.Id, 1, DateTime.Today.AddYears(1));
+                        cboProductSelector.SelectedValue = matchedProduct.Id;
                     }
-                    DateTime ngayLap = DateTime.Now;
-                    if (gioHang.Any(dong => dong.HanBaoHanh.HasValue && dong.HanBaoHanh.Value.Date < ngayLap.Date))
-                    {
-                        HienThiLoi("Có hạn bảo hành nhỏ hơn ngày lập hóa đơn.");
-                        return;
-                    }
-                    var hoaDon = new HoaDon
-                    {
-                        NhanVienId = nhanVienId,
-                        KhachHangId = khachHang.Id.Value,
-                        NgayLap = ngayLap,
-                        TongTien = tongTien,
-                        GiamGia = giamGia,
-                        ThanhTien = tongTien - giamGia,
-                        PhuongThucThanhToan = phuongThuc,
-                        TrangThai = "DA_THANH_TOAN"
-                    };
-                    db.HoaDons.Add(hoaDon);
-                    foreach (var dong in gioHang)
-                    {
-                        hoaDon.ChiTietHoaDons.Add(new ChiTietHoaDon
-                        {
-                            SanPhamId = dong.SanPhamId,
-                            SoLuong = dong.SoLuong,
-                            DonGiaBan = dong.DonGiaBan,
-                            HanBaoHanh = dong.HanBaoHanh
-                        });
-                        sanPhams.Single(sp => sp.SanPhamId == dong.SanPhamId).SoLuongTon -= dong.SoLuong;
-                    }
-                    db.SaveChanges();
-                    transaction.Commit();
-                    hoaDonMoiId = hoaDon.HoaDonId;
                 }
-                TaiDuLieuLuaChon();
-                LamMoiHoaDon();
-                MessageBox.Show($"Đã thanh toán hóa đơn HD{hoaDonMoiId:000000}.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                catch (Exception ex)
+                {
+                    ShowNotification("Lỗi khi đọc file ảnh QR: " + ex.Message, true);
+                }
             }
-            catch (DbUpdateException)
+        }
+
+        private void RefreshCartView()
+        {
+            dgvCart.DataSource = null;
+            dgvCart.DataSource = cartItems.ToList();
+
+            // Populate row numbers
+            for (int i = 0; i < dgvCart.Rows.Count; i++)
             {
-                HienThiLoi("Không thể lưu hóa đơn. Dữ liệu có thể đã thay đổi hoặc bị trùng.");
+                dgvCart.Rows[i].Cells["ColIndex"].Value = (i + 1).ToString();
             }
-            catch (Exception)
+
+            lblCartSummary.Text = $"Giỏ hàng: {cartItems.Sum(item => item.Quantity)} món ({cartItems.Count} dòng sản phẩm)";
+            RecalculateTotals();
+        }
+
+        private void RecalculateTotals()
+        {
+            decimal subTotal = cartItems.Sum(item => item.LineTotal);
+            decimal discount = numDiscount.Value;
+            if (discount > subTotal)
             {
-                HienThiLoi("Không thể lập hóa đơn. Hãy kiểm tra kết nối CSDL.");
+                discount = subTotal;
+                numDiscount.Value = discount;
+            }
+
+            decimal totalPayable = Math.Max(0M, subTotal - discount);
+            decimal customerCash = numCustomerCash.Value;
+            decimal changeDue = Math.Max(0M, customerCash - totalPayable);
+
+            lblSubTotalValue.Text = subTotal.ToString("N0") + " đ";
+            lblTotalPayableValue.Text = totalPayable.ToString("N0") + " đ";
+            lblChangeDueValue.Text = changeDue.ToString("N0") + " đ";
+        }
+
+        private void numDiscount_ValueChanged(object sender, EventArgs e) => RecalculateTotals();
+        private void numCustomerCash_ValueChanged(object sender, EventArgs e) => RecalculateTotals();
+
+        private void btnCashExact_Click(object sender, EventArgs e)
+        {
+            decimal subTotal = cartItems.Sum(item => item.LineTotal);
+            decimal totalPayable = Math.Max(0M, subTotal - numDiscount.Value);
+            numCustomerCash.Value = totalPayable;
+        }
+
+        private void btnCash500k_Click(object sender, EventArgs e) => numCustomerCash.Value = 500000M;
+        private void btnCash1m_Click(object sender, EventArgs e) => numCustomerCash.Value = 1000000M;
+        private void btnCash2m_Click(object sender, EventArgs e) => numCustomerCash.Value = 2000000M;
+
+        private void btnIncreaseQty_Click(object sender, EventArgs e)
+        {
+            var selectedItem = GetSelectedCartItem();
+            if (selectedItem == null) return;
+
+            var product = productOptions.FirstOrDefault(p => p.Id == selectedItem.ProductId);
+            if (product != null && selectedItem.Quantity >= product.InStock)
+            {
+                ShowNotification($"Không thể tăng số lượng. Tồn kho tối đa: {product.InStock}.", true);
+                return;
+            }
+
+            selectedItem.Quantity++;
+            RefreshCartView();
+        }
+
+        private void btnDecreaseQty_Click(object sender, EventArgs e)
+        {
+            var selectedItem = GetSelectedCartItem();
+            if (selectedItem == null) return;
+
+            selectedItem.Quantity--;
+            if (selectedItem.Quantity <= 0)
+            {
+                cartItems.Remove(selectedItem);
+            }
+
+            RefreshCartView();
+        }
+
+        private void btnRemoveSelectedItem_Click(object sender, EventArgs e)
+        {
+            var selectedItem = GetSelectedCartItem();
+            if (selectedItem == null)
+            {
+                ShowNotification("Vui lòng chọn dòng sản phẩm cần xóa.", true);
+                return;
+            }
+
+            cartItems.Remove(selectedItem);
+            RefreshCartView();
+            ShowNotification($"Đã xóa '{selectedItem.ProductName}' khỏi giỏ hàng.", false);
+        }
+
+        private void btnClearCart_Click(object sender, EventArgs e)
+        {
+            if (cartItems.Count == 0) return;
+            if (MessageBox.Show("Bạn có chắc chắn muốn làm sạch toàn bộ giỏ hàng?", "Xác nhận",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                cartItems.Clear();
+                RefreshCartView();
+                ShowNotification("Đã làm sạch giỏ hàng.", false);
             }
         }
 
-        private void btnHoaDonMoi_Click(object sender, EventArgs e) => LamMoiHoaDon();
-
-        private void LamMoiHoaDon()
+        private PosCartItem GetSelectedCartItem()
         {
-            dangLamMoi = true;
-            try { LamMoiHoaDonNoiBo(); }
-            finally { dangLamMoi = false; }
+            if (dgvCart.CurrentRow == null) return null;
+            return dgvCart.CurrentRow.DataBoundItem as PosCartItem;
         }
 
-        private void LamMoiHoaDonNoiBo()
+        private void dgvCart_SelectionChanged(object sender, EventArgs e)
         {
-            gioHang.Clear();
-            if (cboKhachHang.Items.Count > 0) cboKhachHang.SelectedIndex = 0;
-            lblNhanVienLap.Text = CurrentUserSession.DaDangNhap ? CurrentUserSession.HienTai.HoTen : string.Empty;
-            lblNgayLap.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
-            cboPhuongThucThanhToan.SelectedIndex = 0;
-            numGiamGia.Value = 0;
-            TaiGioHang();
-            LamMoiDongBan();
-            lblThongBao.Text = string.Empty;
+            var item = GetSelectedCartItem();
+            if (item != null)
+            {
+                cboProductSelector.SelectedValue = item.ProductId;
+            }
         }
 
-        private void HienThiLoi(string noiDung) => lblThongBao.Text = "* " + noiDung;
-
-        private sealed class LuaChonKhachHang
+        private void btnCheckout_Click(object sender, EventArgs e)
         {
-            public int? Id { get; set; }
-            public string Ten { get; set; }
-            public string SoDienThoai { get; set; }
-            public bool DangHoatDong { get; set; }
-            public LuaChonKhachHang SaoChep() => (LuaChonKhachHang)MemberwiseClone();
-            public override string ToString() => string.IsNullOrWhiteSpace(SoDienThoai) ? Ten : $"{Ten} - {SoDienThoai}";
+            if (!CurrentUserSession.DaDangNhap)
+            {
+                MessageBox.Show("Phiên đăng nhập đã kết thúc.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var customer = cboCustomer.SelectedItem as CustomerOption;
+            if (customer == null)
+            {
+                ShowNotification("Vui lòng chọn thông tin khách hàng.", true);
+                return;
+            }
+
+            if (cartItems.Count == 0)
+            {
+                ShowNotification("Giỏ hàng đang trống. Hãy thêm sản phẩm trước khi thanh toán.", true);
+                return;
+            }
+
+            decimal subTotal = cartItems.Sum(item => item.LineTotal);
+            decimal discount = numDiscount.Value;
+            decimal totalPayable = Math.Max(0M, subTotal - discount);
+            decimal customerCash = numCustomerCash.Value;
+
+            string paymentMethod = cboPaymentMethod.Text;
+            if (paymentMethod == "Tiền mặt" && customerCash < totalPayable)
+            {
+                if (MessageBox.Show($"Khách đưa {customerCash:N0} đ, chưa đủ {totalPayable:N0} đ. Bạn có muốn tự động nhận đủ tiền mặt?",
+                    "Xác nhận tiền mặt", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    customerCash = totalPayable;
+                    numCustomerCash.Value = customerCash;
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            var request = new PosCheckoutRequest
+            {
+                StaffId = CurrentUserSession.HienTai.NhanVienId,
+                CustomerId = customer.Id,
+                SubTotal = subTotal,
+                DiscountAmount = discount,
+                TotalPayable = totalPayable,
+                CustomerPayment = customerCash,
+                PaymentMethod = paymentMethod,
+                Items = cartItems
+            };
+
+            var result = PosService.ProcessCheckout(request);
+            if (!result.IsSuccess)
+            {
+                ShowNotification(result.ErrorMessage, true);
+                MessageBox.Show(result.ErrorMessage, "Lỗi thanh toán", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            int newInvoiceId = result.InvoiceId;
+            string newInvoiceCode = result.InvoiceCode;
+
+            // Reload products to refresh stock counts
+            LoadCustomersAndProducts();
+            ResetOrderInternal();
+
+            var printChoice = MessageBox.Show(
+                $"Thanh toán thành công đơn hàng {newInvoiceCode}!\nTổng tiền: {totalPayable:N0} đ\n\nBạn có muốn xem và in hóa đơn ngay không?",
+                "Giao dịch thành công",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Information);
+
+            if (printChoice == DialogResult.Yes)
+            {
+                try
+                {
+                    var reportConfig = BaoCaoService.TaoHoaDon(newInvoiceId);
+                    using (var reportViewer = new FrmXemBaoCao(reportConfig))
+                    {
+                        reportViewer.ShowDialog(this);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Không thể mở hóa đơn in: " + ex.Message, "Lỗi in ấn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
         }
 
-        private sealed class LuaChonSanPham
+        private void btnNewOrder_Click(object sender, EventArgs e)
+        {
+            if (cartItems.Count > 0)
+            {
+                if (MessageBox.Show("Hủy đơn hiện tại và tạo đơn mới?", "Xác nhận",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                {
+                    return;
+                }
+            }
+
+            ResetOrderInternal();
+            ShowNotification("Đã khởi tạo đơn mới.", false);
+        }
+
+        private void ResetOrderInternal()
+        {
+            cartItems.Clear();
+            if (customerOptions.Count > 0) cboCustomer.SelectedIndex = 0;
+            if (productOptions.Count > 0) cboProductSelector.SelectedIndex = 0;
+
+            string staffName = CurrentUserSession.DaDangNhap ? CurrentUserSession.HienTai.HoTen : "--";
+            lblCashierInfo.Text = $"{staffName} | {DateTime.Now:dd/MM/yyyy HH:mm}";
+
+            cboPaymentMethod.SelectedIndex = 0;
+            numProductQty.Value = 1;
+            numDiscount.Value = 0M;
+            numCustomerCash.Value = 0M;
+            dtpProductWarranty.Checked = true;
+            dtpProductWarranty.Value = DateTime.Today.AddYears(1);
+
+            RefreshCartView();
+            lblNotification.Text = string.Empty;
+        }
+
+        private void FrmBanHang_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F9)
+            {
+                btnCheckout_Click(this, EventArgs.Empty);
+                e.Handled = true;
+            }
+            else if (e.KeyCode == Keys.F4)
+            {
+                btnNewOrder_Click(this, EventArgs.Empty);
+                e.Handled = true;
+            }
+        }
+
+        private void ShowNotification(string message, bool isError)
+        {
+            lblNotification.ForeColor = isError ? Color.FromArgb(198, 40, 40) : Color.FromArgb(46, 125, 50);
+            lblNotification.Text = message;
+        }
+
+        private sealed class CustomerOption
         {
             public int Id { get; set; }
-            public string Ten { get; set; }
-            public decimal GiaBan { get; set; }
-            public int SoLuongTon { get; set; }
-            public override string ToString() => $"SP{Id:000000} - {Ten}";
+            public string Name { get; set; }
+            public string Phone { get; set; }
+            public int RewardPoints { get; set; }
+            public string DisplayName => string.IsNullOrWhiteSpace(Phone) ? Name : $"{Name} ({Phone})";
         }
 
-        private sealed class DongBanHang
+        private sealed class ProductOption
         {
-            public int SanPhamId { get; set; }
-            public string MaSanPham { get; set; }
-            public string TenSanPham { get; set; }
-            public int TonKhoHienTai { get; set; }
-            public int SoLuong { get; set; }
-            public decimal DonGiaBan { get; set; }
-            public decimal ThanhTien => SoLuong * DonGiaBan;
-            public DateTime? HanBaoHanh { get; set; }
-            public string HanBaoHanhHienThi => HanBaoHanh.HasValue ? HanBaoHanh.Value.ToString("dd/MM/yyyy") : "Không có";
-            public DongBanHang SaoChep() => (DongBanHang)MemberwiseClone();
+            public int Id { get; set; }
+            public string Code { get; set; }
+            public string Name { get; set; }
+            public decimal Price { get; set; }
+            public int InStock { get; set; }
+            public string DisplayName => $"{Code} - {Name} ({Price:N0} đ | Kho: {InStock})";
         }
     }
 }
