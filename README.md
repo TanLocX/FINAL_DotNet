@@ -1,4 +1,4 @@
-﻿# PNJ Jewelry Store Management System
+# PNJ Jewelry Store Management System
 
 Phần mềm quản lý bán hàng và vận hành chuỗi cửa hàng vàng bạc, đá quý và trang sức PNJ. Hệ thống được phát triển trên nền tảng Windows Forms với C# và .NET Framework 4.7.2, tích hợp Entity Framework 6 và hệ quản trị cơ sở dữ liệu Microsoft SQL Server.
 
@@ -151,4 +151,5 @@ FINAL_DotNet/
 
 - Đề cương ôn tập Full-Stack, giải thích code và kịch bản phản biện: xem tại [`Doc.md`](Doc.md).
 - Đặc tả kỹ thuật chi tiết toàn bộ 13 phân hệ và 17 bảng CSDL: xem tại [`docs/HANDOVER_SPECIFICATION.md`](docs/HANDOVER_SPECIFICATION.md).
+- Thuyết minh và bản đồ chi tiết cây thư mục dự án: xem tại [`PROJECT_STRUCTURE.md`](PROJECT_STRUCTURE.md).
 - Bảng chấm điểm đối chiếu tiêu chí đồ án: xem tại [`RUBRIC CHAM DIEM - THAM KHAO.xlsx`](RUBRIC%20CHAM%20DIEM%20-%20THAM%20KHAO.xlsx).
