@@ -601,20 +601,35 @@ namespace FINAL_DotNet
         {
             using (var dialog = new OpenFileDialog
             {
-                Title = "Chọn ảnh sản phẩm đã có trong dự án",
-                Filter = "Tệp ảnh|*.png;*.jpg;*.jpeg;*.bmp;*.gif|Tất cả tệp|*.*"
+                Title = "Chọn ảnh sản phẩm",
+                Filter = "Tệp hình ảnh (*.png;*.jpg;*.jpeg;*.bmp;*.webp)|*.png;*.jpg;*.jpeg;*.bmp;*.webp|Tất cả tệp (*.*)|*.*"
             })
             {
                 string thuMucDuAn = TimThuMucDuAn();
-                if (thuMucDuAn != null) dialog.InitialDirectory = Path.Combine(thuMucDuAn, "Resources");
-                if (dialog.ShowDialog(this) != DialogResult.OK) return;
-                if (thuMucDuAn == null || !NamTrongThuMuc(dialog.FileName, thuMucDuAn))
+                if (thuMucDuAn != null && Directory.Exists(Path.Combine(thuMucDuAn, "Resources")))
                 {
-                    HienThiLoi("Hãy đưa ảnh vào thư mục dự án (khuyến nghị Resources) rồi chọn lại.");
-                    return;
+                    dialog.InitialDirectory = Path.Combine(thuMucDuAn, "Resources");
                 }
-                txtDuongDanAnh.Text = LayDuongDanTuongDoi(thuMucDuAn, dialog.FileName);
-                HienThiAnh(txtDuongDanAnh.Text);
+                if (dialog.ShowDialog(this) != DialogResult.OK) return;
+
+                try
+                {
+                    if (thuMucDuAn != null && NamTrongThuMuc(dialog.FileName, Path.Combine(thuMucDuAn, "Resources")))
+                    {
+                        txtDuongDanAnh.Text = LayDuongDanTuongDoi(thuMucDuAn, dialog.FileName);
+                    }
+                    else
+                    {
+                        string relativePath = ImageOptimizationHelper.SaveOptimizedProductImage(dialog.FileName, thuMucDuAn);
+                        txtDuongDanAnh.Text = relativePath;
+                    }
+
+                    HienThiAnh(txtDuongDanAnh.Text);
+                }
+                catch (Exception ex)
+                {
+                    HienThiLoi("Không thể xử lý tệp ảnh: " + ex.Message);
+                }
             }
         }
 
@@ -859,7 +874,7 @@ namespace FINAL_DotNet
             {
                 using (var stream = new FileStream(tepAnh, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 using (var anh = Image.FromStream(stream))
-                    picSanPham.Image = new Bitmap(anh);
+                    picSanPham.Image = ImageOptimizationHelper.CreateOptimizedThumbnail(anh, 300);
                 lblChuaCoAnh.Visible = false;
             }
             catch
@@ -870,25 +885,12 @@ namespace FINAL_DotNet
 
         private static string TimTepAnh(string duongDan)
         {
-            if (string.IsNullOrWhiteSpace(duongDan) || Path.IsPathRooted(duongDan)) return null;
-            string chuanHoa = duongDan.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar);
-            string ungVien = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, chuanHoa));
-            if (File.Exists(ungVien)) return ungVien;
-            string thuMucDuAn = TimThuMucDuAn();
-            if (thuMucDuAn == null) return null;
-            ungVien = Path.GetFullPath(Path.Combine(thuMucDuAn, chuanHoa));
-            return File.Exists(ungVien) ? ungVien : null;
+            return ImageOptimizationHelper.FindImageFile(duongDan);
         }
 
         private static string TimThuMucDuAn()
         {
-            var thuMuc = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
-            while (thuMuc != null)
-            {
-                if (File.Exists(Path.Combine(thuMuc.FullName, "FINAL_DotNet.csproj"))) return thuMuc.FullName;
-                thuMuc = thuMuc.Parent;
-            }
-            return null;
+            return ImageOptimizationHelper.FindProjectDirectory();
         }
 
         private static bool NamTrongThuMuc(string tep, string thuMuc)

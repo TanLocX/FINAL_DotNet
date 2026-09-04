@@ -387,22 +387,7 @@ namespace FINAL_DotNet
 
         private static string TimTepAnh(string duongDan)
         {
-            if (string.IsNullOrWhiteSpace(duongDan) || Path.IsPathRooted(duongDan)) return null;
-            string chuanHoa = duongDan.Replace('/', Path.DirectorySeparatorChar)
-                .Replace('\\', Path.DirectorySeparatorChar);
-            string ungVien = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, chuanHoa));
-            if (File.Exists(ungVien)) return ungVien;
-            DirectoryInfo thuMuc = new DirectoryInfo(AppDomain.CurrentDomain.BaseDirectory);
-            while (thuMuc != null)
-            {
-                if (File.Exists(Path.Combine(thuMuc.FullName, "FINAL_DotNet.csproj")))
-                {
-                    ungVien = Path.GetFullPath(Path.Combine(thuMuc.FullName, chuanHoa));
-                    return File.Exists(ungVien) ? ungVien : null;
-                }
-                thuMuc = thuMuc.Parent;
-            }
-            return null;
+            return ImageOptimizationHelper.FindImageFile(duongDan);
         }
 
         private void GiaiPhongAnhBoSuuTap()
