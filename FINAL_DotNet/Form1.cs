@@ -1,5 +1,6 @@
 using System;
 using System.Data.Entity;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -7,9 +8,96 @@ namespace FINAL_DotNet
 {
     public partial class Form1 : Form
     {
+        private Image anhNenHienTai;
+        private bool isUpdatingLayout = false;
+        private int lastCropWidth = -1;
+        private int lastCropHeight = -1;
+
         public Form1()
         {
             InitializeComponent();
+            this.DoubleBuffered = true;
+            this.Resize += Form1_Resize;
+            this.FormClosed += Form1_FormClosed;
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            anhNenHienTai?.Dispose();
+            anhNenHienTai = null;
+            lastCropWidth = -1;
+            lastCropHeight = -1;
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            if (isUpdatingLayout) return;
+            try
+            {
+                isUpdatingLayout = true;
+                CapNhatAnhNenAutoCrop();
+                CanChinhViTriDangNhap();
+            }
+            finally
+            {
+                isUpdatingLayout = false;
+            }
+        }
+
+        private void CapNhatAnhNenAutoCrop()
+        {
+            if (pnlNen == null || pnlNen.ClientSize.Width <= 0 || pnlNen.ClientSize.Height <= 0) return;
+
+            int targetW = pnlNen.ClientSize.Width;
+            int targetH = pnlNen.ClientSize.Height;
+
+            if (targetW == lastCropWidth && targetH == lastCropHeight && anhNenHienTai != null)
+            {
+                return;
+            }
+
+            Image rawBg = Properties.Resources.Background;
+            if (rawBg == null) return;
+
+            Bitmap cropped = ImageOptimizationHelper.CreateCoverCroppedImage(rawBg, targetW, targetH);
+            if (cropped != null)
+            {
+                Image oldImg = anhNenHienTai;
+                anhNenHienTai = cropped;
+                lastCropWidth = targetW;
+                lastCropHeight = targetH;
+                pnlNen.BackgroundImageLayout = ImageLayout.None;
+                pnlNen.BackgroundImage = anhNenHienTai;
+                oldImg?.Dispose();
+            }
+        }
+
+        private void CanChinhViTriDangNhap()
+        {
+            if (pnlDangNhap == null || pnlNen == null) return;
+
+            int rightMargin = Math.Max(40, (int)(pnlNen.ClientSize.Width * 0.08));
+            int left = Math.Max(450, pnlNen.ClientSize.Width - pnlDangNhap.Width - rightMargin);
+
+            pnlDangNhap.Left = left;
+
+            if (guna2Panel4 != null) guna2Panel4.Left = left;
+            if (guna2Panel2 != null) guna2Panel2.Left = left + (pnlDangNhap.Width - guna2Panel2.Width) / 2;
+            if (guna2Panel1 != null) guna2Panel1.Left = left + (pnlDangNhap.Width - guna2Panel1.Width) / 2;
+            if (label5 != null) label5.Left = left + (pnlDangNhap.Width - label5.Width) / 2;
+            if (label9 != null) label9.Left = left + (pnlDangNhap.Width - label9.Width) / 2;
+            if (label6 != null) label6.Left = left + (pnlDangNhap.Width - label6.Width) / 2;
+
+            int totalStackHeight = 175 + pnlDangNhap.Height;
+            int stackTop = Math.Max(12, (pnlNen.ClientSize.Height - totalStackHeight) / 2);
+
+            if (guna2Panel1 != null) guna2Panel1.Top = stackTop;
+            if (label5 != null) label5.Top = stackTop + 54;
+            if (guna2Panel4 != null) guna2Panel4.Top = stackTop + 64;
+            if (guna2Panel2 != null) guna2Panel2.Top = stackTop + 82;
+            if (label9 != null) label9.Top = stackTop + 98;
+            if (label6 != null) label6.Top = stackTop + 144;
+            pnlDangNhap.Top = stackTop + 175;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -18,6 +106,20 @@ namespace FINAL_DotNet
 
             // Tài khoản chỉ do quản trị viên cấp, không đăng ký công khai.
             btnChuyenDangKy.Visible = false;
+
+            if (!isUpdatingLayout)
+            {
+                try
+                {
+                    isUpdatingLayout = true;
+                    CapNhatAnhNenAutoCrop();
+                    CanChinhViTriDangNhap();
+                }
+                finally
+                {
+                    isUpdatingLayout = false;
+                }
+            }
         }
 
         private void btnDangNhap_Click(object sender, EventArgs e)

@@ -52,6 +52,38 @@ namespace FINAL_DotNet
         }
 
         /// <summary>
+        /// Scales and crops the source image to completely cover the target area (Center-Crop / Aspect-Ratio Cover)
+        /// with zero letterboxing margins and no aspect ratio distortion.
+        /// </summary>
+        public static Bitmap CreateCoverCroppedImage(Image sourceImage, int targetWidth, int targetHeight)
+        {
+            if (sourceImage == null || targetWidth <= 0 || targetHeight <= 0)
+            {
+                return null;
+            }
+
+            float scale = Math.Max((float)targetWidth / sourceImage.Width, (float)targetHeight / sourceImage.Height);
+            int scaledWidth = Math.Max(targetWidth, (int)Math.Ceiling(sourceImage.Width * scale));
+            int scaledHeight = Math.Max(targetHeight, (int)Math.Ceiling(sourceImage.Height * scale));
+
+            int posX = (targetWidth - scaledWidth) / 2;
+            int posY = (targetHeight - scaledHeight) / 2;
+
+            var resultBitmap = new Bitmap(targetWidth, targetHeight, PixelFormat.Format32bppArgb);
+            using (var graphics = Graphics.FromImage(resultBitmap))
+            {
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                graphics.DrawImage(sourceImage, new Rectangle(posX, posY, scaledWidth, scaledHeight));
+            }
+
+            return resultBitmap;
+        }
+
+        /// <summary>
         /// Locates an image file by relative path across BaseDirectory, Assembly Directory, and Project Directory.
         /// </summary>
         public static string FindImageFile(string relativePath)

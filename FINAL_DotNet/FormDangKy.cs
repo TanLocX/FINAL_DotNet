@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -6,14 +7,70 @@ namespace FINAL_DotNet
 {
     public partial class FormDangKy : Form
     {
+        private Image anhNenHienTai;
+        private bool isUpdatingLayout = false;
+        private int lastCropWidth = -1;
+        private int lastCropHeight = -1;
+
         public FormDangKy()
         {
             InitializeComponent();
+            this.DoubleBuffered = true;
+            this.Resize += (s, e) => ThucHienCapNhat();
+            this.FormClosed += (s, e) => {
+                anhNenHienTai?.Dispose();
+                anhNenHienTai = null;
+                lastCropWidth = -1;
+                lastCropHeight = -1;
+            };
+        }
+
+        private void ThucHienCapNhat()
+        {
+            if (isUpdatingLayout) return;
+            try
+            {
+                isUpdatingLayout = true;
+                CapNhatAnhNenAutoCrop();
+            }
+            finally
+            {
+                isUpdatingLayout = false;
+            }
         }
 
         private void FormDangKy_Load(object sender, EventArgs e)
         {
             lbThongBaoLoi.Text = string.Empty;
+            ThucHienCapNhat();
+        }
+
+        private void CapNhatAnhNenAutoCrop()
+        {
+            if (guna2Panel1 == null || guna2Panel1.ClientSize.Width <= 0 || guna2Panel1.ClientSize.Height <= 0) return;
+
+            int targetW = guna2Panel1.ClientSize.Width;
+            int targetH = guna2Panel1.ClientSize.Height;
+
+            if (targetW == lastCropWidth && targetH == lastCropHeight && anhNenHienTai != null)
+            {
+                return;
+            }
+
+            Image rawBg = Properties.Resources._99;
+            if (rawBg == null) return;
+
+            Bitmap cropped = ImageOptimizationHelper.CreateCoverCroppedImage(rawBg, targetW, targetH);
+            if (cropped != null)
+            {
+                Image oldImg = anhNenHienTai;
+                anhNenHienTai = cropped;
+                lastCropWidth = targetW;
+                lastCropHeight = targetH;
+                guna2Panel1.BackgroundImageLayout = ImageLayout.None;
+                guna2Panel1.BackgroundImage = anhNenHienTai;
+                oldImg?.Dispose();
+            }
         }
 
         private void btnDangKy_Click(object sender, EventArgs e)
