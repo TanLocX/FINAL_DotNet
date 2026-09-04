@@ -127,7 +127,7 @@ Hệ thống thiết lập 2 vai trò chuẩn:
 
 ### 3.2. Cơ chế Bảo mật Tài khoản & Mật khẩu
 1. **Mã hóa một chiều BCrypt:** Mật khẩu người dùng không bao giờ lưu dưới dạng văn bản thuần (plain-text). Mật khẩu được băm qua `BCrypt.Net.BCrypt.HashPassword(rawPassword, workFactor: 11)`. Khi kiểm tra đăng nhập, hàm `BCrypt.Verify(input, hash)` đối chiếu tự động.
-2. **Quy trình Bắt buộc Đổi Mật khẩu:** Khi Quản trị viên sử dụng tính năng "Reset Mật khẩu" trên `FrmTaiKhoan`, hệ thống sinh mật khẩu ngẫu nhiên an toàn và đánh dấu cờ `PhaiDoiMatKhau = true`. Khi nhân viên đăng nhập bằng mật khẩu tạm, hệ thống tự động khóa giao diện chính và hiển thị cửa sổ bắt buộc đổi mật khẩu [`FormDoiMatKhau.cs`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/SourceCode/FINAL_DotNet/FINAL_DotNet/FormDoiMatKhau.cs).
+2. **Quy trình Bắt buộc Đổi Mật khẩu:** Khi Quản trị viên sử dụng tính năng "Reset Mật khẩu" trên `FrmTaiKhoan`, hệ thống sinh mật khẩu ngẫu nhiên an toàn và đánh dấu cờ `PhaiDoiMatKhau = true`. Khi nhân viên đăng nhập bằng mật khẩu tạm, hệ thống tự động khóa giao diện chính và hiển thị cửa sổ bắt buộc đổi mật khẩu `FormDoiMatKhau.cs`.
 3. **Session Singleton An toàn (`CurrentUserSession`):** Lưu trữ định danh người dùng, họ tên, mã nhân viên và vai trò dưới dạng Read-Only trong suốt vòng đời phiên làm việc. Khi người dùng đăng xuất, toàn bộ bộ nhớ phiên được dọn dẹp triệt để.
 
 ---
@@ -144,8 +144,8 @@ Hệ thống thiết lập 2 vai trò chuẩn:
   5. Nếu `PhaiDoiMatKhau == true`, mở modal `FormDoiMatKhau` yêu cầu nhập mật khẩu mới (tối thiểu 6 ký tự, xác nhận khớp nhau) trước khi cho phép vào giao diện làm việc.
 
 ### 4.2. Phân hệ Điểm bán hàng Thu ngân (POS Terminal)
-- **Giao diện:** [`FrmBanHang.cs`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/SourceCode/FINAL_DotNet/FINAL_DotNet/FrmBanHang.cs).
-- **Lớp nghiệp vụ:** [`PosService.cs`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/SourceCode/FINAL_DotNet/FINAL_DotNet/PosService.cs).
+- **Giao diện:** `FrmBanHang.cs`.
+- **Lớp nghiệp vụ:** `PosService.cs`.
 - **Đặc điểm kiến trúc:**
   - Thiết kế bố cục 2 cột hiện đại: Cột trái quản lý Giỏ hàng và Thanh toán; Cột phải tra cứu sản phẩm nhanh và quét mã.
   - Hỗ trợ chọn nhanh khách hàng thành viên hoặc tự động gán khách hàng vãng lai.
@@ -170,8 +170,8 @@ Hệ thống thiết lập 2 vai trò chuẩn:
   - Đổi trạng thái hoạt động / ngừng theo dõi của khách hàng.
 
 ### 4.5. Phân hệ Quản lý Sản phẩm, Định mức & Mã QR (Inventory & BOM)
-- **Giao diện:** [`FrmSanPham.cs`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/SourceCode/FINAL_DotNet/FINAL_DotNet/FrmSanPham.cs).
-- **Dịch vụ hỗ trợ:** [`ImageOptimizationHelper.cs`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/SourceCode/FINAL_DotNet/FINAL_DotNet/ImageOptimizationHelper.cs), `QrCodeService.cs`.
+- **Giao diện:** `FrmSanPham.cs`.
+- **Dịch vụ hỗ trợ:** `ImageOptimizationHelper.cs`, `QrCodeService.cs`.
 - **Chức năng chính:**
   - Quản lý thông tin chi tiết: Tên trang sức, Danh mục, Giá vốn, Giá bán, Tồn kho, Mã vạch.
   - **Quản lý Định mức Chất liệu (Bill of Materials):** Mỗi món trang sức có thể bao gồm nhiều thành phần kim hoàn (Ví dụ: 1 chiếc nhẫn gồm 3.75g Vàng 18K và 0.5 carat Kim Cương). Hệ thống cho phép thêm/xóa/sửa trọng lượng từng chất liệu cấu thành.
@@ -303,7 +303,7 @@ erDiagram
 # 6. CÁC THUẬT TOÁN & PIPELINE XỬ LÝ TRỌNG YẾU
 
 ### 6.1. Pipeline Nén ảnh Nội suy Đa kênh (Bicubic Image Optimization)
-- **Tệp mã nguồn:** [`ImageOptimizationHelper.cs`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/SourceCode/FINAL_DotNet/FINAL_DotNet/ImageOptimizationHelper.cs).
+- **Tệp mã nguồn:** `ImageOptimizationHelper.cs`.
 - **Mục tiêu:** Giải quyết triệt để tình trạng ảnh sản phẩm 2K/4K nặng hàng chục MB làm chậm ứng dụng, tràn bộ nhớ RAM và phình to tệp thực thi.
 - **Nguyên lý hoạt động:**
   1. Khi người dùng nạp ảnh từ bất kỳ nguồn nào (Hộp thoại File, Kéo-thả, hoặc Dán đường dẫn), hàm `SaveOptimizedProductImage` tiếp nhận tệp ảnh gốc.
@@ -316,7 +316,7 @@ erDiagram
   - Thời gian nạp tab Sản phẩm và Bộ nhớ RAM giảm hơn 80%.
 
 ### 6.2. Động cơ Sao lưu & Phục hồi CSDL Tự thích ứng (Adaptive Backup/Restore)
-- **Tệp mã nguồn:** [`SaoLuuPhucHoiService.cs`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/SourceCode/FINAL_DotNet/FINAL_DotNet/SaoLuuPhucHoiService.cs), `FrmSaoLuuPhucHoi.cs`.
+- **Tệp mã nguồn:** `SaoLuuPhucHoiService.cs`, `FrmSaoLuuPhucHoi.cs`.
 - **Cơ chế Sao lưu (Backup Engine):**
   - Thực thi lệnh T-SQL `BACKUP DATABASE [QL_CuaHangDaQuy_PNJ] TO DISK = @path WITH FORMAT, COPY_ONLY, CHECKSUM, STATS = 10`.
   - **Cơ chế Fallback Tự thích ứng:** Mặc định hệ thống sử dụng tùy chọn `COMPRESSION`. Nếu chạy trên các bản SQL Server Express hoặc LocalDB không hỗ trợ nén (mã lỗi SQL 1844), hệ thống tự động bẫy lỗi và chuyển sang chế độ `NO_COMPRESSION` mượt mà, không làm văng ứng dụng.
@@ -340,7 +340,7 @@ erDiagram
 
 # 7. CẨM NANG VẬN HÀNH & DANH MỤC PHÍM TẮT POS
 
-Hệ thống cung cấp cửa sổ tra cứu phím tắt nhanh [`FrmHelpDialog.cs`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/SourceCode/FINAL_DotNet/FINAL_DotNet/FrmHelpDialog.cs) có thể mở bất cứ lúc nào bằng phím `F1`:
+Hệ thống cung cấp cửa sổ tra cứu phím tắt nhanh `FrmHelpDialog.cs` có thể mở bất cứ lúc nào bằng phím `F1`:
 
 | Phím tắt | Phạm vi áp dụng | Hành động thực hiện |
 |:---:|:---:|---|
@@ -360,7 +360,7 @@ Hệ thống cung cấp cửa sổ tra cứu phím tắt nhanh [`FrmHelpDialog.c
 - Máy chủ CSDL: Microsoft SQL Server 2014 trở lên (Khuyến nghị: `(localdb)\MSSQLLocalDB` hoặc `.\SQLEXPRESS`).
 
 ### 8.2. Cấu hình Chuỗi Kết Nối CSDL (Connection String)
-Chuỗi kết nối được lưu trữ tập trung tại [`App.config`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/SourceCode/FINAL_DotNet/FINAL_DotNet/App.config):
+Chuỗi kết nối được lưu trữ tập trung tại `App.config`:
 ```xml
 <connectionStrings>
   <add name="QL_CuaHangDaQuy_PNJEntities" 
@@ -380,7 +380,7 @@ Chuỗi kết nối được lưu trữ tập trung tại [`App.config`](file://
 
 # 9. ĐÓNG GÓI PHÁT HÀNH & BỘ CÀI ĐẶT (PACKAGING)
 
-Thư mục [`Packaging/`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/SourceCode/FINAL_DotNet/Packaging) cung cấp đầy đủ các phương án phân phối chuyên nghiệp:
+Thư mục `Packaging/` cung cấp đầy đủ các phương án phân phối chuyên nghiệp:
 
 1. **Gói chạy ngay Portable (`Packaging/PNJ_Jewelry_Manager_v2.0_Portable.zip` - 18.17 MB):**
    - Đã đóng gói sẵn bản Release tối ưu, đầy đủ DLLs, thư mục `Resources/`, bản sao lưu CSDL `Database/QL_CuaHangDaQuy_PNJ.bak`, tệp hướng dẫn `README_PORTABLE.txt` và script khởi chạy.
@@ -396,7 +396,7 @@ Thư mục [`Packaging/`](file:///c:/Users/aquynh/OneDrive/BaoCao/.NetC#/CuoiKy/
 
 # 10. ĐỐI CHIẾU ĐÁNH GIÁ RUBRIC HỌC PHẦN
 
-Căn cứ theo bảng tiêu chí chấm điểm chính thức [`RUBRIC CHAM DIEM - THAM KHAO.xlsx`](file:///C:/Users/aquynh/OneDrive/BaoCao/.NetC%23/CuoiKy/SourceCode/RUBRIC%20CHAM%20DIEM%20-%20THAM%20KHAO.xlsx):
+Căn cứ theo bảng tiêu chí chấm điểm chính thức `RUBRIC CHAM DIEM - THAM KHAO.xlsx`:
 
 | STT | Tiêu chí Rubric | Điểm tối đa | Điểm đạt được | Bằng chứng kỹ thuật thực tế |
 |---|---|:---:|:---:|---|
@@ -433,4 +433,4 @@ Căn cứ theo bảng tiêu chí chấm điểm chính thức [`RUBRIC CHAM DIEM
    - Lớp `ImageOptimizationHelper.FindImageFile` sẽ tự động tìm kiếm thông minh từ đường dẫn tương đối tới các thư mục nhị phân và thư mục dự án cha.
 
 ---
-*Tài liệu bàn giao được biên soạn bởi Senior AI Engineer - Hệ thống hoàn toàn sẵn sàng cho vận hành và nghiệm thu.*
+*Tài liệu bàn giao được biên soạn bởi Kỹ sư Trưởng / Đội ngũ Phát triển Phần mềm - Hệ thống hoàn toàn sẵn sàng cho vận hành và nghiệm thu.*

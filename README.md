@@ -77,7 +77,7 @@ Có thể phục hồi bằng một trong hai cách:
 - **Cách 2 (Dùng T-SQL):**
 ```sql
 RESTORE DATABASE [QL_CuaHangDaQuy_PNJ]
-FROM DISK = 'c:\Users\aquynh\OneDrive\BaoCao\.NetC#\CuoiKy\SourceCode\FINAL_DotNet\Database\QL_CuaHangDaQuy_PNJ.bak'
+FROM DISK = 'C:\PNJ_Backups\QL_CuaHangDaQuy_PNJ.bak'
 WITH REPLACE;
 ```
 
