@@ -251,22 +251,46 @@ ALTER DATABASE " + tenDaTrichDan + @" SET MULTI_USER;";
             string tuyChonNen = nenDuLieu ? ", COMPRESSION" : ", NO_COMPRESSION";
             baoTienTrinh?.Invoke("Đang sao lưu CSDL đến " + duongDan + (nenDuLieu ? " (có nén)..." : "..."));
 
-            using (var db = DatabaseConnection.CreateContext())
+            try
             {
-                GanTienTrinh(db, baoTienTrinh);
-                db.Database.CommandTimeout = ThoiGianChoLenhGiay;
+                using (var db = DatabaseConnection.CreateContext())
+                {
+                    GanTienTrinh(db, baoTienTrinh);
+                    db.Database.CommandTimeout = ThoiGianChoLenhGiay;
 
-                string backupSql = @"
+                    string backupSql = @"
 DECLARE @DuongDan nvarchar(4000) = @pDuongDan;
 BACKUP DATABASE " + tenDaTrichDan + @" TO DISK = @DuongDan
 WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5" + tuyChonNen + @", NAME = @pTenBanSao, DESCRIPTION = @pMoTa;";
 
-                db.Database.ExecuteSqlCommand(
-                    TransactionalBehavior.DoNotEnsureTransaction,
-                    backupSql,
-                    new SqlParameter("@pDuongDan", duongDan),
-                    new SqlParameter("@pTenBanSao", "PNJ Manager - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")),
-                    new SqlParameter("@pMoTa", "Bản sao copy-only được tạo bởi PNJ Manager"));
+                    db.Database.ExecuteSqlCommand(
+                        TransactionalBehavior.DoNotEnsureTransaction,
+                        backupSql,
+                        new SqlParameter("@pDuongDan", duongDan),
+                        new SqlParameter("@pTenBanSao", "PNJ Manager - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")),
+                        new SqlParameter("@pMoTa", "Bản sao copy-only được tạo bởi PNJ Manager"));
+                }
+            }
+            catch (Exception ex) when (nenDuLieu && (ex.Message.IndexOf("COMPRESSION", StringComparison.OrdinalIgnoreCase) >= 0 || (ex.InnerException != null && ex.InnerException.Message.IndexOf("COMPRESSION", StringComparison.OrdinalIgnoreCase) >= 0)))
+            {
+                baoTienTrinh?.Invoke("Phiên bản SQL Server không hỗ trợ COMPRESSION, tự động lưu với NO_COMPRESSION...");
+                using (var db = DatabaseConnection.CreateContext())
+                {
+                    GanTienTrinh(db, baoTienTrinh);
+                    db.Database.CommandTimeout = ThoiGianChoLenhGiay;
+
+                    string backupSql = @"
+DECLARE @DuongDan nvarchar(4000) = @pDuongDan;
+BACKUP DATABASE " + tenDaTrichDan + @" TO DISK = @DuongDan
+WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5, NO_COMPRESSION, NAME = @pTenBanSao, DESCRIPTION = @pMoTa;";
+
+                    db.Database.ExecuteSqlCommand(
+                        TransactionalBehavior.DoNotEnsureTransaction,
+                        backupSql,
+                        new SqlParameter("@pDuongDan", duongDan),
+                        new SqlParameter("@pTenBanSao", "PNJ Manager - " + DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")),
+                        new SqlParameter("@pMoTa", "Bản sao copy-only được tạo bởi PNJ Manager"));
+                }
             }
 
             baoTienTrinh?.Invoke("Đang xác minh tính toàn vẹn của file .bak...");
