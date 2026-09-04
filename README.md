@@ -1,161 +1,154 @@
-﻿# 💎 PNJ Jewelry Store Management System (Enterprise Edition)
+﻿# PNJ Jewelry Store Management System
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/)
-[![Platform](https://img.shields.io/badge/platform-.NET%20Framework%204.7.2-blue.svg)](https://dotnet.microsoft.com/)
-[![Language](https://img.shields.io/badge/language-C%23%207.3-orange.svg)](https://docs.microsoft.com/en-us/dotnet/csharp/)
-[![Database](https://img.shields.io/badge/database-Microsoft%20SQL%20Server-red.svg)](https://www.microsoft.com/en-us/sql-server)
-[![ORM](https://img.shields.io/badge/ORM-Entity%20Framework%206-purple.svg)](https://docs.microsoft.com/en-us/ef/ef6/)
-[![UI Framework](https://img.shields.io/badge/UI-Guna.UI2%20WinForms-gold.svg)](https://gunai.io/)
-[![Score](https://img.shields.io/badge/Rubric%20Score-90%2F100-success.svg)](RUBRIC%20CHAM%20DIEM%20-%20THAM%20KHAO.xlsx)
-
-> **Enterprise-grade Windows Forms ERP & POS solution tailored for fine jewelry, precious gemstones, and gold retail chains.**
+Phần mềm quản lý bán hàng và vận hành chuỗi cửa hàng vàng bạc, đá quý và trang sức PNJ. Hệ thống được phát triển trên nền tảng Windows Forms với C# và .NET Framework 4.7.2, tích hợp Entity Framework 6 và hệ quản trị cơ sở dữ liệu Microsoft SQL Server.
 
 ---
 
-## 📖 Overview
+## 1. Công nghệ và Yêu cầu Môi trường
 
-**PNJ Jewelry Store Management System** is an enterprise-oriented retail and management desktop software built with **C# WinForms** and **.NET Framework 4.7.2**. The system provides end-to-end operational capabilities for luxury jewelry retailers, encompassing high-speed counter checkout (POS), inventory bill of materials (BOM), precious metal buyback, warranty lifecycle tracking, closed-loop reporting, and physical SQL Server database administration.
+### Công nghệ sử dụng
+- **Ngôn ngữ & Nền tảng:** C# 7.3, .NET Framework 4.7.2 (Windows Forms)
+- **Hệ quản trị CSDL:** Microsoft SQL Server (tương thích SQL Server 2014 trở lên, LocalDB, SQL Express)
+- **Truy cập dữ liệu (ORM):** Entity Framework 6.4.4 (Database First / EDMX)
+- **Bộ điều khiển giao diện:** Guna.UI2.WinForms 2.0.4.8 & Guna Charts
+- **Thư viện bổ trợ:**
+  - `BCrypt.Net-Next`: Băm mật khẩu một chiều kèm Salt ngẫu nhiên (Work Factor 11).
+  - `ClosedXML`: Đọc và ghi tệp bảng tính Microsoft Excel (.xlsx) qua chuẩn OpenXML.
+  - `ZXing.Net` & `QRCoder`: Sinh và nhận diện mã QR sản phẩm.
+  - `MailKit` & `MimeKit`: Giao thức gửi thư điện tử SMTP.
+  - `Microsoft.ReportingServices.ReportViewer`: Kết xuất báo cáo và phiếu in.
 
----
-
-## ✨ Key Features
-
-### 🛒 1. Modern POS Terminal (`FrmBanHang`)
-- **Dual-column workflow**: Streamlined left checkout panel paired with instant product lookup cards.
-- **Member loyalty integration**: Rapid phone search and one-click guest assignment.
-- **Instant QR Code reader**: Scan product tags via webcam or image files (`F4`).
-- **Flexible billing**: Percentage discounts, tax calculations, and real-time cash balance computation.
-- **Transactional integrity**: Atomic database commits for invoice creation, line items, and stock deduction.
-
-### 📦 2. Product Catalog & Bill of Materials (`FrmSanPham`)
-- **Precious composition breakdown**: Track fine jewelry components (e.g., 3.75g 18K Gold + 0.5 ct Diamond).
-- **Multi-channel image pipeline**:
-  - Auto-compress external pictures using **High-Quality Bicubic downscaling** to standard 500x500 px.
-  - Full **Drag & Drop** support directly onto preview canvas.
-  - Auto-converts absolute paths upon submit.
-- **Dynamic QR generator**: Generates high-res QR tags (`SP000001`) with PNG export.
-
-### 🔄 3. Goldsmith Buyback & Pawn Engine (`FrmThuMua`)
-- Repurchase scrap gold and estate jewelry from walk-in customers according to live market rates.
-- **High-volume Excel Batch Importer**: Process bulk buyback spreadsheets with validation via ClosedXML.
-
-### 🛡️ 4. Jewelry Warranty Service (`FrmBaoHanh`)
-- Validates warranty expiration based on original invoice records.
-- Complete ticket lifecycle: `TIEP_NHAN` (Received) ➔ `DANG_XU_LY` (In Progress) ➔ `HOAN_THANH` (Completed).
-- Print customized warranty certificates for customers.
-
-### 📊 5. Business Intelligence & Reporting (`FrmThongKe`)
-- Interactive revenue and inventory analytics powered by **Guna Chart**.
-- Best-selling jewelry leaderboard with visual thumbnails.
-- Accounting-compliant Excel export (.xlsx) with styled headers, borders, and sum formulas.
-
-### 💾 6. SQL Server Backup & Disaster Recovery (`FrmSaoLuuPhucHoi`)
-- One-click physical database backup (`.bak`) with `CHECKSUM` and `COPY_ONLY`.
-- **Adaptive compression negotiation**: Automatically falls back to `NO_COMPRESSION` on SQL Server Express / LocalDB.
-- Single-user restoration engine with auto-disconnect for existing locks.
-
-### 🔒 7. Enterprise Security & Administration (`FrmTaiKhoan`, `FrmNhanVien`)
-- Cryptographic password hashing using **BCrypt** with Work Factor 11 and unique 128-bit salts.
-- Role-based access control (RBAC): Differentiates Administrator (`ADMIN`) and Cashier (`NHANVIEN`).
-- Administrator forced password reset with one-time temporary keys.
+### Yêu cầu hệ thống tối thiểu
+- Hệ điều hành: Windows 10 hoặc Windows 11 (x86/x64).
+- Môi trường thực thi: Microsoft .NET Framework 4.7.2 (có sẵn trên Windows 10 bản cập nhật gần đây).
+- Máy chủ CSDL: SQL Server LocalDB `(localdb)\MSSQLLocalDB` hoặc SQL Server Express `.\SQLEXPRESS`.
 
 ---
 
-## 🏛️ System Architecture
+## 2. Các Phân Hệ Chức Năng Chính
 
-```
-                                  USER INTERFACE
-         ┌─────────────────────────────────────────────────────────────┐
-         │     Guna UI2 Luxury Theme & Responsive Shell (FrmMain)      │
-         └──────────────┬───────────────────────────────┬──────────────┘
-                        │                               │
-             BUSINESS & SERVICES                 INFRASTRUCTURE
-         ┌──────────────────────────────┐┌─────────────────────────────┐
-         │ • PosService.cs              ││ • ImageOptimizationHelper   │
-         │ • BaoCaoService.cs           ││ • QrCodeService (ZXing)     │
-         │ • SaoLuuPhucHoiService.cs    ││ • Xlsx Services (ClosedXML) │
-         │ • EmailService (MailKit)     ││ • CurrentUserSession        │
-         └──────────────┬───────────────┘└──────────────┬──────────────┘
-                        │                               │
-                        └───────────────┬───────────────┘
-                                        │
-                               DATA ACCESS LAYER
-         ┌─────────────────────────────────────────────────────────────┐
-         │      Entity Framework 6.4.4 (Database First / EDMX)         │
-         │             17 Normalized Relational Tables                 │
-         └──────────────────────────────┬──────────────────────────────┘
-                                        │
-                              PERSISTENCE STORAGE
-         ┌─────────────────────────────────────────────────────────────┐
-         │             Microsoft SQL Server (LocalDB / Express)        │
-         │             Database: QL_CuaHangDaQuy_PNJ                   │
-         └─────────────────────────────────────────────────────────────┘
-```
+1. **Bán hàng tại quầy (POS):**
+   - Bố cục 2 cột: Tra cứu sản phẩm nhanh bên phải, quản lý giỏ hàng và thanh toán bên trái.
+   - Tìm kiếm khách hàng thành viên theo số điện thoại hoặc gán khách vãng lai.
+   - Quét mã QR sản phẩm qua webcam hoặc file ảnh (`F4`).
+   - Hỗ trợ chiết khấu phần trăm, tính thuế và tiền thừa.
+   - Trừ số lượng tồn kho theo giao dịch nguyên khối (Database Transaction).
+   - Tự động sinh hạn bảo hành 12 tháng cho từng món trang sức khi thanh toán thành công (`F9`).
+2. **Quản lý Sản phẩm & Định mức (BOM):**
+   - Quản lý danh mục trang sức, giá vốn, giá bán niêm yết, số lượng tồn kho.
+   - Thiết lập thành phần chất liệu (Ví dụ: trọng lượng vàng 18K và kích cỡ kim cương cấu thành).
+   - Pipeline nén ảnh tự động: Nén nội suy Bicubic về chuẩn 500x500 px giúp giảm 85% dung lượng đĩa và giải phóng bộ nhớ RAM.
+   - Hỗ trợ kéo thả (Drag & Drop) ảnh trực tiếp từ Windows Explorer vào khung ảnh sản phẩm.
+   - Tạo mã QR tương ứng mã sản phẩm `SP000001` và xuất ảnh PNG.
+3. **Quản lý Hóa đơn:**
+   - Tra cứu hóa đơn theo khoảng thời gian, số điện thoại khách hàng, nhân viên lập.
+   - Xem chi tiết từng dòng hàng và thời hạn bảo hành tương ứng.
+   - Hỗ trợ hủy hóa đơn có hoàn nguyên (rollback) số lượng tồn kho về bảng sản phẩm.
+   - In lại hóa đơn bán lẻ theo chuẩn phiếu in nhiệt/A5.
+4. **Thu mua Trang sức cũ:**
+   - Nghiệp vụ thu mua lại vàng bạc, đá quý cũ từ khách hàng theo trọng lượng và tuổi vàng.
+   - Hỗ trợ nạp dữ liệu thu mua hàng loạt từ file Excel (.xlsx) với tính năng kiểm tra lỗi dữ liệu trước khi lưu.
+5. **Dịch vụ Bảo hành:**
+   - Tiếp nhận sản phẩm bảo hành dựa trên mã hóa đơn gốc.
+   - Kiểm tra hạn bảo hành tự động; quản lý tiến độ xử lý (Tiếp nhận -> Đang xử lý -> Hoàn thành / Hủy).
+   - In phiếu hẹn bảo hành cho khách hàng.
+6. **Báo cáo & Thống kê:**
+   - Biểu đồ trực quan doanh thu theo thời gian và cơ cấu chất liệu sản phẩm (Guna Chart).
+   - Bảng xếp hạng sản phẩm bán chạy kèm hình ảnh đại diện.
+   - Xuất báo cáo doanh thu, phiếu nhập, phiếu thu mua ra file Excel định dạng chuẩn.
+7. **Sao lưu & Phục hồi CSDL:**
+   - Sao lưu CSDL ra tệp `.bak` vật lý có kiểm tra tính toàn vẹn `CHECKSUM` và `COPY_ONLY`.
+   - Cơ chế tự thích ứng: Tự động chuyển về chế độ không nén (`NO_COMPRESSION`) nếu máy chủ SQL Server Express/LocalDB không hỗ trợ nén (mã lỗi SQL 1844).
+   - Phục hồi dữ liệu an toàn với lệnh ngắt kết nối độc quyền (`SINGLE_USER`).
+8. **Bảo mật & Phân quyền (RBAC):**
+   - Phân quyền hai vai trò: Quản trị viên (`ADMIN`) và Nhân viên thu ngân (`NHANVIEN`).
+   - Mật khẩu lưu trữ dưới dạng băm BCrypt; chức năng Reset mật khẩu tự động kích hoạt cờ bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo.
 
 ---
 
-## 🚀 Quick Start Guide
+## 3. Hướng Dẫn Cài Đặt và Khởi Chạy
 
-### Prerequisites
-1. Windows 10 or Windows 11 (32-bit or 64-bit).
-2. Microsoft .NET Framework 4.7.2 or higher.
-3. Microsoft SQL Server (LocalDB `(localdb)\MSSQLLocalDB` or SQL Server Express `.\SQLEXPRESS`).
+### Bước 1: Khôi phục Cơ sở Dữ liệu
+Dự án cung cấp sẵn tệp sao lưu CSDL chuẩn tại:
+`Database/QL_CuaHangDaQuy_PNJ.bak` (Dung lượng 6.4 MB)
 
-### 1. Database Setup
-Restore the provided physical backup file:
-- File location: [`Database/QL_CuaHangDaQuy_PNJ.bak`](Database/QL_CuaHangDaQuy_PNJ.bak) (6.4 MB)
-- Restore via SQL Server Management Studio (SSMS) or command line:
+Có thể phục hồi bằng một trong hai cách:
+- **Cách 1 (Dùng SQL Server Management Studio - SSMS):** Chuột phải vào Databases ➔ Restore Database ➔ Chọn Device ➔ Trỏ tới tệp `.bak` ➔ Đặt tên CSDL là `QL_CuaHangDaQuy_PNJ` ➔ Nhấn OK.
+- **Cách 2 (Dùng T-SQL):**
 ```sql
-RESTORE DATABASE [QL_CuaHangDaQuy_PNJ] 
-FROM DISK = 'C:\Path\To\Database\QL_CuaHangDaQuy_PNJ.bak' 
+RESTORE DATABASE [QL_CuaHangDaQuy_PNJ]
+FROM DISK = 'c:\Users\aquynh\OneDrive\BaoCao\.NetC#\CuoiKy\SourceCode\FINAL_DotNet\Database\QL_CuaHangDaQuy_PNJ.bak'
 WITH REPLACE;
 ```
 
-### 2. Launching the Application
-You can choose any of the following launch methods:
-- **Portable Batch Launcher:** Double-click [`Packaging/Launch_App.bat`](Packaging/Launch_App.bat).
-- **Deployment Wizard:** Run [`Packaging/Setup_Installer.bat`](Packaging/Setup_Installer.bat) to verify environment and create desktop shortcuts.
-- **Standalone Executable:** Open `FINAL_DotNet\bin\Release\FINAL_DotNet.exe`.
+### Bước 2: Cấu hình Chuỗi Kết Nối (Nếu Cần)
+Tệp cấu hình `FINAL_DotNet\App.config` mặc định trỏ về máy chủ LocalDB:
+```xml
+<connectionStrings>
+  <add name="QL_CuaHangDaQuy_PNJEntities" 
+       connectionString="metadata=res://*/Model1.csdl|res://*/Model1.ssdl|res://*/Model1.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=(localdb)\MSSQLLocalDB;initial catalog=QL_CuaHangDaQuy_PNJ;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework&quot;" 
+       providerName="System.Data.EntityClient" />
+</connectionStrings>
+```
+Nếu sử dụng instance khác (ví dụ SQL Server Express), chỉnh sửa `data source=.\SQLEXPRESS`.
 
-### 3. Default Login Credentials
-| Username | Password | Role | Permissions |
+### Bước 3: Khởi chạy Ứng dụng
+- **Chạy trực tiếp từ Visual Studio:** Mở file `FINAL_DotNet.slnx`, đặt cấu hình `Debug` hoặc `Release` và nhấn `F5`.
+- **Chạy từ bản dựng sẵn (Portable):** Vào thư mục `Packaging/`, giải nén tệp `PNJ_Jewelry_Manager_v2.0_Portable.zip` và chạy file `Launch_App.bat` (hoặc `FINAL_DotNet.exe`).
+
+---
+
+## 4. Tài Khoản Đăng Nhập Mặc Định
+
+| Tên đăng nhập | Mật khẩu | Vai trò | Quyền hạn |
 |:---:|:---:|:---:|---|
-| `admin` | `admin123` | `ADMIN` | Complete Administrative & Operational Privileges |
-| `nhanvien` | `nv123` | `NHANVIEN` | Daily Counter POS & Standard Business Operations |
+| `admin` | `admin123` | `ADMIN` | Toàn quyền truy cập tất cả các phân hệ và quản trị hệ thống |
+| `nhanvien` | `nv123` | `NHANVIEN` | Thực hiện bán hàng POS, quản lý hóa đơn, sản phẩm, khách hàng |
 
 ---
 
-## ⌨️ POS Keyboard Shortcuts
+## 5. Phím Tắt Thao Tác Nhanh (POS)
 
-| Shortcut | Context | Action |
+| Phím tắt | Phạm vi | Mô tả chức năng |
 |:---:|:---:|---|
-| **`F1`** | Global | Open System Help, Shortcuts & Server Diagnostics Modal |
-| **`F4`** | POS Screen | Scan QR Code into active cart |
-| **`F9`** | POS Screen | Instant Checkout & Retail Invoice Print |
-| **`ESC`**| Modals | Safely close current dialog |
-| **`Enter`**| Login | Immediate authentication submit |
+| `F1` | Toàn hệ thống | Mở hộp thoại Tra cứu trợ giúp, danh sách phím tắt và thông tin kết nối CSDL |
+| `F4` | Màn hình Bán hàng | Mở hộp thoại chọn ảnh hoặc quét mã QR sản phẩm đưa vào giỏ hàng |
+| `F9` | Màn hình Bán hàng | Xác nhận thanh toán hóa đơn và gọi lệnh in phiếu bán lẻ |
+| `ESC` | Toàn hệ thống | Đóng nhanh các hộp thoại modal đang mở |
+| `Enter` | Màn hình Đăng nhập | Đăng nhập ngay sau khi nhập xong mật khẩu |
 
 ---
 
-## 📦 Distribution & Packaging
+## 6. Cấu Trúc Thư Mục Dự Án
 
-The application includes multiple deployment deliverables under [`Packaging/`](Packaging/):
-- **Portable Distribution Bundle:** [`Packaging/PNJ_Jewelry_Manager_v2.0_Portable.zip`](Packaging/PNJ_Jewelry_Manager_v2.0_Portable.zip) (18.17 MB) — fully self-contained package including runtime dependencies, database backup, and launchers.
-- **Inno Setup Script:** [`Packaging/PNJ_Setup.iss`](Packaging/PNJ_Setup.iss) — production-grade script to compile standalone setup executables (`.exe`).
-- **Automated Setup Script:** [`Packaging/Setup_Installer.bat`](Packaging/Setup_Installer.bat).
+```text
+FINAL_DotNet/
+├── Database/
+│   ├── QL_CuaHangDaQuy_PNJ.bak        # Tệp sao lưu CSDL SQL Server vật lý
+│   └── 01_CreateDatabase.sql...       # Bộ script SQL tạo bảng và seed dữ liệu
+├── docs/
+│   ├── HANDOVER_SPECIFICATION.md      # Tài liệu đặc tả kỹ thuật chi tiết 13 phân hệ
+│   └── legacy/                        # Tài liệu nháp cũ đã lưu trữ an toàn
+├── FINAL_DotNet/                      # Mã nguồn dự án Windows Forms
+│   ├── FrmBanHang.cs / PosService.cs  # Điểm bán hàng POS và nghiệp vụ tính tiền
+│   ├── ImageOptimizationHelper.cs     # Bộ tiện ích nén ảnh nội suy Bicubic
+│   ├── SaoLuuPhucHoiService.cs        # Động cơ sao lưu/phục hồi SQL Server
+│   ├── Model1.edmx                    # Mô hình Entity Framework 6 Database First
+│   └── Resources/                     # Tài nguyên hình ảnh đã nén tối ưu
+├── Packaging/
+│   ├── PNJ_Jewelry_Manager_v2.0_Portable.zip # Gói chạy ngay không cần cài đặt
+│   ├── PNJ_Setup.iss                  # Kịch bản đóng gói Inno Setup 6
+│   └── Setup_Installer.bat            # Kịch bản kiểm tra môi trường và cài đặt nhanh
+├── agents.md                          # Hướng dẫn dành cho công cụ phát triển
+├── CHANGELOG.md                       # Lịch sử phiên bản phát hành
+├── Doc.md                             # Tài liệu ôn tập Full-Stack và kịch bản bảo vệ đồ án
+└── README.md                          # Tài liệu tổng quan dự án
+```
 
 ---
 
-## 📑 Documentation Directory
+## 7. Tài Liệu Nghiên Cứu Chi Tiết
 
-- [Comprehensive Handover Specification (Vietnamese)](docs/HANDOVER_SPECIFICATION.md)
-- [Architecture & Business Overview (Doc.md)](Doc.md)
-- [Rubric Evaluation Spreadsheet](RUBRIC%20CHAM%20DIEM%20-%20THAM%20KHAO.xlsx)
-- [Legacy Documentation Archive](docs/legacy/)
-
----
-
-## ⚖️ License & Acknowledgements
-
-Developed as a capstone .NET Framework project.  
-Engineered with ❤️ adhering to clean coding standards, robust error handling, and enterprise UX principles.
+- Đề cương ôn tập Full-Stack, giải thích code và kịch bản phản biện: xem tại [`Doc.md`](Doc.md).
+- Đặc tả kỹ thuật chi tiết toàn bộ 13 phân hệ và 17 bảng CSDL: xem tại [`docs/HANDOVER_SPECIFICATION.md`](docs/HANDOVER_SPECIFICATION.md).
+- Bảng chấm điểm đối chiếu tiêu chí đồ án: xem tại [`RUBRIC CHAM DIEM - THAM KHAO.xlsx`](RUBRIC%20CHAM%20DIEM%20-%20THAM%20KHAO.xlsx).
