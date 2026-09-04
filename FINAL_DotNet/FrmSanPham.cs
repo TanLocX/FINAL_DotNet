@@ -38,6 +38,9 @@ namespace FINAL_DotNet
             numGiaBan.Maximum = 9999999999999999M;
             numSoLuongTon.Maximum = int.MaxValue;
             numTrongLuong.Maximum = 9999999.999M;
+            picSanPham.AllowDrop = true;
+            picSanPham.DragEnter += PicSanPham_DragEnter;
+            picSanPham.DragDrop += PicSanPham_DragDrop;
             FormClosed += FrmSanPham_FormClosed;
             LuxuryDarkGoldTheme.Apply(this);
         }
@@ -541,8 +544,25 @@ namespace FINAL_DotNet
             string duongDan = ChuanHoaTuyChon(txtDuongDanAnh.Text);
             if (duongDan != null && Path.IsPathRooted(duongDan))
             {
-                HienThiLoi("Đường dẫn ảnh phải là đường dẫn tương đối trong dự án.");
-                return false;
+                if (File.Exists(duongDan))
+                {
+                    try
+                    {
+                        string thuMucDuAn = TimThuMucDuAn();
+                        duongDan = ImageOptimizationHelper.SaveOptimizedProductImage(duongDan, thuMucDuAn);
+                        txtDuongDanAnh.Text = duongDan;
+                    }
+                    catch (Exception ex)
+                    {
+                        HienThiLoi("Không thể tối ưu ảnh: " + ex.Message);
+                        return false;
+                    }
+                }
+                else
+                {
+                    HienThiLoi("Tệp ảnh không tồn tại trên hệ thống.");
+                    return false;
+                }
             }
             duLieu = new ThongTinSanPhamNhap
             {
@@ -633,7 +653,57 @@ namespace FINAL_DotNet
             }
         }
 
-        private void txtDuongDanAnh_Leave(object sender, EventArgs e) => HienThiAnh(txtDuongDanAnh.Text.Trim());
+        private void txtDuongDanAnh_Leave(object sender, EventArgs e)
+        {
+            string duongDan = txtDuongDanAnh.Text.Trim();
+            if (!string.IsNullOrEmpty(duongDan) && Path.IsPathRooted(duongDan) && File.Exists(duongDan))
+            {
+                try
+                {
+                    string thuMucDuAn = TimThuMucDuAn();
+                    duongDan = ImageOptimizationHelper.SaveOptimizedProductImage(duongDan, thuMucDuAn);
+                    txtDuongDanAnh.Text = duongDan;
+                }
+                catch
+                {
+                    // Fallback to raw string, validation will handle on submit
+                }
+            }
+            HienThiAnh(txtDuongDanAnh.Text.Trim());
+        }
+
+        private void PicSanPham_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effect = DragDropEffects.Copy;
+        }
+
+        private void PicSanPham_DragDrop(object sender, DragEventArgs e)
+        {
+            try
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+                if (files != null && files.Length > 0 && File.Exists(files[0]))
+                {
+                    string ext = Path.GetExtension(files[0]).ToLowerInvariant();
+                    if (ext == ".png" || ext == ".jpg" || ext == ".jpeg" || ext == ".bmp" || ext == ".webp")
+                    {
+                        string thuMucDuAn = TimThuMucDuAn();
+                        string relativePath = ImageOptimizationHelper.SaveOptimizedProductImage(files[0], thuMucDuAn);
+                        txtDuongDanAnh.Text = relativePath;
+                        HienThiAnh(relativePath);
+                    }
+                    else
+                    {
+                        HienThiLoi("Định dạng tệp không được hỗ trợ. Vui lòng chọn tệp ảnh PNG, JPG hoặc BMP.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HienThiLoi("Không thể nạp ảnh kéo thả: " + ex.Message);
+            }
+        }
 
         private void KhoiTaoGiaoDienQr()
         {
