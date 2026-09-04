@@ -100,10 +100,12 @@ Nếu sử dụng instance khác (ví dụ SQL Server Express), chỉnh sửa `d
 
 ## 4. Tài Khoản Đăng Nhập Mặc Định
 
-| Tên đăng nhập | Mật khẩu | Vai trò | Quyền hạn |
+| Tên đăng nhập | Mật khẩu mặc định | Vai trò | Mục đích / Quyền hạn |
 |:---:|:---:|:---:|---|
-| `admin` | `admin123` | `ADMIN` | Toàn quyền truy cập tất cả các phân hệ và quản trị hệ thống |
-| `nhanvien` | `nv123` | `NHANVIEN` | Thực hiện bán hàng POS, quản lý hóa đơn, sản phẩm, khách hàng |
+| `admin` | `PnjDemo@123` *(hoặc `admin123`)* | `ADMIN` | Quản trị viên toàn quyền truy cập toàn bộ 13 phân hệ |
+| `ngoclan` | `PnjDemo@123` *(hoặc `nv123`)* | `NHANVIEN` | Nhân viên thu ngân POS tiêu chuẩn |
+| `thuha` | `PnjDemo@123` | `NHANVIEN` | Tài khoản kiểm thử quy trình **bắt buộc đổi mật khẩu** lần đầu |
+| `mylinh` | `PnjDemo@123` | `NHANVIEN` | Tài khoản kiểm thử cơ chế **chặn đăng nhập** (đã bị khóa / nhân viên đã nghỉ việc) |
 
 ---
 

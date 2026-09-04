@@ -1,4 +1,4 @@
-﻿# TÀI LIỆU BÀN GIAO CÔNG VIỆC & ĐẶC TẢ KỸ THUẬT TOÀN DIỆN HỆ THỐNG
+# TÀI LIỆU BÀN GIAO CÔNG VIỆC & ĐẶC TẢ KỸ THUẬT TOÀN DIỆN HỆ THỐNG
 ## PNJ JEWELRY STORE MANAGEMENT SYSTEM (ENTERPRISE EDITION v2.0)
 
 > **Dự án:** Hệ thống Quản lý Chuỗi Cửa hàng Đá quý & Vàng bạc Trang sức PNJ  
@@ -370,11 +370,13 @@ Chuỗi kết nối được lưu trữ tập trung tại `App.config`:
 ```
 *Ghi chú:* Nếu máy chủ SQL sử dụng instance khác (ví dụ: `localhost` hoặc `.\SQLEXPRESS`), chỉ cần thay đổi giá trị `data source=...` trong tệp cấu hình `FINAL_DotNet.exe.config`.
 
-### 8.3. Tài khoản Đăng nhập Mặc định:
-| Vai trò | Tên đăng nhập | Mật khẩu ban đầu | Quyền hạn |
+### 8.3. Danh sách Tài khoản Khởi tạo & Kịch bản Kiểm thử:
+| Vai trò | Tên đăng nhập | Mật khẩu mẫu | Kịch bản kiểm thử & Quyền hạn |
 |---|---|---|---|
-| **Quản trị viên** | `admin` | `admin123` | Toàn quyền quản trị & Nghiệp vụ |
-| **Nhân viên thu ngân** | `nhanvien` | `nv123` | Bán hàng POS & Nghiệp vụ thường nhật |
+| **Quản trị viên** | `admin` | `PnjDemo@123` *(hoặc `admin123`)* | Toàn quyền quản trị 13 phân hệ |
+| **Nhân viên thu ngân** | `ngoclan` | `PnjDemo@123` *(hoặc `nv123`)* | Nghiệp vụ bán hàng POS & lập hóa đơn |
+| **Nhân viên (Đổi MK)** | `thuha` | `PnjDemo@123` | Kiểm thử quy trình **bắt buộc đổi mật khẩu** ở lần đầu đăng nhập |
+| **Nhân viên (Bị khóa)** | `mylinh` | `PnjDemo@123` | Kiểm thử cơ chế **chặn truy cập** (thông báo tài khoản bị khóa / nhân viên thôi việc) |
 
 ---
 

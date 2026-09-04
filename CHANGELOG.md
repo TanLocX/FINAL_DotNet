@@ -1,4 +1,4 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 
@@ -34,6 +34,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Product Selector Data Binding:** Fixed empty dropdown by ensuring `DisplayMember` and `ValueMember` are assigned prior to `DataSource`.
 
 ### Fixed
+- **Login Background Auto-Crop & Letterboxing:** Implemented `CreateCoverCroppedImage` in `ImageOptimizationHelper.cs` to auto-crop background wallpapers with Bicubic interpolation, eliminating window letterboxing margins.
+- **Login Card Responsive Alignment:** Dynamically aligns brand header logos, ornamental borders, and the login card along the vertical center with proportional right margins upon window resize.
+- **Authentication Feedback for Deactivated Accounts:** Differentiated between invalid credentials and deactivated accounts/terminated employees, displaying explicit error messages when attempting to log in as a banned user (`mylinh`).
 - **Dark Theme Corruption:** Disabled intrusive recursive theme injection in `LuxuryDarkGoldTheme.cs` to preserve high-fidelity Guna2 styling across all screens.
 - **Mnemonic Character Truncation:** Enabled `UseMnemonic = false` on Help modal headers to prevent `&` from disappearing.
 - **Rubric Scoring Compliance:** Updated evaluation matrix to 90/100 points, clearing all potential penalty deductions.
