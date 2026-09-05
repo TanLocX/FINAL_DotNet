@@ -1,4 +1,4 @@
-﻿# BẢN ĐỒ VÀ THUYẾT MINH CÂY THƯ MỤC HỆ THỐNG
+# BẢN ĐỒ VÀ THUYẾT MINH CÂY THƯ MỤC HỆ THỐNG
 ## Phân Tích Cấu Trúc Toàn Diện Từ Nhánh Gốc FINAL_DotNet\
 
 > **Tài liệu này cung cấp:** Bản đồ phân loại, nguồn gốc phát sinh, mục đích kỹ thuật và vai trò vận hành của từng tệp tin và thư mục trong toàn bộ dự án `FINAL_DotNet\`.  
@@ -43,7 +43,7 @@ FINAL_DotNet/
 │   ├── Setup_Installer.bat        # Kịch bản kiểm tra môi trường, tạo shortcut Desktop và khởi chạy
 │   └── Launch_App.bat             # Kịch bản khởi chạy ứng dụng nhanh gọn với đường dẫn tương đối
 │
-├── packages/                      # Thư mục chứa các gói thư viện NuGet phụ thuộc (EF, Guna, ClosedXML...)
+├── packages/                      # Thư mục chứa các gói thư viện NuGet phụ thuộc (EF, Guna, ZXing, BCrypt...)
 │
 └── FINAL_DotNet/                  # Dự án mã nguồn C# Windows Forms chính (.NET Framework 4.7.2)
     ├── FINAL_DotNet.csproj        # Tệp cấu hình dự án MSBuild, danh mục file biên dịch và tài nguyên
@@ -56,10 +56,10 @@ FINAL_DotNet/
     │   ├── ImageOptimizationHelper.cs # Pipeline nén ảnh nội suy Bicubic và quản lý đường dẫn tương đối
     │   ├── SaoLuuPhucHoiService.cs # Động cơ sao lưu/phục hồi SQL Server có thích ứng nén
     │   ├── BaoCaoService.cs       # Động cơ định dạng và cung cấp nguồn dữ liệu in ấn báo cáo
-    │   ├── QrCodeService.cs       # Xử lý sinh mã QR (QRCoder) và đọc mã qua ảnh/webcam (ZXing)
-    │   ├── EmailService.cs        # Động cơ gửi email SMTP qua MailKit với các thẻ thay thế động
-    │   ├── XlsxImportService.cs   # Dịch vụ nạp dữ liệu lớn từ file Excel bằng ClosedXML
-    │   ├── XlsxExportService.cs   # Dịch vụ kết xuất bảng tính Excel có định dạng kế toán
+    │   ├── QrCodeService.cs       # Xử lý sinh mã QR và đọc mã qua ảnh/webcam hoàn toàn bằng ZXing.Net
+    │   ├── EmailService.cs        # Động cơ gửi email SMTP chuẩn .NET (System.Net.Mail) với các thẻ thay thế động
+    │   ├── XlsxImportService.cs   # Dịch vụ nạp dữ liệu từ file Excel chuẩn OpenXML (System.IO.Compression/Xml)
+    │   ├── XlsxExportService.cs   # Dịch vụ kết xuất bảng tính Excel OpenXML chuẩn, không phụ thuộc bên ngoài
     │   ├── DatabaseConnection.cs  # Quản lý chuỗi kết nối và tạo DbContext theo chu kỳ ngắn hạn
     │   └── CurrentUserSession.cs  # Quản lý phiên làm việc, lưu trữ định danh và vai trò người dùng
     │
@@ -183,7 +183,7 @@ FINAL_DotNet/
 
 1. **`HANDOVER_SPECIFICATION.md` (32 KB):**
    - *Phân loại:* Tài liệu đặc tả kỹ thuật và bàn giao toàn diện hệ thống.
-   - *Vai trò:* Mô tả chi tiết không gian nghiệp vụ của toàn bộ 13 phân hệ chức năng trong ứng dụng, ma trận phân quyền RBAC, từ điển dữ liệu chi tiết của 17 bảng quan hệ, nguyên lý các thuật toán nền tảng (Bicubic, ClosedXML, Adaptive Backup) và runbook xử lý sự cố.
+   - *Vai trò:* Mô tả chi tiết không gian nghiệp vụ của toàn bộ 13 phân hệ chức năng trong ứng dụng, ma trận phân quyền RBAC, từ điển dữ liệu chi tiết của 17 bảng quan hệ, nguyên lý các thuật toán nền tảng (Bicubic, Native OpenXML, Adaptive Backup) và runbook xử lý sự cố.
 2. **Thư mục `docs/legacy/` (`Bcrypt_legacy.md`, `CHUC_NANG_VA_PHAN_QUYEN_legacy.md`, `Doc_legacy.md`):**
    - *Phân loại:* Tài liệu lưu trữ lịch sử (Historical Archive).
    - *Nguồn gốc:* Đây là các tệp ghi chép sơ thảo, rời rạc được tạo ra trong những ngày đầu tiên khi nhóm bắt đầu nghiên cứu đề tài. Khi hệ thống được nâng cấp lên phiên bản hoàn chỉnh, các tài liệu này được chuyển vào thư mục `legacy/` để bảo toàn lịch sử nghiên cứu ban đầu của nhóm, đồng thời nhường chỗ cho các bộ tài liệu chính thức (`Doc.md` và `HANDOVER_SPECIFICATION.md`) có cấu trúc mạch lạc và chuẩn mực hơn.
@@ -214,9 +214,9 @@ FINAL_DotNet/
 2. **`ImageOptimizationHelper.cs`:** Chứa thuật toán nén ảnh nội suy chất lượng cao `HighQualityBicubic` đưa ảnh về kích thước chuẩn tối đa $500 \times 500$ px, tự động sinh tên tệp theo cú pháp `sp_{ten}_{timestamp}.png`, lưu vào thư mục `Resources/` và tự động đồng bộ sang thư mục thực thi nhị phân.
 3. **`SaoLuuPhucHoiService.cs`:** Thực thi các câu lệnh T-SQL sao lưu với `COPY_ONLY` và `CHECKSUM`. Tích hợp logic tự động phát hiện mã lỗi SQL 1844 để chuyển đổi linh hoạt giữa chế độ có nén và không nén (`NO_COMPRESSION`); thực thi lệnh `SET SINGLE_USER WITH ROLLBACK IMMEDIATE` khi phục hồi dữ liệu.
 4. **`BaoCaoService.cs`:** Chuẩn bị mô hình dữ liệu (Report Model) và định dạng chuỗi tiền tệ theo văn hóa Việt Nam (`vi-VN`) cho các phiếu in hóa đơn bán lẻ, phiếu nhập kho, phiếu thu mua và phiếu tiếp nhận bảo hành.
-5. **`QrCodeService.cs`:** Đóng gói thư viện `QRCoder` để render mã QR dưới dạng `Bitmap` và `ZXing.BarcodeReader` để quét và giải mã chuỗi mã sản phẩm từ hình ảnh.
-6. **`EmailService.cs`:** Kết nối máy chủ SMTP qua giao thức bảo mật SSL/TLS của `MailKit`, hỗ trợ gửi thư điện tử đơn lẻ hoặc hàng loạt kèm tệp đính kèm và tự động thay thế các tham số giữ chỗ như `{TEN_KHACH_HANG}`, `{SO_HOA_DON}`.
-7. **`XlsxImportService.cs` & `XlsxExportService.cs`:** Đọc và ghi tệp bảng tính `.xlsx` chuẩn OpenXML qua thư viện `ClosedXML`. Hỗ trợ kiểm tra dữ liệu dòng lỗi khi import và định dạng tiêu đề, màu nền, đường viền khi export báo cáo.
+5. **`QrCodeService.cs`:** Sử dụng thư viện `ZXing.Net` (`BarcodeWriter` với `BarcodeFormat.QR_CODE`) để render mã QR dưới dạng `Bitmap` và `ZXing.BarcodeReader` để quét và giải mã chuỗi mã sản phẩm từ hình ảnh.
+6. **`EmailService.cs`:** Kết nối máy chủ SMTP qua giao thức bảo mật SSL/TLS của thư viện chuẩn .NET `System.Net.Mail` (`SmtpClient`), hỗ trợ gửi thư điện tử đơn lẻ hoặc hàng loạt kèm tệp đính kèm và tự động thay thế các tham số giữ chỗ như `{HoTen}`, `{TongTien}`, `{HanBaoHanh}`.
+7. **`XlsxImportService.cs` & `XlsxExportService.cs`:** Đọc và ghi tệp bảng tính `.xlsx` chuẩn Office Open XML sử dụng các lớp hệ thống chuẩn `System.IO.Compression` và `System.Xml`. Hỗ trợ kiểm tra dữ liệu dòng lỗi khi import và định dạng tiêu đề, màu nền, đường viền khi export báo cáo mà không cần phụ thuộc gói ngoài hay cài Office.
 8. **`DatabaseConnection.cs`:** Điểm tập trung khởi tạo đối tượng `QL_CuaHangDaQuy_PNJEntities` để đảm bảo chuỗi kết nối luôn nhất quán và dễ dàng bảo trì khi thay đổi máy chủ.
 9. **`CurrentUserSession.cs`:** Lớp tĩnh lưu trữ thông tin phiên làm việc hiện hành của người dùng (Mã tài khoản, Mã nhân viên, Họ tên, Quyền hạn `ADMIN` hoặc `NHANVIEN`) trong suốt vòng đời ứng dụng.
 

@@ -9,14 +9,13 @@ Phần mềm quản lý bán hàng và vận hành chuỗi cửa hàng vàng b�
 ### Công nghệ sử dụng
 - **Ngôn ngữ & Nền tảng:** C# 7.3, .NET Framework 4.7.2 (Windows Forms)
 - **Hệ quản trị CSDL:** Microsoft SQL Server (tương thích SQL Server 2014 trở lên, LocalDB, SQL Express)
-- **Truy cập dữ liệu (ORM):** Entity Framework 6.4.4 (Database First / EDMX)
-- **Bộ điều khiển giao diện:** Guna.UI2.WinForms 2.0.4.8 & Guna Charts
-- **Thư viện bổ trợ:**
-  - `BCrypt.Net-Next`: Băm mật khẩu một chiều kèm Salt ngẫu nhiên (Work Factor 11).
-  - `ClosedXML`: Đọc và ghi tệp bảng tính Microsoft Excel (.xlsx) qua chuẩn OpenXML.
-  - `ZXing.Net` & `QRCoder`: Sinh và nhận diện mã QR sản phẩm.
-  - `MailKit` & `MimeKit`: Giao thức gửi thư điện tử SMTP.
-  - `Microsoft.ReportingServices.ReportViewer`: Kết xuất báo cáo và phiếu in.
+- **Truy cập dữ liệu (ORM):** Entity Framework 6.5.2 (Database First / EDMX)
+- **Bộ điều khiển giao diện:** Guna.UI2.WinForms 2.0.4.8 & Guna Charts 1.1.0
+- **Bảo mật & Mã hóa:** `BCrypt.Net-Next` (v4.2.0) — Băm mật khẩu một chiều kèm Salt ngẫu nhiên (Work Factor 11).
+- **Mã vạch & QR Code:** `ZXing.Net` (v0.16.11) — Sinh và giải mã QR Code sản phẩm 2 chiều.
+- **Xử lý tệp bảng tính (.xlsx):** Thuần chuẩn Office Open XML sử dụng các thư viện hệ thống `System.IO.Compression` và `System.Xml` (hoạt động độc lập, không yêu cầu cài Microsoft Excel hay package phụ thuộc bên ngoài).
+- **Dịch vụ Email SMTP:** Thư viện chuẩn `System.Net.Mail` (`SmtpClient`, `MailMessage`) hỗ trợ bảo mật SSL/TLS và phân giải tham số giữ chỗ động.
+- **Báo cáo & In ấn:** `Microsoft.ReportingServices.ReportViewerControl.Winforms` (v150.1652.0).
 
 ### Yêu cầu hệ thống tối thiểu
 - Hệ điều hành: Windows 10 hoặc Windows 11 (x86/x64).
@@ -61,8 +60,9 @@ Phần mềm quản lý bán hàng và vận hành chuỗi cửa hàng vàng b�
    - Cơ chế tự thích ứng: Tự động chuyển về chế độ không nén (`NO_COMPRESSION`) nếu máy chủ SQL Server Express/LocalDB không hỗ trợ nén (mã lỗi SQL 1844).
    - Phục hồi dữ liệu an toàn với lệnh ngắt kết nối độc quyền (`SINGLE_USER`).
 8. **Bảo mật & Phân quyền (RBAC):**
-   - Phân quyền hai vai trò: Quản trị viên (`ADMIN`) và Nhân viên thu ngân (`NHANVIEN`).
-   - Mật khẩu lưu trữ dưới dạng băm BCrypt; chức năng Reset mật khẩu tự động kích hoạt cờ bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo.
+   - Hệ thống quản lý 2 vai trò bảo mật đăng nhập (`VaiTro`): Quản trị viên (`ADMIN`) và Nhân viên (`NHANVIEN`).
+   - Nhân sự được phân công theo 5 chức vụ nghiệp vụ cụ thể (`ChucVu`): Quản lý cửa hàng, Nhân viên bán hàng, Nhân viên kho, Chăm sóc khách hàng, Nhân viên thu mua.
+   - Mật khẩu lưu trữ dưới dạng băm BCrypt (Work Factor 11); chức năng Đặt lại mật khẩu tự động kích hoạt cờ bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo.
 
 ---
 
@@ -100,12 +100,16 @@ Nếu sử dụng instance khác (ví dụ SQL Server Express), chỉnh sửa `d
 
 ## 4. Tài Khoản Đăng Nhập Mặc Định
 
-| Tên đăng nhập | Mật khẩu mặc định | Vai trò | Mục đích / Quyền hạn |
-|:---:|:---:|:---:|---|
-| `admin` | `PnjDemo@123` *(hoặc `admin123`)* | `ADMIN` | Quản trị viên toàn quyền truy cập toàn bộ 13 phân hệ |
-| `ngoclan` | `PnjDemo@123` *(hoặc `nv123`)* | `NHANVIEN` | Nhân viên thu ngân POS tiêu chuẩn |
-| `thuha` | `PnjDemo@123` | `NHANVIEN` | Tài khoản kiểm thử quy trình **bắt buộc đổi mật khẩu** lần đầu |
-| `mylinh` | `PnjDemo@123` | `NHANVIEN` | Tài khoản kiểm thử cơ chế **chặn đăng nhập** (đã bị khóa / nhân viên đã nghỉ việc) |
+Tất cả tài khoản demo trong CSDL được khởi tạo với mật khẩu mẫu an toàn đã qua băm BCrypt:
+
+| Tên đăng nhập | Mật khẩu mẫu | Vai trò (`VaiTro`) | Chức vụ nhân sự (`ChucVu`) | Ghi chú kiểm thử nghiệp vụ |
+|:---:|:---:|:---:|:---:|---|
+| `admin` | `PnjDemo@123` | `ADMIN` | Quản lý cửa hàng | Toàn quyền truy cập tất cả các phân hệ quản trị và cấu hình |
+| `ngoclan` | `PnjDemo@123` | `NHANVIEN` | Nhân viên bán hàng | Tài khoản nhân viên chuẩn: Mở POS, Hóa đơn, Khách hàng, Bảo hành |
+| `hoangnam` | `PnjDemo@123` | `NHANVIEN` | Nhân viên kho | Tài khoản nhân viên nghiệp vụ kho hàng và nhập hàng |
+| `thuha` | `PnjDemo@123` | `NHANVIEN` | Chăm sóc khách hàng | Tài khoản kiểm thử luồng **Bắt buộc đổi mật khẩu** ở lần đăng nhập đầu |
+| `quocbao` | `PnjDemo@123` | `NHANVIEN` | Nhân viên thu mua | Tài khoản nhân viên nghiệp vụ thu mua kim hoàn và nhập Excel |
+| `mylinh` | `PnjDemo@123` | `NHANVIEN` | Nhân viên bán hàng | Tài khoản kiểm thử phản hồi bảo mật: **Đã bị khóa / ngừng hoạt động** |
 
 ---
 
@@ -132,18 +136,23 @@ FINAL_DotNet/
 │   ├── HANDOVER_SPECIFICATION.md      # Tài liệu đặc tả kỹ thuật chi tiết 13 phân hệ
 │   └── legacy/                        # Tài liệu nháp cũ đã lưu trữ an toàn
 ├── FINAL_DotNet/                      # Mã nguồn dự án Windows Forms
+│   ├── Form1.cs                       # Form Đăng nhập hệ thống (Auth & BCrypt)
+│   ├── FrmMain.cs                     # Cửa sổ chính điều hướng & Dashboard
 │   ├── FrmBanHang.cs / PosService.cs  # Điểm bán hàng POS và nghiệp vụ tính tiền
 │   ├── ImageOptimizationHelper.cs     # Bộ tiện ích nén ảnh nội suy Bicubic
+│   ├── XlsxImportService.cs           # Xử lý nạp bảng tính OpenXML chuẩn
+│   ├── XlsxExportService.cs           # Xử lý xuất báo cáo OpenXML chuẩn
+│   ├── QrCodeService.cs               # Động cơ sinh và đọc mã QR qua ZXing.Net
+│   ├── EmailService.cs                # Động cơ gửi email qua System.Net.Mail
 │   ├── SaoLuuPhucHoiService.cs        # Động cơ sao lưu/phục hồi SQL Server
-│   ├── Model1.edmx                    # Mô hình Entity Framework 6 Database First
+│   ├── Model1.edmx                    # Mô hình Entity Framework 6.5.2 Database First
 │   └── Resources/                     # Tài nguyên hình ảnh đã nén tối ưu
 ├── Packaging/
 │   ├── PNJ_Jewelry_Manager_v2.0_Portable.zip # Gói chạy ngay không cần cài đặt
 │   ├── PNJ_Setup.iss                  # Kịch bản đóng gói Inno Setup 6
 │   └── Setup_Installer.bat            # Kịch bản kiểm tra môi trường và cài đặt nhanh
-├── agents.md                          # Hướng dẫn dành cho công cụ phát triển
-├── CHANGELOG.md                       # Lịch sử phiên bản phát hành
 ├── Doc.md                             # Tài liệu ôn tập Full-Stack và kịch bản bảo vệ đồ án
+├── PROJECT_STRUCTURE.md               # Thuyết minh chi tiết cây thư mục và bối cảnh mã nguồn
 └── README.md                          # Tài liệu tổng quan dự án
 ```
 

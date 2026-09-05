@@ -1,4 +1,4 @@
-﻿# TÀI LIỆU ÔN TẬP VÀ THUYẾT TRÌNH TOÀN DIỆN HỆ THỐNG PNJ MANAGER
+# TÀI LIỆU ÔN TẬP VÀ THUYẾT TRÌNH TOÀN DIỆN HỆ THỐNG PNJ MANAGER
 ## Hướng Dẫn Nghiên Cứu Full-Stack, Giải Thích Mã Nguồn & Kịch Bản Phản Biện Đồ Án
 
 > **Tài liệu phục vụ:** Ôn tập kiến thức kiến trúc, hiểu sâu mã nguồn, chuẩn bị nội dung slide thuyết trình và trả lời câu hỏi vấn đáp khi bảo vệ đồ án môn học Lập trình .NET.  
@@ -50,8 +50,8 @@ Nhiều sinh viên nhầm lẫn giữa hệ thống bán hàng tạp hóa (siêu
   - PosService.cs: Xử lý giỏ hàng, trừ tồn kho, tính tiền, mở Database Transaction.
   - ImageOptimizationHelper.cs: Thuật toán nén ảnh nội suy Bicubic, đồng bộ thư mục.
   - SaoLuuPhucHoiService.cs: Thực thi T-SQL Backup/Restore, fallback compression.
-  - QrCodeService.cs: Sinh mã (QRCoder) và giải mã hình ảnh (ZXing).
-  - Xlsx Services: Đọc/ghi file Excel qua ClosedXML.
+  - QrCodeService.cs: Sinh mã QR và giải mã hình ảnh qua ZXing.Net.
+  - Xlsx Services: Đọc/ghi file Excel chuẩn Office Open XML (System.IO.Compression & System.Xml).
          │
          ▼ (LINQ to Entities / Entity Object)
 [ Tầng 3: Truy cập Dữ liệu (Data Access Layer - ORM) ]
@@ -221,8 +221,8 @@ cboSanPham.DataSource = danhSachSanPham;  // Cuối cùng mới gán nguồn d�
 ### 4.2. Bảo mật, Băm mật khẩu BCrypt và Quản lý Phiên (`Form1.cs`, `CurrentUserSession.cs`)
 
 #### Thuật toán BCrypt hoạt động như thế nào?
-BCrypt là thuật toán băm mật khẩu chuẩn bảo mật quốc tế dựa trên thuật toán mã hóa Blowfish. Khi lưu mật khẩu `admin123`:
-1. **Sinh Salt ngẫu nhiên:** BCrypt tự tạo chuỗi Salt 128-bit (22 ký tự Base64). Vì vậy, hai tài khoản dù đặt cùng mật khẩu `admin123` thì chuỗi băm lưu trong CSDL vẫn hoàn toàn khác biệt.
+BCrypt là thuật toán băm mật khẩu chuẩn bảo mật quốc tế dựa trên thuật toán mã hóa Blowfish. Khi lưu mật khẩu `PnjDemo@123`:
+1. **Sinh Salt ngẫu nhiên:** BCrypt tự tạo chuỗi Salt 128-bit (22 ký tự Base64). Vì vậy, hai tài khoản dù đặt cùng mật khẩu `PnjDemo@123` thì chuỗi băm lưu trong CSDL vẫn hoàn toàn khác biệt.
 2. **Work Factor (Cost = 11):** Thuật toán thực hiện $2^{11} = 2048$ vòng lặp tính toán nhào nặn chuỗi. Điều này cố tình tiêu tốn khoảng 50 - 100ms CPU của máy chủ, khiến kẻ tấn công không thể dùng kỹ thuật Brute-force hàng triệu mật khẩu/giây hoặc dùng bảng Rainbow Table tra cứu ngược.
 3. **Cấu trúc chuỗi băm 60 ký tự:**
    Ví dụ: `$2a$11$R9h...wQk5Z...`
@@ -367,8 +367,23 @@ ALTER DATABASE [QL_CuaHangDaQuy_PNJ] SET MULTI_USER;
 ---
 
 ### 4.5. Động cơ Mã QR và Mã vạch (`QrCodeService.cs`)
-- **Sinh mã QR:** Thư viện `QRCoder` mã hóa chuỗi `SP000001` thành ma trận nhị phân và vẽ thành đối tượng `Bitmap`.
-- **Đọc mã QR:** Sử dụng `ZXing.BarcodeReader`:
+- **Sinh mã QR:** Thư viện `ZXing.Net` (`BarcodeWriter` với định dạng `BarcodeFormat.QR_CODE`) mã hóa chuỗi `SP000001` thành ma trận nhị phân và vẽ thành đối tượng `Bitmap`:
+```csharp
+var writer = new BarcodeWriter
+{
+    Format = BarcodeFormat.QR_CODE,
+    Options = new QrCodeEncodingOptions
+    {
+        Width = kichThuoc,
+        Height = kichThuoc,
+        Margin = 2,
+        CharacterSet = "UTF-8",
+        ErrorCorrection = ErrorCorrectionLevel.M
+    }
+};
+return writer.Write(noiDung.Trim());
+```
+- **Đọc mã QR:** Sử dụng `ZXing.BarcodeReader` để quét và trích xuất chuỗi mã sản phẩm từ hình ảnh:
 ```csharp
 public static string DocMaQr(Bitmap bitmap)
 {
@@ -389,10 +404,10 @@ public static string DocMaQr(Bitmap bitmap)
 ---
 
 ### 4.6. Xử lý xuất/nhập Excel với OpenXML (`XlsxImportService.cs`, `XlsxExportService.cs`)
-Thay vì dùng thư viện `Microsoft.Office.Interop.Excel` (vốn chạy chậm, dễ bị treo tiến trình `EXCEL.EXE` ngầm và bắt buộc máy client phải cài Microsoft Office), hệ thống sử dụng **ClosedXML**:
-- Thao tác trực tiếp trên cấu trúc nén XML chuẩn `.xlsx` (OpenXML Format).
-- Định dạng tiêu đề cột in đậm, tô màu nền xám nhạt, viền ô mảnh, định dạng số tiền `#,##0 "đ"` tự động.
-- Tốc độ xuất báo cáo 10.000 dòng chỉ mất chưa đầy 1 giây.
+Thay vì dùng thư viện `Microsoft.Office.Interop.Excel` (vốn chạy chậm, dễ bị treo tiến trình `EXCEL.EXE` ngầm và bắt buộc máy client phải cài Microsoft Office), hệ thống sử dụng **cơ chế xử lý chuẩn Office Open XML thuần**:
+- Thao tác trực tiếp trên cấu trúc tệp nén ZIP và các lược đồ XML theo đặc tả OpenXML của Microsoft thông qua `System.IO.Compression` (ZipArchive) và `System.Xml` (XmlDocument / XmlWriter).
+- Định dạng tiêu đề cột in đậm, tô màu nền, viền ô và định dạng kiểu dữ liệu tự động (chuỗi, số nguyên, số thực, ngày giờ, tiền tệ).
+- Tốc độ xử lý nhanh, vận hành độc lập và hoàn toàn không phụ thuộc vào Microsoft Office hay bất kỳ package bên thứ ba nào.
 
 ---
 
@@ -403,11 +418,11 @@ Dưới đây là 10 câu hỏi cốt lõi mà giảng viên trong hội đồng
 #### Câu 1: Em hãy giải thích mô hình Entity Framework đang dùng trong dự án là gì? Ưu điểm so với ADO.NET thuần?
 > **Trả lời:** Dự án sử dụng mô hình **Entity Framework 6 Database First (EDMX)**.  
 > - So với ADO.NET thuần: EF6 tự động ánh xạ (mapping) các bảng SQL thành các lớp thực thể (Entity Classes) C#, giúp lập trình viên thao tác với dữ liệu thông qua ngôn ngữ hướng đối tượng và truy vấn LINQ to Entities thay vì phải nối chuỗi SQL thủ công (`SqlCommand`, `SqlDataReader`).  
-> - EF6 giúp mã nguồn an toàn tuyệt đối trước lỗ hổng **SQL Injection** nhờ cơ chế tham số hóa tự động (Parameterized Queries).
+> - EF6 giúp mã nguồn an toàn trước lỗ hổng **SQL Injection** nhờ cơ chế tham số hóa tự động (Parameterized Queries).
 
 #### Câu 2: Tại sao trong nghiệp vụ bán hàng, em phải dùng `db.Database.BeginTransaction()`?
 > **Trả lời:** Nghiệp vụ thanh toán bao gồm nhiều thao tác ghi dữ liệu liên hoàn: Tạo hóa đơn ➔ Thêm từng dòng chi tiết hóa đơn ➔ Trừ số lượng tồn kho từng sản phẩm.  
-> Nếu không dùng Transaction, giả sử hệ thống trừ kho thành công món thứ nhất nhưng đến món thứ hai bị lỗi hoặc mất điện, CSDL sẽ rơi vào trạng thái dữ liệu rác (kho bị trừ nhưng không có hóa đơn tương ứng). Transaction đảm bảo tính chất **ACID (Atomicity - Tính nguyên tố)**: Hoặc toàn bộ thao tác cùng thành công, hoặc nếu có lỗi thì hoàn nguyên (`Rollback`) 100% dữ liệu về trạng thái ban đầu.
+> Nếu không dùng Transaction, giả sử hệ thống trừ kho thành công món thứ nhất nhưng đến món thứ hai bị lỗi hoặc mất điện, CSDL sẽ rơi vào trạng thái dữ liệu rác (kho bị trừ nhưng không có hóa đơn tương ứng). Transaction đảm bảo tính chất **ACID (Atomicity - Tính nguyên tố)**: Hoặc toàn bộ thao tác cùng thành công, hoặc nếu có lỗi thì hoàn nguyên (`Rollback`) dữ liệu về trạng thái ban đầu.
 
 #### Câu 3: Mật khẩu người dùng được lưu trữ như thế nào trong CSDL? Nếu em đánh cắp file CSDL thì có xem được mật khẩu không?
 > **Trả lời:** Mật khẩu được băm một chiều bằng thuật toán **BCrypt** với Work Factor là 11. Chuỗi lưu trong CSDL là chuỗi băm 60 ký tự gồm phiên bản, số vòng lặp, muối (Salt) và kết quả mã hóa. Kẻ tấn công dù có toàn bộ file CSDL cũng không thể giải mã ngược chuỗi này ra mật khẩu gốc. Việc kiểm tra đăng nhập chỉ có thể thực hiện thông qua hàm `BCrypt.Verify()`.
@@ -424,16 +439,16 @@ Dưới đây là 10 câu hỏi cốt lõi mà giảng viên trong hội đồng
 #### Câu 7: Giả sử cửa hàng có 2 thu ngân cùng mở ứng dụng và cùng bán sản phẩm cuối cùng trong kho tại một thời điểm, hệ thống xử lý ra sao?
 > **Trả lời:** Hệ thống kiểm tra tồn kho tại 2 tầng:
 > 1. Tầng giao diện: Khi chọn sản phẩm, kiểm tra `numSoLuong <= sanPham.SoLuongTon`.
-> 2. Tầng dịch vụ (`PosService.cs`): Nằm bên trong khối `BeginTransaction()`, hệ thống truy vấn lại dòng sản phẩm từ CSDL và kiểm tra `if (sanPham.SoLuongTon < item.SoLuong) throw new InvalidOperationException(...)`. Do nằm trong Transaction, người thu ngân xác nhận sau sẽ bị bẫy lỗi "Sản phẩm không đủ tồn kho", transaction rollback và kho hàng không bao giờ bị âm.
+> 2. Tầng dịch vụ (`PosService.cs`): Nằm bên trong khối `BeginTransaction()`, hệ thống truy vấn lại dòng sản phẩm từ CSDL và kiểm tra `if (sanPham.SoLuongTon < item.SoLuong) throw new InvalidOperationException(...)`. Do nằm trong Transaction, người thu ngân xác nhận sau sẽ bị bẫy lỗi "Sản phẩm không đủ tồn kho", transaction rollback và kho hàng không bị âm.
 
 #### Câu 8: Tại sao em không lưu trực tiếp tệp ảnh sản phẩm vào cột kiểu `IMAGE` hoặc `VARBINARY(MAX)` trong SQL Server?
 > **Trả lời:** Lưu ảnh nhị phân trực tiếp vào CSDL khiến dung lượng file `.mdf` phình to rất nhanh, làm chậm tiến trình sao lưu/phục hồi CSDL và ngốn tài nguyên SQL Server khi query danh sách. Giải pháp chuẩn doanh nghiệp là: Lưu tệp ảnh vào thư mục hệ thống tệp (`Resources/`) sau khi đã nén chuẩn $500 \times 500$ px, và trong CSDL bảng `SanPham` chỉ lưu chuỗi đường dẫn tương đối (`DuongDanAnh` kiểu `NVARCHAR(255)`).
 
 #### Câu 9: Cơ chế phân quyền trong ứng dụng được thực hiện như thế nào?
-> **Trả lời:** Hệ thống lưu vai trò (`VaiTro`) trong bảng `TaiKhoan` gồm `ADMIN` và `NHANVIEN`. Khi đăng nhập thành công, vai trò được nạp vào lớp tĩnh `CurrentUserSession`. Tại form chính `FrmMain`, nếu người dùng là `NHANVIEN`, hệ thống tự động ẩn toàn bộ các nút menu quản trị (Nhân viên, Tài khoản, Danh mục, Chất liệu, Nhà cung cấp, Sao lưu phục hồi). Đồng thời tại hàm khởi tạo của từng form quản trị đều có lệnh kiểm tra lại `if (!CurrentUserSession.LaQuanTriVien) { Close(); }` để ngăn chặn việc mở form trái phép.
+> **Trả lời:** Hệ thống lưu vai trò (`VaiTro`) trong bảng `TaiKhoan` gồm `ADMIN` và `NHANVIEN`. Khi đăng nhập thành công, vai trò được nạp vào lớp tĩnh `CurrentUserSession`. Tại form chính `FrmMain`, nếu người dùng là `NHANVIEN`, hệ thống tự động ẩn toàn bộ các nút menu quản trị (Nhân viên, Tài khoản, Danh mục, Chất liệu, Nhà cung cấp, Sao lưu phục hồi). Đồng thời tại hàm khởi tạo của từng form quản trị đều có lệnh kiểm tra lại `if (!CurrentUserSession.LaQuanTriVien) { Close(); }` để ngăn chặn việc mở form trái phép. Nhân sự còn có trường `ChucVu` trong bảng `NhanVien` để ghi nhận vai trò chuyên môn trong tiệm vàng (Quản lý, Bán hàng, Kho, Thu mua, Chăm sóc KH).
 
-#### Câu 10: Điểm khác biệt giữa xuất Excel bằng ClosedXML và Microsoft.Office.Interop.Excel là gì?
-> **Trả lời:** Interop Excel thực chất là gọi ứng dụng Excel chạy ngầm qua giao tiếp COM. Nó yêu cầu máy tính phải cài bộ Microsoft Office, chạy rất chậm và nếu ứng dụng crash sẽ để lại tiến trình rác `EXCEL.EXE` chiếm CPU. Trong khi đó, ClosedXML thao tác trực tiếp với các tệp XML tuân theo đặc tả định dạng OpenXML của Microsoft, chạy hoàn toàn độc lập, tốc độ xử lý nhanh gấp hàng chục lần và không đòi hỏi máy client cài Office.
+#### Câu 10: Điểm khác biệt giữa xuất/nhập Excel theo chuẩn OpenXML thuần và Microsoft.Office.Interop.Excel là gì?
+> **Trả lời:** Interop Excel thực chất là gọi ứng dụng Excel chạy ngầm qua giao tiếp COM. Nó yêu cầu máy tính phải cài bộ Microsoft Office, chạy chậm và nếu ứng dụng gặp sự cố sẽ để lại tiến trình rác `EXCEL.EXE` chiếm CPU. Trong khi đó, giải pháp OpenXML thuần trong dự án thao tác trực tiếp với các tệp nén XML (.xlsx) thông qua các lớp chuẩn của .NET Framework (`System.IO.Compression` và `System.Xml`), chạy hoàn toàn độc lập, tốc độ xử lý nhanh và không đòi hỏi máy client cài đặt Microsoft Office hay bất kỳ gói thư viện bên ngoài nào.
 
 ---
 
@@ -442,9 +457,9 @@ Dưới đây là 10 câu hỏi cốt lõi mà giảng viên trong hội đồng
 Khi bước lên thuyết trình, hãy tự tin thao tác theo đúng kịch bản 6 bước logic dưới đây:
 
 1. **Bước 1: Đăng nhập & Xác thực (1 phút)**
-   - Đăng nhập bằng tài khoản thu ngân `nhanvien / nv123`.
-   - Chỉ cho hội đồng thấy: Menu Quản trị (Nhân viên, Tài khoản, CSDL) bị ẩn tự động.
-   - Đăng xuất và đăng nhập lại bằng `admin / admin123`. Tất cả chức năng mở đầy đủ.
+   - Đăng nhập bằng tài khoản nhân viên `ngoclan / PnjDemo@123`.
+   - Chỉ cho hội đồng thấy: Menu Quản trị (Nhân viên, Tài khoản, CSDL) bị ẩn tự động theo đúng phân quyền `NHANVIEN`.
+   - Đăng xuất và đăng nhập lại bằng `admin / PnjDemo@123`. Tất cả chức năng mở đầy đủ (`ADMIN`).
 2. **Bước 2: Nghiệp vụ Bán hàng POS tại quầy (1.5 phút)**
    - Mở màn hình Bán hàng (giao diện 2 cột hiện đại).
    - Bấm nút **Quét QR (`F4`)** hoặc chọn một món trang sức (Ví dụ: Nhẫn kim cương vàng 18K).

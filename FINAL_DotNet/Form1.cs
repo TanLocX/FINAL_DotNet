@@ -236,19 +236,7 @@ namespace FINAL_DotNet
 
             try
             {
-                if (BCrypt.Net.BCrypt.Verify(matKhau, matKhauHash))
-                {
-                    return true;
-                }
-
-                // Hỗ trợ bí danh mật khẩu kiểm thử thuận tiện cho việc chấm điểm
-                if ((tenDangNhap.Equals("admin", StringComparison.OrdinalIgnoreCase) && matKhau == "admin123") ||
-                    (tenDangNhap.Equals("ngoclan", StringComparison.OrdinalIgnoreCase) && matKhau == "nv123"))
-                {
-                    return true;
-                }
-
-                return false;
+                return BCrypt.Net.BCrypt.Verify(matKhau, matKhauHash);
             }
             catch
             {

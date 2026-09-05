@@ -35,7 +35,7 @@
    - 6.1. Pipeline Nén ảnh Nội suy Đa kênh (Bicubic Image Optimization)
    - 6.2. Động cơ Sao lưu & Phục hồi CSDL Tự thích ứng (Adaptive Backup/Restore)
    - 6.3. Hệ thống Nhận diện & Sinh mã QR/Barcode (QR Engine)
-   - 6.4. Xử lý Dữ liệu Lớn với Excel (ClosedXML Engine)
+   - 6.4. Xử lý Xuất/Nhập Bảng tính theo chuẩn Office Open XML (Native OpenXML Engine)
 7. [Cẩm Nang Vận Hành & Danh Mục Phím Tắt POS](#7-cẩm-nang-vận-hành--danh-mục-phím-tắt-pos)
 8. [Hướng Dẫn Cài Đặt, Cấu Hình & Triển Khai](#8-hướng-dẫn-cài-đặt-cấu-hình--triển-khai)
 9. [Đóng Gói Phát Hành & Bộ Cài Đặt (Packaging)](#9-đóng-gói-phát-hành--bộ-cài-đặt-packaging)
@@ -73,14 +73,14 @@ Hệ thống được tổ chức theo kiến trúc phân tầng (Layered Archit
 │  - BaoCaoService.cs: Invoice, goods receipt, warranty report printing  │
 │  - ImageOptimizationHelper.cs: High-Quality Bicubic image compression   │
 │  - SaoLuuPhucHoiService.cs: Adaptive SQL Server Backup/Restore engine  │
-│  - QrCodeService.cs: QR code generation and ZXing camera/file decoding │
-│  - EmailService.cs: SMTP engine, template variable resolver, MailKit   │
-│  - XlsxImportService.cs / XlsxExportService.cs: ClosedXML Excel engine │
+│  - QrCodeService.cs: QR code generation and decoding via ZXing.Net     │
+│  - EmailService.cs: SMTP engine, template variable resolver (.NET Mail)│
+│  - XlsxImportService.cs / XlsxExportService.cs: Native OpenXML engine  │
 └────────────────────────────────────┬────────────────────────────────────┘
                                      │ Data Mapping
 ┌────────────────────────────────────▼────────────────────────────────────┐
 │                       DATA ACCESS LAYER (ORM)                           │
-│  Entity Framework 6.4.4 (Database First via Model1.edmx)                │
+│  Entity Framework 6.5.2 (Database First via Model1.edmx)                │
 │  LINQ to Entities, Safe Transaction Scopes, Entity Validation           │
 └────────────────────────────────────┬────────────────────────────────────┘
                                      │ Query & Storage
@@ -91,13 +91,13 @@ Hệ thống được tổ chức theo kiến trúc phân tầng (Layered Archit
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Danh mục Thư viện & Công nghệ bên thứ ba:
-- **Guna.UI2.WinForms (v2.0.4.6):** Khung giao diện cao cấp hỗ trợ Border Radius, đổ bóng, màu sắc mượt mà, hỗ trợ tối ưu hiển thị.
-- **EntityFramework (v6.4.4):** ORM truy xuất dữ liệu mạnh mẽ, quản lý context và tự động sinh câu truy vấn SQL an toàn chống SQL Injection.
-- **BCrypt.Net-Next (v4.0.3):** Thuật toán băm mật khẩu chuẩn bảo mật quốc tế với Work Factor 11 và Salt ngẫu nhiên 128-bit.
-- **ClosedXML / DocumentFormat.OpenXml:** Thư viện xuất/nhập tệp bảng tính Microsoft Excel (.xlsx) chuẩn OpenXML không yêu cầu máy cài Microsoft Office.
-- **ZXing.Net & QRCoder:** Bộ giải mã và sinh mã vạch / mã QR 2D phục vụ quét sản phẩm tại quầy.
-- **MailKit & MimeKit:** Giao thức gửi thư điện tử SMTP hiện đại hỗ trợ SSL/TLS và tệp đính kèm.
+### Danh mục Thư viện & Công nghệ Nền tảng:
+- **Guna.UI2.WinForms (v2.0.4.8):** Khung giao diện cao cấp hỗ trợ Border Radius, đổ bóng, màu sắc mượt mà, tối ưu hiển thị.
+- **EntityFramework (v6.5.2):** ORM truy xuất dữ liệu mạnh mẽ, quản lý context và tự động sinh câu truy vấn SQL an toàn trước SQL Injection.
+- **BCrypt.Net-Next (v4.2.0):** Thuật toán băm mật khẩu chuẩn bảo mật quốc tế với Work Factor 11 và Salt ngẫu nhiên 128-bit.
+- **Xử lý OpenXML thuần (System.IO.Compression & System.Xml):** Xuất/nhập tệp bảng tính Microsoft Excel (.xlsx) chuẩn OpenXML không yêu cầu máy cài Microsoft Office hay phụ thuộc package ngoài.
+- **ZXing.Net (v0.16.11):** Bộ giải mã và sinh mã vạch / mã QR 2 chiều phục vụ quản lý và quét sản phẩm tại quầy.
+- **System.Net.Mail:** Thư viện chuẩn .NET Framework gửi thư điện tử SMTP an toàn hỗ trợ SSL/TLS và tệp đính kèm.
 
 ---
 
@@ -328,13 +328,13 @@ erDiagram
 
 ### 6.3. Hệ thống Nhận diện & Sinh mã QR/Barcode (QR Engine)
 - **Tệp mã nguồn:** `QrCodeService.cs`.
-- **Sinh mã:** Sử dụng thư viện `QRCoder` để render ma trận điểm 2D chuẩn định dạng `SP000001` tương thích máy quét chuẩn ngành.
-- **Đọc mã:** Sử dụng thư viện `ZXing.Net` kết hợp `BarcodeReader` với bộ lọc tối ưu hóa tương phản để đọc chính xác mã QR từ webcam hoặc tệp ảnh bị nghiêng/mờ.
+- **Sinh mã:** Sử dụng thư viện `ZXing.Net` (`BarcodeWriter` với `BarcodeFormat.QR_CODE`) để render ma trận điểm 2D chuẩn định dạng `SP000001` thành đối tượng `Bitmap`.
+- **Đọc mã:** Sử dụng thư viện `ZXing.Net` kết hợp `BarcodeReader` với bộ lọc tự động xoay (`AutoRotate = true`) để đọc chính xác mã QR từ webcam hoặc tệp ảnh.
 
-### 6.4. Xử lý Dữ liệu Lớn với Excel (ClosedXML Engine)
+### 6.4. Xử lý Xuất/Nhập Bảng tính theo chuẩn Office Open XML (Native OpenXML Engine)
 - **Tệp mã nguồn:** `XlsxImportService.cs`, `XlsxExportService.cs`.
-- Đọc và phân tích cú pháp trực tiếp cấu trúc XML của tệp `.xlsx`, không phụ thuộc vào tiến trình nền `EXCEL.EXE`.
-- Tự động kiểm tra định dạng cột, kiểm tra trùng lặp khóa ngoại và thực thi lưu dữ liệu theo lô (Batch Saving) với hiệu năng xử lý hàng ngàn dòng trong vài giây.
+- Đọc và phân tích cú pháp trực tiếp cấu trúc XML của tệp `.xlsx` thông qua `System.IO.Compression` và `System.Xml`, không phụ thuộc vào Microsoft Excel hay thư viện bên ngoài.
+- Tự động kiểm tra định dạng cột, kiểm tra trùng lặp mã nguồn và thực thi lưu dữ liệu theo lô với hiệu năng cao.
 
 ---
 
@@ -396,25 +396,23 @@ Thư mục `Packaging/` cung cấp đầy đủ các phương án phân phối c
 
 ---
 
-# 10. ĐỐI CHIẾU ĐÁNH GIÁ RUBRIC HỌC PHẦN
+# 10. ĐỐI CHIẾU ĐÁNH GIÁ TIÊU CHÍ HỌC PHẦN
 
-Căn cứ theo bảng tiêu chí chấm điểm chính thức `RUBRIC CHAM DIEM - THAM KHAO.xlsx`:
+Bảng đối chiếu mức độ đáp ứng các yêu cầu kỹ thuật dựa trên khung tiêu chí đánh giá học phần Lập trình .NET (C#):
 
-| STT | Tiêu chí Rubric | Điểm tối đa | Điểm đạt được | Bằng chứng kỹ thuật thực tế |
-|---|---|:---:|:---:|---|
-| **I** | Thiết kế CSDL SQL Server | 10 | **10** | CSDL 17 bảng đạt chuẩn 3NF, đầy đủ PK, FK, dữ liệu mẫu thực tế. |
-| **II** | Entity Framework | 10 | **10** | Mô hình EF 6 Database First/EDMX, LINQ to Entities chuẩn xác. |
-| **III**| Thiết kế Giao diện | 10 | **10** | Guna UI2 sang trọng, layout 2 cột khoa học, Header điều hướng mượt mà. |
-| **IV** | Quản lý Dữ liệu (CRUD) | 20 | **20** | Đầy đủ Thêm/Sửa/Xóa trên tất cả phân hệ, kiểm tra ràng buộc chặt chẽ. |
-| **V** | Hiển thị Dữ liệu | 5 | **5** | DataGridView định dạng tiền/ngày chuẩn, ComboBox Binding mượt mà. |
-| **VI** | Tìm kiếm Dữ liệu | 10 | **10** | Tìm kiếm đa tiêu chí, tự động lọc theo từ khóa, số điện thoại, ngày tháng. |
-| **VII**| Thống kê Dữ liệu | 10 | **10** | Dashboard trực quan, đồ thị Guna Chart, phân tích doanh số và kho. |
-| **VIII**| Xuất Dữ liệu / Báo cáo | 10 | **10** | Xuất Excel qua ClosedXML, in hóa đơn và phiếu bảo hành chuẩn khổ. |
-| **IX** | Báo cáo Word | 10 | *Chờ nộp* | Đã chuẩn bị toàn bộ khung nội dung đặc tả kỹ thuật chi tiết. |
-| **X** | Demo & Nộp sản phẩm | 5 | **5** | Chạy ổn định 100%, có file .bak 6.4MB, hướng dẫn cài đặt và packaging. |
-| **+** | **Điểm Thưởng Nâng Cao** | **10** | **10/10** | Phân quyền RBAC (2đ), BCrypt (2đ), Reset Pass (2đ), Backup/Restore (2đ), Đóng gói Setup (2đ), Guna UI (2đ) -> Đạt trần thưởng 10 điểm. |
-| **-** | **Quy định trừ điểm** | 0 | **0** | Có EF, có file .bak, không crash, build sạch 0 lỗi. |
-| **TỔNG**| **ĐIỂM HIỆN TẠI** | **100** | **`90 / 100`** | **Đạt điểm tuyệt đối mọi hạng mục phần mềm & CSDL.** |
+| STT | Nhóm Tiêu chí Học phần | Trạng thái Đáp ứng | Minh chứng Kỹ thuật Thực tế |
+|---|---|:---:|---|
+| **I** | Thiết kế CSDL SQL Server | **Đã đáp ứng đầy đủ** | CSDL 17 bảng đạt chuẩn 3NF, đầy đủ PK, FK, dữ liệu mẫu thực tế, có script tạo và tệp .bak chuẩn 6.4 MB. |
+| **II** | Entity Framework (ORM) | **Đã triển khai** | Mô hình EF 6.5.2 Database First (Model1.edmx), thao tác dữ liệu qua LINQ to Entities an toàn trước SQL Injection. |
+| **III**| Thiết kế Giao diện | **Đã triển khai** | Bộ điều khiển Guna.UI2.WinForms 2.0.4.8, layout 2 cột khoa học, Header điều hướng mượt mà, hỗ trợ F1 trợ giúp. |
+| **IV** | Quản lý Dữ liệu (CRUD) | **Đã đáp ứng đầy đủ** | Đầy đủ chức năng Thêm/Sửa/Xóa/Tìm kiếm trên tất cả 13 phân hệ, kiểm tra ràng buộc toàn vẹn chặt chẽ. |
+| **V** | Hiển thị Dữ liệu | **Đã triển khai** | DataGridView định dạng tiền tệ/ngày giờ chuẩn Việt Nam (`vi-VN`), nạp danh mục liên kết ComboBox mượt mà. |
+| **VI** | Tìm kiếm & Tra cứu Dữ liệu | **Đã đáp ứng đầy đủ** | Tra cứu đa tiêu chí theo từ khóa, số điện thoại, ngày tháng, tự động cập nhật kết quả theo thời gian thực. |
+| **VII**| Thống kê & Phân tích Trực quan | **Đã triển khai** | Dashboard trực quan, đồ thị Guna Chart đa dạng (cột, tròn), phân tích doanh thu, chất liệu và cảnh báo tồn kho. |
+| **VIII**| Xuất Dữ liệu & In Báo cáo | **Đã đáp ứng đầy đủ** | Xuất/nhập file Excel (.xlsx) chuẩn OpenXML thuần qua `System.IO.Compression/Xml`, in hóa đơn bán lẻ và phiếu bảo hành. |
+| **IX** | Báo cáo Kỹ thuật Học phần | **Đã chuẩn bị** | Hoàn thành tài liệu đặc tả 13 module, cẩm nang ôn tập Full-Stack và kịch bản bảo vệ trước hội đồng. |
+| **X** | Demo & Vận hành Sản phẩm | **Đã đáp ứng đầy đủ** | Hệ thống chạy ổn định, có gói Portable chạy ngay, kịch bản Inno Setup và bản sao lưu CSDL vật lý. |
+| **+** | **Các Chức Năng Nâng Cao** | **Đã tích hợp** | Phân quyền RBAC (2 vai trò), băm mật khẩu BCrypt (Work Factor 11), quét/sinh mã QR (ZXing.Net), sao lưu/phục hồi CSDL tự thích ứng, nén ảnh nội suy Bicubic. |
 
 ---
 
