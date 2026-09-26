@@ -91,7 +91,18 @@ namespace FINAL_DotNet
                 return;
             }
 
-            tabChinh.SelectedTab = moTabPhanTich ? tabPhanTich : tabBoSuuTap;
+            if (moTabPhanTich)
+            {
+                tabChinh.TabPages.Remove(tabBoSuuTap);
+                tabChinh.TabPages.Remove(tabTongQuan);
+                tabChinh.SelectedTab = tabPhanTich;
+            }
+            else
+            {
+                tabChinh.TabPages.Remove(tabPhanTich);
+                tabChinh.TabPages.Remove(tabXuatDuLieu);
+                tabChinh.SelectedTab = tabTongQuan;
+            }
             TaiVaHienThiDuLieu();
         }
 
