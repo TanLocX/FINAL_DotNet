@@ -149,6 +149,7 @@ namespace FINAL_DotNet
                         .AsNoTracking()
                         .Where(sp => sp.DangKinhDoanh)
                         .OrderBy(sp => sp.TenSanPham)
+                        .AsEnumerable()
                         .Select(sp => new ProductOption
                         {
                             Id = sp.SanPhamId,
