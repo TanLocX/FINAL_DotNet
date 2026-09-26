@@ -1,12 +1,20 @@
 using System;
+using System.Data.Entity.Infrastructure;
 using System.Drawing;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace FINAL_DotNet
 {
     public partial class FormDangKy : Form
     {
+        private static readonly Regex MauTenDangNhap =
+            new Regex("^[A-Za-z0-9._-]{3,50}$", RegexOptions.Compiled);
+        private static readonly Regex MauMaNhanVien =
+            new Regex("^NV([0-9]{6})$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private Image anhNenHienTai;
         private bool isUpdatingLayout = false;
         private int lastCropWidth = -1;
@@ -80,13 +88,21 @@ namespace FINAL_DotNet
             string matKhau = txtMatKhau.Text;
             string nhapLaiMatKhau = txtNhapLaiMatKhau.Text;
             string maNhanVien = txtMaNhanVien.Text.Trim();
+            string soDienThoai = txtSoDienThoai.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(tenDangNhap) ||
                 string.IsNullOrEmpty(matKhau) ||
                 string.IsNullOrEmpty(nhapLaiMatKhau) ||
-                string.IsNullOrWhiteSpace(maNhanVien))
+                string.IsNullOrWhiteSpace(maNhanVien) ||
+                string.IsNullOrWhiteSpace(soDienThoai))
             {
                 lbThongBaoLoi.Text = "* Vui lòng điền đầy đủ tất cả các trường!";
+                return;
+            }
+
+            if (!MauTenDangNhap.IsMatch(tenDangNhap))
+            {
+                lbThongBaoLoi.Text = "* Tên đăng nhập dài 3–50 ký tự và chỉ gồm chữ, số, ., _ hoặc -!";
                 return;
             }
 
@@ -96,9 +112,22 @@ namespace FINAL_DotNet
                 return;
             }
 
+            if (Encoding.UTF8.GetByteCount(matKhau) > 72)
+            {
+                lbThongBaoLoi.Text = "* Mật khẩu không được vượt quá 72 byte UTF-8!";
+                return;
+            }
+
             if (matKhau != nhapLaiMatKhau)
             {
                 lbThongBaoLoi.Text = "* Mật khẩu nhập lại không khớp!";
+                return;
+            }
+
+            if (soDienThoai.Length < 9 || soDienThoai.Length > 15 ||
+                soDienThoai.Any(kyTu => !char.IsDigit(kyTu)))
+            {
+                lbThongBaoLoi.Text = "* Số điện thoại phải gồm từ 9 đến 15 chữ số!";
                 return;
             }
 
@@ -109,22 +138,25 @@ namespace FINAL_DotNet
                 return;
             }
 
+            btnDangKy.Enabled = false;
             try
             {
                 using (var db = DatabaseConnection.CreateContext())
                 {
-                    if (db.TaiKhoans.Any(tk => tk.TenDangNhap == tenDangNhap))
-                    {
-                        lbThongBaoLoi.Text = "* Tên đăng nhập này đã tồn tại!";
-                        return;
-                    }
-
                     var nhanVien = db.NhanViens.FirstOrDefault(nv =>
-                        nv.NhanVienId == nhanVienId && nv.DangLamViec);
+                        nv.NhanVienId == nhanVienId &&
+                        nv.DangLamViec &&
+                        nv.SoDienThoai == soDienThoai);
 
                     if (nhanVien == null)
                     {
-                        lbThongBaoLoi.Text = "* Không tìm thấy nhân viên đang làm việc!";
+                        lbThongBaoLoi.Text = "* Mã nhân viên hoặc số điện thoại không khớp hồ sơ đang làm việc!";
+                        return;
+                    }
+
+                    if (db.TaiKhoans.Any(tk => tk.TenDangNhap == tenDangNhap))
+                    {
+                        lbThongBaoLoi.Text = "* Tên đăng nhập này đã tồn tại!";
                         return;
                     }
 
@@ -138,9 +170,9 @@ namespace FINAL_DotNet
                     {
                         NhanVienId = nhanVienId,
                         TenDangNhap = tenDangNhap,
-                        MatKhauHash = BCrypt.Net.BCrypt.HashPassword(matKhau),
+                        MatKhauHash = BCrypt.Net.BCrypt.HashPassword(matKhau, 11),
                         VaiTro = "NHANVIEN",
-                        PhaiDoiMatKhau = true,
+                        PhaiDoiMatKhau = false,
                         DangHoatDong = true
                     });
 
@@ -148,27 +180,33 @@ namespace FINAL_DotNet
                 }
 
                 MessageBox.Show(
-                    "Cấp tài khoản thành công. Nhân viên phải đổi mật khẩu ở lần đăng nhập đầu tiên.",
+                    "Đăng ký tài khoản thành công. Bạn có thể đăng nhập ngay.",
                     "Thành công",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 Close();
             }
+            catch (DbUpdateException)
+            {
+                lbThongBaoLoi.Text = "* Không thể đăng ký. Nhân viên hoặc tên đăng nhập có thể đã được sử dụng.";
+            }
             catch (Exception)
             {
-                lbThongBaoLoi.Text = "* Không thể kết nối CSDL. Hãy kiểm tra cấu hình kết nối.";
+                lbThongBaoLoi.Text = "* Không thể đăng ký. Hãy kiểm tra kết nối CSDL và thử lại.";
+            }
+            finally
+            {
+                btnDangKy.Enabled = true;
             }
         }
 
         private static bool ThuChuyenNhanVienId(string maNhanVien, out int nhanVienId)
         {
-            string giaTri = maNhanVien.Trim();
-            if (giaTri.StartsWith("NV", StringComparison.OrdinalIgnoreCase))
-            {
-                giaTri = giaTri.Substring(2);
-            }
-
-            return int.TryParse(giaTri, out nhanVienId) && nhanVienId > 0;
+            nhanVienId = 0;
+            Match ketQua = MauMaNhanVien.Match(maNhanVien.Trim());
+            return ketQua.Success &&
+                   int.TryParse(ketQua.Groups[1].Value, out nhanVienId) &&
+                   nhanVienId > 0;
         }
 
         private void btnQuayLai_Click(object sender, EventArgs e)

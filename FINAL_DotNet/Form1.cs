@@ -104,8 +104,8 @@ namespace FINAL_DotNet
         {
             lbThongBaoLoi.Text = string.Empty;
 
-            // Tài khoản chỉ do quản trị viên cấp, không đăng ký công khai.
-            btnChuyenDangKy.Visible = false;
+            // Cho phép nhân viên nội bộ tự đăng ký sau khi xác minh hồ sơ.
+            btnChuyenDangKy.Visible = true;
 
             if (!isUpdatingLayout)
             {

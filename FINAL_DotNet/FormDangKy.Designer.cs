@@ -31,6 +31,8 @@ namespace FINAL_DotNet
             this.btnDangKy = new Guna.UI2.WinForms.Guna2Button();
             this.txtNhapLaiMatKhau = new Guna.UI2.WinForms.Guna2TextBox();
             this.txtMaNhanVien = new Guna.UI2.WinForms.Guna2TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtSoDienThoai = new Guna.UI2.WinForms.Guna2TextBox();
             this.guna2Panel2 = new Guna.UI2.WinForms.Guna2Panel();
             this.label9 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -82,9 +84,11 @@ namespace FINAL_DotNet
             this.pnlDangKy.Controls.Add(this.btnDangKy);
             this.pnlDangKy.Controls.Add(this.txtNhapLaiMatKhau);
             this.pnlDangKy.Controls.Add(this.txtMaNhanVien);
+            this.pnlDangKy.Controls.Add(this.label5);
+            this.pnlDangKy.Controls.Add(this.txtSoDienThoai);
             this.pnlDangKy.Location = new System.Drawing.Point(792, 187);
             this.pnlDangKy.Name = "pnlDangKy";
-            this.pnlDangKy.Size = new System.Drawing.Size(346, 464);
+            this.pnlDangKy.Size = new System.Drawing.Size(346, 506);
             this.pnlDangKy.TabIndex = 8;
             // 
             // label4
@@ -93,7 +97,7 @@ namespace FINAL_DotNet
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(22, 275);
+            this.label4.Location = new System.Drawing.Point(22, 248);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(81, 15);
             this.label4.TabIndex = 14;
@@ -105,7 +109,7 @@ namespace FINAL_DotNet
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(22, 207);
+            this.label3.Location = new System.Drawing.Point(22, 187);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(112, 15);
             this.label3.TabIndex = 13;
@@ -117,7 +121,7 @@ namespace FINAL_DotNet
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(22, 139);
+            this.label1.Location = new System.Drawing.Point(22, 126);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 15);
             this.label1.TabIndex = 12;
@@ -129,7 +133,7 @@ namespace FINAL_DotNet
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(22, 71);
+            this.label2.Location = new System.Drawing.Point(22, 65);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(59, 15);
             this.label2.TabIndex = 11;
@@ -142,9 +146,9 @@ namespace FINAL_DotNet
             this.labelTitle.ForeColor = System.Drawing.Color.White;
             this.labelTitle.Location = new System.Drawing.Point(25, 27);
             this.labelTitle.Name = "labelTitle";
-            this.labelTitle.Size = new System.Drawing.Size(205, 25);
+            this.labelTitle.Size = new System.Drawing.Size(234, 25);
             this.labelTitle.TabIndex = 0;
-            this.labelTitle.Text = "CẤP TÀI KHOẢN";
+            this.labelTitle.Text = "ĐĂNG KÝ TÀI KHOẢN";
             // 
             // btnQuayLai
             // 
@@ -152,7 +156,8 @@ namespace FINAL_DotNet
             this.btnQuayLai.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnQuayLai.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnQuayLai.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
-            this.btnQuayLai.Location = new System.Drawing.Point(25, 424);
+            this.btnQuayLai.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnQuayLai.Location = new System.Drawing.Point(25, 468);
             this.btnQuayLai.Name = "btnQuayLai";
             this.btnQuayLai.Size = new System.Drawing.Size(120, 30);
             this.btnQuayLai.TabIndex = 7;
@@ -168,7 +173,8 @@ namespace FINAL_DotNet
             this.txtTenDangNhap.DefaultText = "";
             this.txtTenDangNhap.FillColor = System.Drawing.Color.Transparent;
             this.txtTenDangNhap.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtTenDangNhap.Location = new System.Drawing.Point(25, 89);
+            this.txtTenDangNhap.Location = new System.Drawing.Point(25, 83);
+            this.txtTenDangNhap.MaxLength = 50;
             this.txtTenDangNhap.Name = "txtTenDangNhap";
             this.txtTenDangNhap.PlaceholderText = "Tên đăng nhập";
             this.txtTenDangNhap.SelectedText = "";
@@ -178,12 +184,12 @@ namespace FINAL_DotNet
             // 
             // lbThongBaoLoi
             // 
-            this.lbThongBaoLoi.AutoSize = true;
+            this.lbThongBaoLoi.AutoSize = false;
             this.lbThongBaoLoi.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbThongBaoLoi.ForeColor = System.Drawing.Color.Red;
-            this.lbThongBaoLoi.Location = new System.Drawing.Point(29, 347);
+            this.lbThongBaoLoi.Location = new System.Drawing.Point(25, 377);
             this.lbThongBaoLoi.Name = "lbThongBaoLoi";
-            this.lbThongBaoLoi.Size = new System.Drawing.Size(10, 15);
+            this.lbThongBaoLoi.Size = new System.Drawing.Size(300, 34);
             this.lbThongBaoLoi.TabIndex = 5;
             this.lbThongBaoLoi.Text = ".";
             // 
@@ -194,7 +200,8 @@ namespace FINAL_DotNet
             this.txtMatKhau.DefaultText = "";
             this.txtMatKhau.FillColor = System.Drawing.Color.Transparent;
             this.txtMatKhau.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtMatKhau.Location = new System.Drawing.Point(25, 157);
+            this.txtMatKhau.Location = new System.Drawing.Point(25, 144);
+            this.txtMatKhau.MaxLength = 72;
             this.txtMatKhau.Name = "txtMatKhau";
             this.txtMatKhau.PasswordChar = '*';
             this.txtMatKhau.PlaceholderText = "Mật khẩu";
@@ -209,11 +216,11 @@ namespace FINAL_DotNet
             this.btnDangKy.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
             this.btnDangKy.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDangKy.ForeColor = System.Drawing.Color.White;
-            this.btnDangKy.Location = new System.Drawing.Point(25, 372);
+            this.btnDangKy.Location = new System.Drawing.Point(25, 416);
             this.btnDangKy.Name = "btnDangKy";
             this.btnDangKy.Size = new System.Drawing.Size(300, 45);
             this.btnDangKy.TabIndex = 6;
-            this.btnDangKy.Text = "Cấp tài khoản";
+            this.btnDangKy.Text = "Đăng ký";
             this.btnDangKy.Click += new System.EventHandler(this.btnDangKy_Click);
             // 
             // txtNhapLaiMatKhau
@@ -223,7 +230,8 @@ namespace FINAL_DotNet
             this.txtNhapLaiMatKhau.DefaultText = "";
             this.txtNhapLaiMatKhau.FillColor = System.Drawing.Color.Transparent;
             this.txtNhapLaiMatKhau.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtNhapLaiMatKhau.Location = new System.Drawing.Point(25, 224);
+            this.txtNhapLaiMatKhau.Location = new System.Drawing.Point(25, 205);
+            this.txtNhapLaiMatKhau.MaxLength = 72;
             this.txtNhapLaiMatKhau.Name = "txtNhapLaiMatKhau";
             this.txtNhapLaiMatKhau.PasswordChar = '*';
             this.txtNhapLaiMatKhau.PlaceholderText = "Nhập lại mật khẩu";
@@ -239,13 +247,42 @@ namespace FINAL_DotNet
             this.txtMaNhanVien.DefaultText = "";
             this.txtMaNhanVien.FillColor = System.Drawing.Color.Transparent;
             this.txtMaNhanVien.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.txtMaNhanVien.Location = new System.Drawing.Point(25, 293);
+            this.txtMaNhanVien.Location = new System.Drawing.Point(25, 266);
+            this.txtMaNhanVien.MaxLength = 8;
             this.txtMaNhanVien.Name = "txtMaNhanVien";
             this.txtMaNhanVien.PlaceholderText = "Mã nhân viên (VD: NV000001)";
             this.txtMaNhanVien.SelectedText = "";
             this.txtMaNhanVien.Size = new System.Drawing.Size(300, 40);
             this.txtMaNhanVien.TabIndex = 4;
             this.txtMaNhanVien.TextChanged += new System.EventHandler(this.txt_TextChanged);
+            //
+            // label5
+            //
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.ForeColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(22, 309);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(148, 15);
+            this.label5.TabIndex = 15;
+            this.label5.Text = "Số điện thoại xác minh";
+            //
+            // txtSoDienThoai
+            //
+            this.txtSoDienThoai.BorderRadius = 8;
+            this.txtSoDienThoai.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtSoDienThoai.DefaultText = "";
+            this.txtSoDienThoai.FillColor = System.Drawing.Color.Transparent;
+            this.txtSoDienThoai.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.txtSoDienThoai.Location = new System.Drawing.Point(25, 327);
+            this.txtSoDienThoai.MaxLength = 15;
+            this.txtSoDienThoai.Name = "txtSoDienThoai";
+            this.txtSoDienThoai.PlaceholderText = "Số điện thoại trong hồ sơ nhân viên";
+            this.txtSoDienThoai.SelectedText = "";
+            this.txtSoDienThoai.Size = new System.Drawing.Size(300, 40);
+            this.txtSoDienThoai.TabIndex = 5;
+            this.txtSoDienThoai.TextChanged += new System.EventHandler(this.txt_TextChanged);
             // 
             // guna2Panel2
             // 
@@ -362,11 +399,13 @@ namespace FINAL_DotNet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AcceptButton = this.btnDangKy;
+            this.CancelButton = this.btnQuayLai;
             this.ClientSize = new System.Drawing.Size(1263, 705);
             this.Controls.Add(this.guna2Panel1);
             this.Name = "FormDangKy";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Cấp tài khoản - Hệ thống PNJ";
+            this.Text = "Đăng ký tài khoản - Hệ thống PNJ";
             this.Load += new System.EventHandler(this.FormDangKy_Load);
             this.guna2Panel1.ResumeLayout(false);
             this.guna2Panel1.PerformLayout();
@@ -391,6 +430,8 @@ namespace FINAL_DotNet
         private Guna.UI2.WinForms.Guna2Button btnDangKy;
         private Guna.UI2.WinForms.Guna2TextBox txtNhapLaiMatKhau;
         private Guna.UI2.WinForms.Guna2TextBox txtMaNhanVien;
+        private System.Windows.Forms.Label label5;
+        private Guna.UI2.WinForms.Guna2TextBox txtSoDienThoai;
         private Guna.UI2.WinForms.Guna2Panel guna2Panel1;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;

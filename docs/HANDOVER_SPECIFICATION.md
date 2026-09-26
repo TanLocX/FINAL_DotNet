@@ -129,6 +129,7 @@ Hệ thống thiết lập 2 vai trò chuẩn:
 1. **Mã hóa một chiều BCrypt:** Mật khẩu người dùng không bao giờ lưu dưới dạng văn bản thuần (plain-text). Mật khẩu được băm qua `BCrypt.Net.BCrypt.HashPassword(rawPassword, workFactor: 11)`. Khi kiểm tra đăng nhập, hàm `BCrypt.Verify(input, hash)` đối chiếu tự động.
 2. **Quy trình Bắt buộc Đổi Mật khẩu:** Khi Quản trị viên sử dụng tính năng "Reset Mật khẩu" trên `FrmTaiKhoan`, hệ thống sinh mật khẩu ngẫu nhiên an toàn và đánh dấu cờ `PhaiDoiMatKhau = true`. Khi nhân viên đăng nhập bằng mật khẩu tạm, hệ thống tự động khóa giao diện chính và hiển thị cửa sổ bắt buộc đổi mật khẩu `FormDoiMatKhau.cs`.
 3. **Session Singleton An toàn (`CurrentUserSession`):** Lưu trữ định danh người dùng, họ tên, mã nhân viên và vai trò dưới dạng Read-Only trong suốt vòng đời phiên làm việc. Khi người dùng đăng xuất, toàn bộ bộ nhớ phiên được dọn dẹp triệt để.
+4. **Đăng ký Nội bộ Có Xác minh:** Nhân viên đang làm việc và chưa có tài khoản có thể tự đăng ký bằng mã nhân viên cùng số điện thoại trùng khớp hồ sơ. Luồng này chỉ cấp vai trò `NHANVIEN`; quyền `ADMIN` chỉ được cấp trong `FrmTaiKhoan` bởi quản trị viên.
 
 ---
 
@@ -142,6 +143,7 @@ Hệ thống thiết lập 2 vai trò chuẩn:
   3. Kiểm tra nhân viên liên kết trong bảng `NhanVien` có đang làm việc (`DangLamViec == true`) hay không.
   4. Thực hiện `BCrypt.Verify`. Nếu hợp lệ, nạp dữ liệu vào `CurrentUserSession` và chuyển sang `FrmMain`.
   5. Nếu `PhaiDoiMatKhau == true`, mở modal `FormDoiMatKhau` yêu cầu nhập mật khẩu mới (tối thiểu 6 ký tự, xác nhận khớp nhau) trước khi cho phép vào giao diện làm việc.
+  6. Tại màn hình đăng nhập, nhân viên chưa có tài khoản có thể mở `FormDangKy`, nhập tên đăng nhập, mật khẩu, mã nhân viên và số điện thoại xác minh. Hệ thống kiểm tra trạng thái làm việc, quan hệ một nhân viên - một tài khoản và chỉ tạo vai trò `NHANVIEN`.
 
 ### 4.2. Phân hệ Điểm bán hàng Thu ngân (POS Terminal)
 - **Giao diện:** `FrmBanHang.cs`.

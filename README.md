@@ -63,6 +63,7 @@ Phần mềm quản lý bán hàng và vận hành chuỗi cửa hàng vàng b�
    - Hệ thống quản lý 2 vai trò bảo mật đăng nhập (`VaiTro`): Quản trị viên (`ADMIN`) và Nhân viên (`NHANVIEN`).
    - Nhân sự được phân công theo 5 chức vụ nghiệp vụ cụ thể (`ChucVu`): Quản lý cửa hàng, Nhân viên bán hàng, Nhân viên kho, Chăm sóc khách hàng, Nhân viên thu mua.
    - Mật khẩu lưu trữ dưới dạng băm BCrypt (Work Factor 11); chức năng Đặt lại mật khẩu tự động kích hoạt cờ bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo.
+   - Nhân viên đang làm việc và chưa có tài khoản có thể tự đăng ký vai trò `NHANVIEN` bằng mã nhân viên và số điện thoại trùng khớp hồ sơ; tài khoản `ADMIN` vẫn chỉ do quản trị viên cấp.
 
 ---
 
@@ -110,6 +111,8 @@ Tất cả tài khoản demo trong CSDL được khởi tạo với mật khẩu
 | `thuha` | `PnjDemo@123` | `NHANVIEN` | Chăm sóc khách hàng | Tài khoản kiểm thử luồng **Bắt buộc đổi mật khẩu** ở lần đăng nhập đầu |
 | `quocbao` | `PnjDemo@123` | `NHANVIEN` | Nhân viên thu mua | Tài khoản nhân viên nghiệp vụ thu mua kim hoàn và nhập Excel |
 | `mylinh` | `PnjDemo@123` | `NHANVIEN` | Nhân viên bán hàng | Tài khoản kiểm thử phản hồi bảo mật: **Đã bị khóa / ngừng hoạt động** |
+
+**Kiểm thử đăng ký nội bộ:** Các nhân viên seed ở trên đều đã có tài khoản. Đăng nhập bằng `admin`, tạo một hồ sơ nhân viên đang làm việc với số điện thoại hợp lệ, ghi lại mã `NVxxxxxx`, sau đó đăng xuất và chọn **Đăng ký**. Nhập đúng mã nhân viên cùng số điện thoại vừa lưu để tạo tài khoản `NHANVIEN`.
 
 ---
 

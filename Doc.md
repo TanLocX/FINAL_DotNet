@@ -233,6 +233,9 @@ BCrypt là thuật toán băm mật khẩu chuẩn bảo mật quốc tế dựa
 4. **Tại sao không cần cột Salt trong CSDL?**
    Khi người dùng đăng nhập, hàm `BCrypt.Verify(inputPassword, hashInDb)` tự động trích xuất Salt và Work Factor từ chính chuỗi hash trong CSDL ra để băm thử nghiệm mật khẩu người dùng vừa nhập, sau đó so sánh kết quả. Do đó CSDL chỉ cần duy nhất 1 cột `MatKhau nvarchar(255)`.
 
+#### Đăng ký nội bộ có xác minh (`FormDangKy.cs`)
+Hệ thống cho phép nhân viên đang làm việc và chưa được cấp tài khoản tự đăng ký bằng mã nhân viên cùng số điện thoại trùng khớp hồ sơ. Tên đăng nhập được giới hạn 3–50 ký tự hợp lệ, mật khẩu được giới hạn theo chuẩn BCrypt và băm với Work Factor 11. Luồng tự đăng ký luôn cấp vai trò `NHANVIEN`; chỉ quản trị viên mới có thể cấp hoặc thay đổi vai trò `ADMIN` trong `FrmTaiKhoan`.
+
 #### Phiên làm việc Singleton (`CurrentUserSession.cs`)
 ```csharp
 public static class CurrentUserSession
@@ -457,6 +460,7 @@ Dưới đây là 10 câu hỏi cốt lõi mà giảng viên trong hội đồng
 Khi bước lên thuyết trình, hãy tự tin thao tác theo đúng kịch bản 6 bước logic dưới đây:
 
 1. **Bước 1: Đăng nhập & Xác thực (1 phút)**
+   - Nếu demo đăng ký: đăng nhập `admin`, tạo một hồ sơ nhân viên đang làm việc, ghi lại mã nhân viên và số điện thoại, sau đó đăng xuất và dùng nút **Đăng ký** để tạo tài khoản `NHANVIEN`.
    - Đăng nhập bằng tài khoản nhân viên `ngoclan / PnjDemo@123`.
    - Chỉ cho hội đồng thấy: Menu Quản trị (Nhân viên, Tài khoản, CSDL) bị ẩn tự động theo đúng phân quyền `NHANVIEN`.
    - Đăng xuất và đăng nhập lại bằng `admin / PnjDemo@123`. Tất cả chức năng mở đầy đủ (`ADMIN`).
