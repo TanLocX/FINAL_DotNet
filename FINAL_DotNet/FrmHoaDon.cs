@@ -25,6 +25,8 @@ namespace FINAL_DotNet
             }
             KhoiTaoGiaoDienTuyBien();
             cboLocTrangThai.SelectedIndex = 0;
+            dtpTuNgay.Checked = false;
+            dtpDenNgay.Checked = false;
             LuxuryDarkGoldTheme.Apply(this);
         }
 
