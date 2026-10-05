@@ -55,8 +55,8 @@ namespace FINAL_DotNet
     internal sealed class RestoreHeaderInfoDto
     {
         public string DatabaseName { get; set; }
-        public short? BackupType { get; set; }
-        public int? Position { get; set; }
+        public byte? BackupType { get; set; }
+        public short? Position { get; set; }
     }
 
     internal static class SaoLuuPhucHoiService
