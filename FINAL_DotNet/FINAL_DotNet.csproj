@@ -179,6 +179,7 @@
     <Compile Include="FrmKhachHang.Designer.cs">
       <DependentUpon>FrmKhachHang.cs</DependentUpon>
     </Compile>
+    <Compile Include="KhachHangXoaService.cs" />
     <Compile Include="FrmBanHang.cs">
       <SubType>Form</SubType>
     </Compile>

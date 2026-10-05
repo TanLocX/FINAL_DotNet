@@ -74,6 +74,7 @@ namespace FINAL_DotNet
                 return;
             }
 
+            btnXoa.Visible = CurrentUserSession.HienTai.LaQuanTriVien;
             TaiDanhSach();
             LamMoiBieuMau();
         }
@@ -179,6 +180,8 @@ namespace FINAL_DotNet
             var item = dgvKhachHang.CurrentRow?.DataBoundItem as KhachHangHienThi;
             if (item == null)
             {
+                khachHangDangChonId = null;
+                btnXoa.Enabled = false;
                 return;
             }
 
@@ -206,9 +209,11 @@ namespace FINAL_DotNet
             BatTatTruongNhap(!laKhachLe);
             btnCapNhat.Enabled = !laKhachLe;
             btnDoiTrangThai.Enabled = !laKhachLe;
+            btnXoa.Enabled = !laKhachLe && CurrentUserSession.DaDangNhap &&
+                CurrentUserSession.HienTai.LaQuanTriVien;
             btnDoiTrangThai.Text = item.DangHoatDong ? "Ngừng hoạt động" : "Khôi phục";
             lblThongBao.Text = laKhachLe
-                ? "Khách lẻ là bản ghi hệ thống, không được sửa hoặc khóa."
+                ? "Khách lẻ là bản ghi hệ thống, không được sửa, khóa hoặc xóa."
                 : string.Empty;
         }
 
@@ -421,6 +426,86 @@ namespace FINAL_DotNet
             }
         }
 
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            if (!CurrentUserSession.DaDangNhap || !CurrentUserSession.HienTai.LaQuanTriVien)
+            {
+                HienThiLoi("Chỉ quản trị viên được xóa khách hàng.");
+                return;
+            }
+
+            var item = dgvKhachHang.CurrentRow?.DataBoundItem as KhachHangHienThi;
+            if (item == null || !khachHangDangChonId.HasValue ||
+                item.KhachHangId != khachHangDangChonId.Value)
+            {
+                HienThiLoi("Vui lòng chọn khách hàng cần xóa.");
+                return;
+            }
+
+            if (item.LaKhachLe)
+            {
+                HienThiLoi("Không được xóa bản ghi Khách lẻ của hệ thống.");
+                return;
+            }
+
+            if (MessageBox.Show(
+                    $"Xóa vĩnh viễn {item.MaKhachHang} - {item.HoTen} ({item.SoDienThoai})?\n\n" +
+                    "Chỉ hồ sơ chưa có hóa đơn, phiếu thu mua, nhật ký email và không còn điểm tích lũy mới được xóa. " +
+                    "Thao tác này không thể hoàn tác.",
+                    "Xác nhận xóa khách hàng",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+            {
+                return;
+            }
+
+            try
+            {
+                KetQuaXoaKhachHang ketQua = KhachHangXoaService.Xoa(
+                    item.KhachHangId, item.HoTen, item.SoDienThoai);
+                switch (ketQua)
+                {
+                    case KetQuaXoaKhachHang.DaXoa:
+                        TaiDanhSach();
+                        LamMoiBieuMau();
+                        MessageBox.Show("Đã xóa hồ sơ khách hàng.", "Thành công",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        break;
+                    case KetQuaXoaKhachHang.KhongTonTai:
+                        TaiDanhSach();
+                        LamMoiBieuMau();
+                        HienThiLoi("Khách hàng không còn tồn tại trong CSDL.");
+                        break;
+                    case KetQuaXoaKhachHang.KhachLe:
+                        HienThiLoi("Không được xóa bản ghi Khách lẻ của hệ thống.");
+                        break;
+                    case KetQuaXoaKhachHang.DaThayDoi:
+                        TaiDanhSach(item.KhachHangId);
+                        HienThiLoi("Thông tin khách hàng đã thay đổi. Hãy kiểm tra lại trước khi xóa.");
+                        break;
+                    case KetQuaXoaKhachHang.CoLichSu:
+                        HienThiLoi("Khách hàng đã có hóa đơn, phiếu thu mua hoặc nhật ký email. Hãy dùng Ngừng hoạt động.");
+                        break;
+                    case KetQuaXoaKhachHang.ConDiemTichLuy:
+                        HienThiLoi("Khách hàng còn điểm tích lũy. Hãy dùng Ngừng hoạt động.");
+                        break;
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                HienThiLoi("Chỉ quản trị viên được xóa khách hàng.");
+            }
+            catch (DbUpdateException)
+            {
+                HienThiLoi("Không thể xóa vì hồ sơ vừa phát sinh dữ liệu liên quan. Hãy tải lại danh sách.");
+            }
+            catch (Exception)
+            {
+                HienThiLoi("Không thể xóa khách hàng. Hãy kiểm tra kết nối CSDL.");
+            }
+        }
+
         private void btnLamMoiBieuMau_Click(object sender, EventArgs e)
         {
             LamMoiBieuMau();
@@ -445,6 +530,7 @@ namespace FINAL_DotNet
                 btnDoiTrangThai.Text = "Ngừng hoạt động";
                 btnCapNhat.Enabled = true;
                 btnDoiTrangThai.Enabled = true;
+                btnXoa.Enabled = false;
                 BatTatTruongNhap(true);
                 lblThongBao.Text = string.Empty;
                 dgvKhachHang.ClearSelection();

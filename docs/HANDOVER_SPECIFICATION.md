@@ -112,7 +112,7 @@ Hệ thống thiết lập 2 vai trò chuẩn:
 |---|---|:---:|:---:|---|
 | Bán hàng tại quầy | `FrmBanHang` | Toàn quyền | Toàn quyền | Tạo đơn, thêm sản phẩm vào giỏ, thanh toán |
 | Quản lý Hóa đơn | `FrmHoaDon` | Xem / In | Toàn quyền | Chỉ Admin được hủy đơn có rollback kho |
-| Hồ sơ Khách hàng | `FrmKhachHang` | Thêm / Sửa / Tra cứu | Toàn quyền | Cập nhật thông tin và điểm tích lũy |
+| Hồ sơ Khách hàng | `FrmKhachHang` | Thêm / Sửa / Tra cứu | Toàn quyền | Chỉ Admin được xóa hồ sơ chưa phát sinh dữ liệu liên quan và không còn điểm tích lũy |
 | Quản lý Sản phẩm | `FrmSanPham` | Thêm / Sửa / Tra cứu | Toàn quyền | Quản lý định mức chất liệu, ảnh, QR |
 | Quản lý Nhập hàng | `FrmNhapHang` | Toàn quyền | Toàn quyền | Lập phiếu nhập kho từ nhà cung cấp |
 | Thu mua Trang sức cũ | `FrmThuMua` | Tra cứu / Xuất file | Toàn quyền | Chỉ Admin được nạp batch file Excel |
@@ -170,6 +170,7 @@ Hệ thống thiết lập 2 vai trò chuẩn:
   - Quản lý hồ sơ khách hàng: Mã KH tự sinh (`KH000001`), Họ tên, Số điện thoại (kiểm tra định dạng và trùng lặp), Email, Địa chỉ, Ngày sinh (phục vụ chiến dịch gửi mail chúc mừng).
   - Tự động thống kê tổng tiền đã mua sắm và lịch sử các hóa đơn phát sinh của từng khách hàng.
   - Đổi trạng thái hoạt động / ngừng theo dõi của khách hàng.
+  - Quản trị viên có thể xóa hồ sơ tạo nhầm sau khi xác nhận, nếu chưa có hóa đơn, phiếu thu mua, nhật ký email và không còn điểm tích lũy. Không cho xóa bản ghi Khách lẻ; hồ sơ đã có lịch sử được ngừng hoạt động thay vì xóa.
 
 ### 4.5. Phân hệ Quản lý Sản phẩm, Định mức & Mã QR (Inventory & BOM)
 - **Giao diện:** `FrmSanPham.cs`.

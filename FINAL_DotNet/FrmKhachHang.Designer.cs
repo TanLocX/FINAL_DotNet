@@ -51,6 +51,7 @@ namespace FINAL_DotNet
             this.btnThem = new Guna.UI2.WinForms.Guna2Button();
             this.btnCapNhat = new Guna.UI2.WinForms.Guna2Button();
             this.btnDoiTrangThai = new Guna.UI2.WinForms.Guna2Button();
+            this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
             this.btnLamMoiBieuMau = new Guna.UI2.WinForms.Guna2Button();
             this.pnlBoLoc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
@@ -230,6 +231,7 @@ namespace FINAL_DotNet
             this.dgvKhachHang.ThemeStyle.HeaderStyle.ForeColor = System.Drawing.Color.White;
             this.dgvKhachHang.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
             this.dgvKhachHang.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(39)))), ((int)(((byte)(53)))));
+            this.dgvKhachHang.CurrentCellChanged += new System.EventHandler(this.dgvKhachHang_SelectionChanged);
             this.dgvKhachHang.SelectionChanged += new System.EventHandler(this.dgvKhachHang_SelectionChanged);
             // 
             // pnlBieuMau
@@ -517,6 +519,7 @@ namespace FINAL_DotNet
             this.pnlThaoTac.Controls.Add(this.btnThem);
             this.pnlThaoTac.Controls.Add(this.btnCapNhat);
             this.pnlThaoTac.Controls.Add(this.btnDoiTrangThai);
+            this.pnlThaoTac.Controls.Add(this.btnXoa);
             this.pnlThaoTac.Controls.Add(this.btnLamMoiBieuMau);
             this.pnlThaoTac.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlThaoTac.Location = new System.Drawing.Point(12, 228);
@@ -572,9 +575,9 @@ namespace FINAL_DotNet
             this.btnThem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(137)))), ((int)(((byte)(100)))), ((int)(((byte)(28)))));
             this.btnThem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnThem.ForeColor = System.Drawing.Color.White;
-            this.btnThem.Location = new System.Drawing.Point(520, 10);
+            this.btnThem.Location = new System.Drawing.Point(450, 10);
             this.btnThem.Name = "btnThem";
-            this.btnThem.Size = new System.Drawing.Size(110, 36);
+            this.btnThem.Size = new System.Drawing.Size(100, 36);
             this.btnThem.TabIndex = 2;
             this.btnThem.Text = "Thêm mới";
             this.btnThem.Click += new System.EventHandler(this.btnThem_Click);
@@ -588,9 +591,9 @@ namespace FINAL_DotNet
             this.btnCapNhat.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(111)))), ((int)(((byte)(155)))));
             this.btnCapNhat.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnCapNhat.ForeColor = System.Drawing.Color.White;
-            this.btnCapNhat.Location = new System.Drawing.Point(640, 10);
+            this.btnCapNhat.Location = new System.Drawing.Point(560, 10);
             this.btnCapNhat.Name = "btnCapNhat";
-            this.btnCapNhat.Size = new System.Drawing.Size(110, 36);
+            this.btnCapNhat.Size = new System.Drawing.Size(100, 36);
             this.btnCapNhat.TabIndex = 3;
             this.btnCapNhat.Text = "Cập nhật";
             this.btnCapNhat.Click += new System.EventHandler(this.btnCapNhat_Click);
@@ -604,13 +607,30 @@ namespace FINAL_DotNet
             this.btnDoiTrangThai.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(186)))), ((int)(((byte)(94)))), ((int)(((byte)(66)))));
             this.btnDoiTrangThai.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnDoiTrangThai.ForeColor = System.Drawing.Color.White;
-            this.btnDoiTrangThai.Location = new System.Drawing.Point(760, 10);
+            this.btnDoiTrangThai.Location = new System.Drawing.Point(670, 10);
             this.btnDoiTrangThai.Name = "btnDoiTrangThai";
             this.btnDoiTrangThai.Size = new System.Drawing.Size(140, 36);
             this.btnDoiTrangThai.TabIndex = 4;
             this.btnDoiTrangThai.Text = "Ngừng hoạt động";
             this.btnDoiTrangThai.Click += new System.EventHandler(this.btnDoiTrangThai_Click);
-            // 
+            //
+            // btnXoa
+            //
+            this.btnXoa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnXoa.Animated = true;
+            this.btnXoa.BorderRadius = 6;
+            this.btnXoa.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnXoa.Enabled = false;
+            this.btnXoa.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(153)))), ((int)(((byte)(44)))), ((int)(((byte)(44)))));
+            this.btnXoa.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnXoa.ForeColor = System.Drawing.Color.White;
+            this.btnXoa.Location = new System.Drawing.Point(820, 10);
+            this.btnXoa.Name = "btnXoa";
+            this.btnXoa.Size = new System.Drawing.Size(80, 36);
+            this.btnXoa.TabIndex = 5;
+            this.btnXoa.Text = "Xóa";
+            this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
+            //
             // btnLamMoiBieuMau
             // 
             this.btnLamMoiBieuMau.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -623,7 +643,7 @@ namespace FINAL_DotNet
             this.btnLamMoiBieuMau.Location = new System.Drawing.Point(910, 10);
             this.btnLamMoiBieuMau.Name = "btnLamMoiBieuMau";
             this.btnLamMoiBieuMau.Size = new System.Drawing.Size(106, 36);
-            this.btnLamMoiBieuMau.TabIndex = 5;
+            this.btnLamMoiBieuMau.TabIndex = 6;
             this.btnLamMoiBieuMau.Text = "Làm mới";
             this.btnLamMoiBieuMau.Click += new System.EventHandler(this.btnLamMoiBieuMau_Click);
             // 
@@ -687,6 +707,7 @@ namespace FINAL_DotNet
         private Guna.UI2.WinForms.Guna2CheckBox chkDangHoatDong;
         private Guna.UI2.WinForms.Guna2Button btnLamMoiBieuMau;
         private Guna.UI2.WinForms.Guna2Button btnDoiTrangThai;
+        private Guna.UI2.WinForms.Guna2Button btnXoa;
         private Guna.UI2.WinForms.Guna2Button btnCapNhat;
         private Guna.UI2.WinForms.Guna2Button btnThem;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblTieuDeBieuMau;

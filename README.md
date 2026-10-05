@@ -39,27 +39,30 @@ Phần mềm quản lý bán hàng và vận hành chuỗi cửa hàng vàng b�
    - Pipeline nén ảnh tự động: Nén nội suy Bicubic về chuẩn 500x500 px giúp giảm 85% dung lượng đĩa và giải phóng bộ nhớ RAM.
    - Hỗ trợ kéo thả (Drag & Drop) ảnh trực tiếp từ Windows Explorer vào khung ảnh sản phẩm.
    - Tạo mã QR tương ứng mã sản phẩm `SP000001` và xuất ảnh PNG.
-3. **Quản lý Hóa đơn:**
+3. **Quản lý Khách hàng:**
+   - Quản trị viên được xóa hồ sơ tạo nhầm khi chưa có hóa đơn, phiếu thu mua, nhật ký email và không còn điểm tích lũy.
+   - Hồ sơ đã sử dụng có thể ngừng hoạt động và khôi phục.
+4. **Quản lý Hóa đơn:**
    - Tra cứu hóa đơn theo khoảng thời gian, số điện thoại khách hàng, nhân viên lập.
    - Xem chi tiết từng dòng hàng và thời hạn bảo hành tương ứng.
    - Hỗ trợ hủy hóa đơn có hoàn nguyên (rollback) số lượng tồn kho về bảng sản phẩm.
    - In lại hóa đơn bán lẻ theo chuẩn phiếu in nhiệt/A5.
-4. **Thu mua Trang sức cũ:**
+5. **Thu mua Trang sức cũ:**
    - Nghiệp vụ thu mua lại vàng bạc, đá quý cũ từ khách hàng theo trọng lượng và tuổi vàng.
    - Hỗ trợ nạp dữ liệu thu mua hàng loạt từ file Excel (.xlsx) với tính năng kiểm tra lỗi dữ liệu trước khi lưu.
-5. **Dịch vụ Bảo hành:**
+6. **Dịch vụ Bảo hành:**
    - Tiếp nhận sản phẩm bảo hành dựa trên mã hóa đơn gốc.
    - Kiểm tra hạn bảo hành tự động; quản lý tiến độ xử lý (Tiếp nhận -> Đang xử lý -> Hoàn thành / Hủy).
    - In phiếu hẹn bảo hành cho khách hàng.
-6. **Báo cáo & Thống kê:**
+7. **Báo cáo & Thống kê:**
    - Biểu đồ trực quan doanh thu theo thời gian và cơ cấu chất liệu sản phẩm (Guna Chart).
    - Bảng xếp hạng sản phẩm bán chạy kèm hình ảnh đại diện.
    - Xuất báo cáo doanh thu, phiếu nhập, phiếu thu mua ra file Excel định dạng chuẩn.
-7. **Sao lưu & Phục hồi CSDL:**
+8. **Sao lưu & Phục hồi CSDL:**
    - Sao lưu CSDL ra tệp `.bak` vật lý có kiểm tra tính toàn vẹn `CHECKSUM` và `COPY_ONLY`.
    - Cơ chế tự thích ứng: Tự động chuyển về chế độ không nén (`NO_COMPRESSION`) nếu máy chủ SQL Server Express/LocalDB không hỗ trợ nén (mã lỗi SQL 1844).
    - Phục hồi dữ liệu an toàn với lệnh ngắt kết nối độc quyền (`SINGLE_USER`).
-8. **Bảo mật & Phân quyền (RBAC):**
+9. **Bảo mật & Phân quyền (RBAC):**
    - Hệ thống quản lý 2 vai trò bảo mật đăng nhập (`VaiTro`): Quản trị viên (`ADMIN`) và Nhân viên (`NHANVIEN`).
    - Nhân sự được phân công theo 5 chức vụ nghiệp vụ cụ thể (`ChucVu`): Quản lý cửa hàng, Nhân viên bán hàng, Nhân viên kho, Chăm sóc khách hàng, Nhân viên thu mua.
    - Mật khẩu lưu trữ dưới dạng băm BCrypt (Work Factor 11); chức năng Đặt lại mật khẩu tự động kích hoạt cờ bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo.
