@@ -53,7 +53,6 @@ namespace FINAL_DotNet
             this.lblWarrantyDate = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.dtpProductWarranty = new Guna.UI2.WinForms.Guna2DateTimePicker();
             this.btnQuickAdd = new Guna.UI2.WinForms.Guna2Button();
-            this.btnScanQr = new Guna.UI2.WinForms.Guna2Button();
             this.lblProductInStock = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.dgvCart = new Guna.UI2.WinForms.Guna2DataGridView();
             this.pnlCartFooter = new Guna.UI2.WinForms.Guna2Panel();
@@ -496,7 +495,6 @@ namespace FINAL_DotNet
             this.pnlProductBar.Controls.Add(this.lblWarrantyDate);
             this.pnlProductBar.Controls.Add(this.dtpProductWarranty);
             this.pnlProductBar.Controls.Add(this.btnQuickAdd);
-            this.pnlProductBar.Controls.Add(this.btnScanQr);
             this.pnlProductBar.Controls.Add(this.lblProductInStock);
             this.pnlProductBar.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlProductBar.Location = new System.Drawing.Point(0, 0);
@@ -603,21 +601,6 @@ namespace FINAL_DotNet
             this.btnQuickAdd.TabIndex = 6;
             this.btnQuickAdd.Text = "+ Thêm giỏ";
             this.btnQuickAdd.Click += new System.EventHandler(this.btnQuickAdd_Click);
-            // 
-            // btnScanQr
-            // 
-            this.btnScanQr.Animated = true;
-            this.btnScanQr.BorderRadius = 6;
-            this.btnScanQr.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnScanQr.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(39)))), ((int)(((byte)(53)))));
-            this.btnScanQr.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnScanQr.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
-            this.btnScanQr.Location = new System.Drawing.Point(558, 25);
-            this.btnScanQr.Name = "btnScanQr";
-            this.btnScanQr.Size = new System.Drawing.Size(104, 30);
-            this.btnScanQr.TabIndex = 7;
-            this.btnScanQr.Text = "📷 Quét QR";
-            this.btnScanQr.Click += new System.EventHandler(this.btnScanQr_Click);
             // 
             // lblProductInStock
             // 
@@ -842,7 +825,6 @@ namespace FINAL_DotNet
         private Guna.UI2.WinForms.Guna2HtmlLabel lblWarrantyDate;
         private Guna.UI2.WinForms.Guna2DateTimePicker dtpProductWarranty;
         private Guna.UI2.WinForms.Guna2Button btnQuickAdd;
-        private Guna.UI2.WinForms.Guna2Button btnScanQr;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblProductInStock;
         private Guna.UI2.WinForms.Guna2DataGridView dgvCart;
         private Guna.UI2.WinForms.Guna2Panel pnlCartFooter;

@@ -29,7 +29,7 @@ Phần mềm quản lý bán hàng và vận hành chuỗi cửa hàng vàng b�
 1. **Bán hàng tại quầy (POS):**
    - Bố cục 2 cột: Tra cứu sản phẩm nhanh bên phải, quản lý giỏ hàng và thanh toán bên trái.
    - Tìm kiếm khách hàng thành viên theo số điện thoại hoặc gán khách vãng lai.
-   - Quét mã QR sản phẩm qua webcam hoặc file ảnh (`F4`).
+   - Chọn sản phẩm, nhập số lượng và thêm vào giỏ hàng.
    - Hỗ trợ chiết khấu phần trăm, tính thuế và tiền thừa.
    - Trừ số lượng tồn kho theo giao dịch nguyên khối (Database Transaction).
    - Tự động sinh hạn bảo hành 12 tháng cho từng món trang sức khi thanh toán thành công (`F9`).
@@ -121,7 +121,7 @@ Tất cả tài khoản demo trong CSDL được khởi tạo với mật khẩu
 | Phím tắt | Phạm vi | Mô tả chức năng |
 |:---:|:---:|---|
 | `F1` | Toàn hệ thống | Mở hộp thoại Tra cứu trợ giúp, danh sách phím tắt và thông tin kết nối CSDL |
-| `F4` | Màn hình Bán hàng | Mở hộp thoại chọn ảnh hoặc quét mã QR sản phẩm đưa vào giỏ hàng |
+| `F4` | Màn hình Bán hàng | Hủy giỏ hàng hiện tại và tạo đơn mới |
 | `F9` | Màn hình Bán hàng | Xác nhận thanh toán hóa đơn và gọi lệnh in phiếu bán lẻ |
 | `ESC` | Toàn hệ thống | Đóng nhanh các hộp thoại modal đang mở |
 | `Enter` | Màn hình Đăng nhập | Đăng nhập ngay sau khi nhập xong mật khẩu |

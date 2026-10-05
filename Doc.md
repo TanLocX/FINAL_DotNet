@@ -436,8 +436,8 @@ Dưới đây là 10 câu hỏi cốt lõi mà giảng viên trong hội đồng
 #### Câu 5: Tại sao khi Restore CSDL lại phải có lệnh `SET SINGLE_USER WITH ROLLBACK IMMEDIATE`?
 > **Trả lời:** SQL Server không cho phép phục hồi đè lên một CSDL đang có kết nối hoạt động (Database in use). Lệnh `SET SINGLE_USER WITH ROLLBACK IMMEDIATE` sẽ cưỡng chế ngắt toàn bộ các phiên làm việc hiện tại, rollback các tác vụ dở dang và trao quyền truy cập độc quyền cho tiến trình Restore, giúp quá trình khôi phục diễn ra an toàn mà không bị lỗi lock database.
 
-#### Câu 6: Trong form Bán hàng, làm thế nào để khi quét mã QR thì giỏ hàng tự động cập nhật sản phẩm?
-> **Trả lời:** Khi người dùng quét mã QR, thư viện ZXing giải mã ảnh ra chuỗi văn bản (ví dụ `SP000001`). Hệ thống lấy chuỗi này tra cứu trong bộ sưu tập sản phẩm đang hiển thị hoặc truy vấn CSDL để tìm `SanPhamId` tương ứng. Nếu sản phẩm tồn tại và còn hàng trong kho, hệ thống gọi hàm `ThemVaoGioHang(sanPhamId, soLuong: 1)`, sau đó kích hoạt hàm `RefreshCartView()` để vẽ lại giỏ hàng và tính lại tổng tiền.
+#### Câu 6: Trong form Bán hàng, làm thế nào để giỏ hàng cập nhật khi thêm sản phẩm?
+> **Trả lời:** Người dùng chọn sản phẩm, nhập số lượng và nhấn **Thêm giỏ**. Hệ thống kiểm tra số lượng tồn kho so với số lượng đã có trong giỏ, cập nhật hoặc thêm dòng sản phẩm, rồi gọi `RefreshCartView()` để hiển thị giỏ hàng và tính lại tổng tiền.
 
 #### Câu 7: Giả sử cửa hàng có 2 thu ngân cùng mở ứng dụng và cùng bán sản phẩm cuối cùng trong kho tại một thời điểm, hệ thống xử lý ra sao?
 > **Trả lời:** Hệ thống kiểm tra tồn kho tại 2 tầng:
@@ -466,7 +466,7 @@ Khi bước lên thuyết trình, hãy tự tin thao tác theo đúng kịch b�
    - Đăng xuất và đăng nhập lại bằng `admin / PnjDemo@123`. Tất cả chức năng mở đầy đủ (`ADMIN`).
 2. **Bước 2: Nghiệp vụ Bán hàng POS tại quầy (1.5 phút)**
    - Mở màn hình Bán hàng (giao diện 2 cột hiện đại).
-   - Bấm nút **Quét QR (`F4`)** hoặc chọn một món trang sức (Ví dụ: Nhẫn kim cương vàng 18K).
+   - Chọn một món trang sức (Ví dụ: Nhẫn kim cương vàng 18K), nhập số lượng và bấm **Thêm giỏ**.
    - Tăng số lượng lên 1. Thử nhập số lượng vượt tồn kho để thấy thông báo chặn lỗi.
    - Nhập chiết khấu 10%, chọn phương thức "Chuyển khoản".
    - Nhấn **Thanh toán (`F9`)**: Hệ thống commit Transaction, in hóa đơn bán lẻ, trừ tồn kho ngay lập tức.

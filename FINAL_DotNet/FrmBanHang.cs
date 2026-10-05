@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -258,49 +257,6 @@ namespace FINAL_DotNet
             RefreshCartView();
             ShowNotification($"Đã thêm '{product.Name}' vào giỏ hàng.", false);
             numProductQty.Value = 1;
-        }
-
-        private void btnScanQr_Click(object sender, EventArgs e)
-        {
-            using (var dialog = new OpenFileDialog())
-            {
-                dialog.Title = "Chọn ảnh mã QR sản phẩm";
-                dialog.Filter = "Ảnh QR Code (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg";
-                if (dialog.ShowDialog(this) != DialogResult.OK) return;
-
-                try
-                {
-                    using (var bitmap = new Bitmap(dialog.FileName))
-                    {
-                        string qrContent = QrCodeService.DocMaQr(bitmap);
-                        if (string.IsNullOrWhiteSpace(qrContent))
-                        {
-                            ShowNotification("Không nhận diện được mã QR hợp lệ từ file ảnh đã chọn.", true);
-                            return;
-                        }
-
-                        // Match product code (e.g. SP000001) or ID
-                        var matchedProduct = productOptions.FirstOrDefault(p =>
-                            string.Equals(p.Code, qrContent, StringComparison.OrdinalIgnoreCase) ||
-                            p.Id.ToString() == qrContent ||
-                            string.Equals(p.Name, qrContent, StringComparison.OrdinalIgnoreCase));
-
-                        if (matchedProduct == null)
-                        {
-                            ShowNotification($"Mã QR '{qrContent}' không khớp với bất kỳ sản phẩm nào đang kinh doanh.", true);
-                            return;
-                        }
-
-                        // Auto add 1 item to cart
-                        AddProductToCart(matchedProduct.Id, 1, DateTime.Today.AddYears(1));
-                        cboProductSelector.SelectedValue = matchedProduct.Id;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    ShowNotification("Lỗi khi đọc file ảnh QR: " + ex.Message, true);
-                }
-            }
         }
 
         private void RefreshCartView()

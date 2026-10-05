@@ -224,7 +224,7 @@ FINAL_DotNet/
 - **Xác thực:** `Form1` (Đăng nhập), `FormDangKy` (Đăng ký tài khoản nội bộ), `FormDoiMatKhau` (Bắt buộc đổi mật khẩu sau khi Admin reset).
 - **Điều hướng:** `FrmMain` (Thanh điều hướng Menu bên trái, quản lý quyền hiển thị theo vai trò, khu vực Header chứa nhãn phiên làm việc, nút Trợ giúp F1 và nút Thoát an toàn).
 - **Nghiệp vụ cốt lõi:**
-  - `FrmBanHang`: Màn hình bán hàng POS bố cục 2 cột, hỗ trợ phím tắt `F4` (Quét QR), `F9` (Thanh toán).
+  - `FrmBanHang`: Màn hình bán hàng POS bố cục 2 cột, hỗ trợ phím tắt `F4` (Tạo đơn mới), `F9` (Thanh toán).
   - `FrmHoaDon`: Quản lý danh sách hóa đơn, chi tiết sản phẩm đã bán và hủy hóa đơn có hoàn trả tồn kho.
   - `FrmKhachHang`: Quản lý danh bạ khách hàng, phân loại thành viên và lịch sử tích lũy doanh số.
   - `FrmSanPham`: Quản lý sản phẩm, thành phần định mức chất liệu (BOM), nén ảnh tự động và kéo thả ảnh.

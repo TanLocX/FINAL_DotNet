@@ -110,7 +110,7 @@ Hệ thống thiết lập 2 vai trò chuẩn:
 
 | Phân hệ / Màn hình | Form Class | Quyền Nhân viên (`NHANVIEN`) | Quyền Quản trị (`ADMIN`) | Ghi chú vận hành |
 |---|---|:---:|:---:|---|
-| Bán hàng tại quầy | `FrmBanHang` | Toàn quyền | Toàn quyền | Tạo đơn, quét QR, thanh toán |
+| Bán hàng tại quầy | `FrmBanHang` | Toàn quyền | Toàn quyền | Tạo đơn, thêm sản phẩm vào giỏ, thanh toán |
 | Quản lý Hóa đơn | `FrmHoaDon` | Xem / In | Toàn quyền | Chỉ Admin được hủy đơn có rollback kho |
 | Hồ sơ Khách hàng | `FrmKhachHang` | Thêm / Sửa / Tra cứu | Toàn quyền | Cập nhật thông tin và điểm tích lũy |
 | Quản lý Sản phẩm | `FrmSanPham` | Thêm / Sửa / Tra cứu | Toàn quyền | Quản lý định mức chất liệu, ảnh, QR |
@@ -149,10 +149,10 @@ Hệ thống thiết lập 2 vai trò chuẩn:
 - **Giao diện:** `FrmBanHang.cs`.
 - **Lớp nghiệp vụ:** `PosService.cs`.
 - **Đặc điểm kiến trúc:**
-  - Thiết kế bố cục 2 cột hiện đại: Cột trái quản lý Giỏ hàng và Thanh toán; Cột phải tra cứu sản phẩm nhanh và quét mã.
+  - Thiết kế bố cục 2 cột hiện đại: Cột trái quản lý Giỏ hàng và Thanh toán; Cột phải chọn sản phẩm.
   - Hỗ trợ chọn nhanh khách hàng thành viên hoặc tự động gán khách hàng vãng lai.
   - Hiển thị danh mục trang sức kèm hình ảnh đại diện, giá niêm yết và số lượng tồn kho theo thời gian thực.
-  - Hỗ trợ quét mã QR sản phẩm trực tiếp từ webcam hoặc tệp ảnh thông qua nút **"Quét QR"** (`F4`).
+  - Hỗ trợ chọn sản phẩm, nhập số lượng và thêm vào giỏ hàng.
   - Hỗ trợ chiết khấu phần trăm (0% - 100%) và tự động tính toán thuế VAT, tiền thừa trả khách.
   - Cơ chế giao dịch nguyên khối (Database Transaction): Khi xác nhận thanh toán (`F9`), hệ thống đồng thời tạo bản ghi `HoaDon`, nạp danh sách `ChiTietHoaDon`, trừ tồn kho trong bảng `SanPham`, tính toán hạn bảo hành tự động (mặc định 12 tháng) và xuất phiếu in hóa đơn bán lẻ.
 
@@ -347,7 +347,7 @@ Hệ thống cung cấp cửa sổ tra cứu phím tắt nhanh `FrmHelpDialog.cs
 | Phím tắt | Phạm vi áp dụng | Hành động thực hiện |
 |:---:|:---:|---|
 | **`F1`** | Toàn hệ thống | Mở Hộp thoại Trợ giúp, Phím tắt & Thông tin Máy chủ |
-| **`F4`** | Màn hình Bán hàng (POS) | Kích hoạt chức năng Quét mã QR sản phẩm vào giỏ hàng |
+| **`F4`** | Màn hình Bán hàng (POS) | Hủy giỏ hàng hiện tại và tạo đơn mới |
 | **`F9`** | Màn hình Bán hàng (POS) | Kích hoạt Thanh toán & In hóa đơn bán lẻ tức thời |
 | **`ESC`**| Các hộp thoại & Modal | Đóng cửa sổ hiện hành an toàn |
 | **`Enter`**| Form Đăng nhập | Đăng nhập hệ thống ngay lập tức |
