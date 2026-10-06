@@ -139,6 +139,7 @@
     </Compile>
     <Compile Include="CurrentUserSession.cs" />
     <Compile Include="DatabaseConnection.cs" />
+    <Compile Include="IdentityCodeGeneration.cs" />
     <Compile Include="BaoCaoService.cs" />
     <Compile Include="SaoLuuPhucHoiService.cs" />
     <Compile Include="EmailService.cs" />

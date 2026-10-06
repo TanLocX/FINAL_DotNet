@@ -21,6 +21,28 @@ Các script tạo/seed sẽ dừng nếu phát hiện bảng hoặc dữ liệu 
 
 Trong CSDL tạo mới từ dữ liệu mẫu, `SP000009` (Vòng tay bạc 925 trơn) có tồn kho bằng 0 và không được liên kết với hóa đơn, phiếu nhập hoặc phiếu thu mua. Admin có thể chọn sản phẩm này để thử nút **Xóa sản phẩm**. Việc sửa script không thay đổi CSDL đã seed trước đó.
 
+## Quy tắc mã tự tăng trong ứng dụng
+
+Khi thêm mới, ứng dụng lấy ID lớn nhất **còn tồn tại trong bảng** + 1. Ví dụ,
+đang có `DM000001`, `DM000002`, `DM000003`: xóa `DM000003` rồi thêm sẽ dùng lại
+`DM000003`; nếu chỉ xóa `DM000002`, lần thêm tiếp theo là `DM000004`. Bảng chưa
+có dữ liệu hoặc đã xóa hết bắt đầu từ `000001`. Bản ghi ngừng hoạt động vẫn
+được tính vì chưa bị xóa khỏi CSDL.
+
+Quy tắc được xử lý chung trong `IdentityCodeGeneration.cs` cho 16 bảng có cột
+`IDENTITY`, kể cả các bảng chi tiết và nhật ký email. `ChiTietChatLieu` dùng
+khóa ghép `(SanPhamId, ChatLieuId)` nên không có mã tự tăng riêng. Ứng dụng
+khóa bảng, đồng bộ bộ đếm khi cần và lưu trong cùng giao dịch để tránh cấp
+trùng ID khi thêm đồng thời. Quy tắc này áp dụng cho thao tác lưu qua ứng dụng;
+các lệnh `INSERT` chạy trực tiếp trong SSMS vẫn dùng bộ đếm SQL Server.
+
+Kết nối SQL cần quyền chạy [`DBCC CHECKIDENT`](https://learn.microsoft.com/en-us/sql/t-sql/database-console-commands/dbcc-checkident-transact-sql)
+(chủ sở hữu schema, `db_owner`, `db_ddladmin` hoặc `sysadmin`). Không cần chạy migration hay đổi ID của bản
+ghi đang có. Sau khi build, khởi động lại ứng dụng để sử dụng quy tắc mới.
+
+Kiểm thử tích hợp: xem `tests/README.md`. Bộ kiểm thử tạo CSDL tạm riêng và
+xóa CSDL đó khi kết thúc.
+
 ## Tài khoản demo
 
 Khi tạo database mới bằng `01_CreateDatabase.sql` và `02_SeedData.sql`:
