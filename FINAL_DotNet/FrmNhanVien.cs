@@ -84,11 +84,17 @@ namespace FINAL_DotNet
                         truyVan = truyVan.Where(nv => !nv.DangLamViec);
                     }
 
+                    var nhanVienCoThamChieu = new HashSet<int>(db.TaiKhoans.Select(tk => tk.NhanVienId)
+                        .Union(db.HoaDons.Select(hd => hd.NhanVienId))
+                        .Union(db.PhieuNhaps.Select(pn => pn.NhanVienId))
+                        .Union(db.PhieuThuMuas.Select(ptm => ptm.NhanVienId))
+                        .ToList());
+
                     List<NhanVienHienThi> danhSach = truyVan
                         .OrderByDescending(nv => nv.DangLamViec)
                         .ThenBy(nv => nv.NhanVienId)
                         .ToList()
-                        .Select(nv => new NhanVienHienThi(nv))
+                        .Select(nv => new NhanVienHienThi(nv, nhanVienCoThamChieu.Contains(nv.NhanVienId)))
                         .ToList();
 
                     dgvNhanVien.DataSource = danhSach;
@@ -124,9 +130,16 @@ namespace FINAL_DotNet
 
         private void dgvNhanVien_SelectionChanged(object sender, EventArgs e)
         {
+            if (dgvNhanVien.SelectedCells.Count == 0 && dgvNhanVien.SelectedRows.Count == 0)
+            {
+                btnXoa.Enabled = false;
+                return;
+            }
+
             var item = dgvNhanVien.CurrentRow?.DataBoundItem as NhanVienHienThi;
             if (item == null)
             {
+                btnXoa.Enabled = false;
                 return;
             }
 
@@ -155,7 +168,13 @@ namespace FINAL_DotNet
             txtChucVu.Text = item.ChucVu;
             chkDangLamViec.Checked = item.DangLamViec;
             btnDoiTrangThai.Text = item.DangLamViec ? "Ngừng làm việc" : "Khôi phục";
-            lblThongBao.Text = string.Empty;
+            btnXoa.Enabled = !item.CoThamChieu &&
+                             item.NhanVienId != CurrentUserSession.HienTai.NhanVienId;
+            lblThongBao.Text = item.CoThamChieu
+                ? "Chỉ xóa nhân viên không có tài khoản và chưa phát sinh giao dịch; có thể dùng Ngừng làm việc."
+                : item.NhanVienId == CurrentUserSession.HienTai.NhanVienId
+                    ? "Không thể xóa nhân viên đang đăng nhập."
+                    : string.Empty;
         }
 
         private void btnTimKiem_Click(object sender, EventArgs e)
@@ -351,6 +370,69 @@ namespace FINAL_DotNet
             }
         }
 
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            if (!KiemTraQuyenQuanTri(true) || !nhanVienDangChonId.HasValue)
+            {
+                HienThiLoi("Vui lòng chọn nhân viên cần xóa.");
+                return;
+            }
+
+            int nhanVienId = nhanVienDangChonId.Value;
+            if (nhanVienId == CurrentUserSession.HienTai.NhanVienId)
+            {
+                HienThiLoi("Bạn không thể xóa nhân viên đang đăng nhập.");
+                return;
+            }
+
+            if (MessageBox.Show(
+                    $"Xóa vĩnh viễn nhân viên NV{nhanVienId:000000} - {txtHoTen.Text.Trim()}?",
+                    "Xác nhận xóa nhân viên",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning) != DialogResult.Yes) return;
+
+            try
+            {
+                using (var db = DatabaseConnection.CreateContext())
+                {
+                    var nhanVien = db.NhanViens.SingleOrDefault(nv => nv.NhanVienId == nhanVienId);
+                    if (nhanVien == null)
+                    {
+                        TaiDanhSach();
+                        LamMoiBieuMau();
+                        HienThiLoi("Nhân viên không còn tồn tại trong CSDL.");
+                        return;
+                    }
+
+                    if (db.TaiKhoans.Any(tk => tk.NhanVienId == nhanVienId) ||
+                        db.HoaDons.Any(hd => hd.NhanVienId == nhanVienId) ||
+                        db.PhieuNhaps.Any(pn => pn.NhanVienId == nhanVienId) ||
+                        db.PhieuThuMuas.Any(ptm => ptm.NhanVienId == nhanVienId))
+                    {
+                        TaiDanhSach(nhanVienId);
+                        HienThiLoi("Nhân viên đã có tài khoản hoặc giao dịch; hãy dùng Ngừng làm việc.");
+                        return;
+                    }
+
+                    db.NhanViens.Remove(nhanVien);
+                    db.SaveChanges();
+                }
+
+                TaiDanhSach();
+                LamMoiBieuMau();
+                MessageBox.Show("Đã xóa nhân viên.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (DbUpdateException)
+            {
+                TaiDanhSach(nhanVienId);
+                HienThiLoi("Nhân viên vừa phát sinh dữ liệu liên quan; không thể xóa.");
+            }
+            catch (Exception)
+            {
+                HienThiLoi("Không thể xóa nhân viên. Hãy kiểm tra kết nối CSDL.");
+            }
+        }
+
         private void btnLamMoiBieuMau_Click(object sender, EventArgs e)
         {
             LamMoiBieuMau();
@@ -370,6 +452,7 @@ namespace FINAL_DotNet
             txtChucVu.Clear();
             chkDangLamViec.Checked = true;
             btnDoiTrangThai.Text = "Ngừng làm việc";
+            btnXoa.Enabled = false;
             lblThongBao.Text = string.Empty;
             dgvNhanVien.ClearSelection();
             txtHoTen.Focus();
@@ -492,9 +575,10 @@ namespace FINAL_DotNet
 
         private sealed class NhanVienHienThi
         {
-            public NhanVienHienThi(NhanVien nhanVien)
+            public NhanVienHienThi(NhanVien nhanVien, bool coThamChieu)
             {
                 NhanVienId = nhanVien.NhanVienId;
+                CoThamChieu = coThamChieu;
                 MaNhanVien = $"NV{nhanVien.NhanVienId:000000}";
                 HoTen = nhanVien.HoTen;
                 GioiTinh = nhanVien.GioiTinh;
@@ -509,6 +593,7 @@ namespace FINAL_DotNet
             }
 
             public int NhanVienId { get; }
+            internal bool CoThamChieu { get; }
             public string MaNhanVien { get; }
             public string HoTen { get; }
             public string GioiTinh { get; }

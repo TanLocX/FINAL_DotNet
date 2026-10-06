@@ -119,8 +119,8 @@ Hệ thống thiết lập 2 vai trò chuẩn:
 | Dịch vụ Bảo hành | `FrmBaoHanh` | Tiếp nhận / Cập nhật | Toàn quyền | Theo dõi hạn bảo hành theo hóa đơn |
 | Tiếp thị Email | `FrmQuanLyEmail` | Soạn / Gửi email | Toàn quyền | Cấu hình SMTP và mẫu email |
 | Báo cáo & Thống kê | `FrmThongKe` | Tra cứu / Xuất Excel | Toàn quyền | Biểu đồ doanh thu và cơ cấu sản phẩm |
-| Hồ sơ Nhân viên | `FrmNhanVien` | Bị khóa (Ẩn) | Toàn quyền | Quản lý hợp đồng và trạng thái làm việc |
-| Tài khoản & Quyền | `FrmTaiKhoan` | Bị khóa (Ẩn) | Toàn quyền | Phân vai trò, khóa tài khoản, reset mật khẩu |
+| Hồ sơ Nhân viên | `FrmNhanVien` | Bị khóa (Ẩn) | Toàn quyền | Quản lý thông tin, trạng thái làm việc và xóa nhân viên chưa có dữ liệu liên quan |
+| Tài khoản & Quyền | `FrmTaiKhoan` | Bị khóa (Ẩn) | Toàn quyền | Phân vai trò, khóa tài khoản, reset mật khẩu và xóa tài khoản chưa có lịch sử email |
 | Danh mục & Chất liệu | `FrmDanhMuc`, `FrmChatLieu` | Bị khóa (Ẩn) | Toàn quyền | Quản lý nhóm trang sức & giá thị trường |
 | Quản lý Nhà cung cấp | `FrmNhaCungCap` | Bị khóa (Ẩn) | Toàn quyền | Quản trị đối tác cung cấp vàng/đá quý |
 | Sao lưu & Phục hồi CSDL| `FrmSaoLuuPhucHoi`| Bị khóa (Ẩn) | Toàn quyền | Xuất .bak và khôi phục CSDL |
@@ -240,6 +240,7 @@ Hệ thống thiết lập 2 vai trò chuẩn:
   - Tách biệt rõ ràng thực thể Nhân viên (`NhanVien` - con người vật lý) và Tài khoản (`TaiKhoan` - thông tin đăng nhập hệ thống).
   - Quản lý thông tin nhân viên: Mã NV (`NV000001`), Họ tên, Ngày sinh, Giới tính, Điện thoại, Địa chỉ, Trạng thái công tác (`DangLamViec`).
   - Quản lý tài khoản: Gán tài khoản cho nhân viên cụ thể (quan hệ 1 - 1), cấp vai trò `ADMIN` hoặc `NHANVIEN`, khóa/mở khóa tài khoản ngay lập tức.
+  - Xóa nhân viên chỉ khi không có tài khoản, hóa đơn, phiếu nhập hoặc phiếu thu mua; xóa tài khoản chỉ khi không có mẫu hoặc nhật ký email tham chiếu. Không cho xóa phiên đăng nhập hiện tại hay quản trị viên đang hoạt động cuối cùng.
   - Chức năng Reset Mật khẩu Quản trị: Tự sinh mật khẩu ngẫu nhiên có độ phức tạp cao, cập nhật hash BCrypt và kích hoạt cờ yêu cầu đổi mật khẩu ở lần đăng nhập tới.
 
 ### 4.13. Phân hệ Báo cáo Doanh thu & Phân tích Trực quan (BI & Analytics)

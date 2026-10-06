@@ -59,6 +59,7 @@ namespace FINAL_DotNet
             this.btnCapNhat = new Guna.UI2.WinForms.Guna2Button();
             this.btnDoiTrangThai = new Guna.UI2.WinForms.Guna2Button();
             this.btnDatLaiMatKhau = new Guna.UI2.WinForms.Guna2Button();
+            this.btnXoa = new Guna.UI2.WinForms.Guna2Button();
             this.btnLamMoiBieuMau = new Guna.UI2.WinForms.Guna2Button();
             this.lblTieuDeBieuMau = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.pnlBoLoc.SuspendLayout();
@@ -587,6 +588,7 @@ namespace FINAL_DotNet
             this.pnlThaoTac.Controls.Add(this.btnCapNhat);
             this.pnlThaoTac.Controls.Add(this.btnDoiTrangThai);
             this.pnlThaoTac.Controls.Add(this.btnDatLaiMatKhau);
+            this.pnlThaoTac.Controls.Add(this.btnXoa);
             this.pnlThaoTac.Controls.Add(this.btnLamMoiBieuMau);
             this.pnlThaoTac.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlThaoTac.Location = new System.Drawing.Point(12, 221);
@@ -693,6 +695,23 @@ namespace FINAL_DotNet
             this.btnDatLaiMatKhau.Text = "Đặt lại mật khẩu";
             this.btnDatLaiMatKhau.Click += new System.EventHandler(this.btnDatLaiMatKhau_Click);
             // 
+            // btnXoa
+            //
+            this.btnXoa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnXoa.Animated = true;
+            this.btnXoa.BorderRadius = 6;
+            this.btnXoa.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnXoa.Enabled = false;
+            this.btnXoa.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(178)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.btnXoa.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnXoa.ForeColor = System.Drawing.Color.White;
+            this.btnXoa.Location = new System.Drawing.Point(260, 12);
+            this.btnXoa.Name = "btnXoa";
+            this.btnXoa.Size = new System.Drawing.Size(72, 36);
+            this.btnXoa.TabIndex = 7;
+            this.btnXoa.Text = "Xóa TK";
+            this.btnXoa.Click += new System.EventHandler(this.btnXoa_Click);
+            //
             // btnLamMoiBieuMau
             // 
             this.btnLamMoiBieuMau.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -793,6 +812,7 @@ namespace FINAL_DotNet
         private Guna.UI2.WinForms.Guna2Button btnCapNhat;
         private Guna.UI2.WinForms.Guna2Button btnDoiTrangThai;
         private Guna.UI2.WinForms.Guna2Button btnDatLaiMatKhau;
+        private Guna.UI2.WinForms.Guna2Button btnXoa;
         private Guna.UI2.WinForms.Guna2Button btnLamMoiBieuMau;
     }
 }

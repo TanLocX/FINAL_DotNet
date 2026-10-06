@@ -69,7 +69,6 @@ namespace FINAL_DotNet
             this.numDonGiaNhap = new Guna.UI2.WinForms.Guna2NumericUpDown();
             this.btnThemDong = new Guna.UI2.WinForms.Guna2Button();
             this.btnXoaDong = new Guna.UI2.WinForms.Guna2Button();
-            this.btnMoiDong = new Guna.UI2.WinForms.Guna2Button();
             this.lblSoDong = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblTongTienLapPhieu = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.pnlDauPhieu = new Guna.UI2.WinForms.Guna2Panel();
@@ -559,6 +558,7 @@ namespace FINAL_DotNet
             this.dgvGioNhap.ThemeStyle.RowsStyle.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(214)))), ((int)(((byte)(182)))), ((int)(((byte)(116)))));
             this.dgvGioNhap.ThemeStyle.RowsStyle.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(27)))), ((int)(((byte)(39)))), ((int)(((byte)(53)))));
             this.dgvGioNhap.SelectionChanged += new System.EventHandler(this.dgvGioNhap_SelectionChanged);
+            this.dgvGioNhap.MouseDown += new System.Windows.Forms.MouseEventHandler(this.dgvGioNhap_MouseDown);
             // 
             // colGioMaSP
             // 
@@ -620,7 +620,6 @@ namespace FINAL_DotNet
             this.pnlDongNhap.Controls.Add(this.numDonGiaNhap);
             this.pnlDongNhap.Controls.Add(this.btnThemDong);
             this.pnlDongNhap.Controls.Add(this.btnXoaDong);
-            this.pnlDongNhap.Controls.Add(this.btnMoiDong);
             this.pnlDongNhap.Controls.Add(this.lblSoDong);
             this.pnlDongNhap.Controls.Add(this.lblTongTienLapPhieu);
             this.pnlDongNhap.Dock = System.Windows.Forms.DockStyle.Top;
@@ -753,21 +752,6 @@ namespace FINAL_DotNet
             this.btnXoaDong.TabIndex = 8;
             this.btnXoaDong.Text = "Xóa";
             this.btnXoaDong.Click += new System.EventHandler(this.btnXoaDong_Click);
-            // 
-            // btnMoiDong
-            // 
-            this.btnMoiDong.Animated = true;
-            this.btnMoiDong.BorderRadius = 6;
-            this.btnMoiDong.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnMoiDong.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
-            this.btnMoiDong.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnMoiDong.ForeColor = System.Drawing.Color.White;
-            this.btnMoiDong.Location = new System.Drawing.Point(705, 18);
-            this.btnMoiDong.Name = "btnMoiDong";
-            this.btnMoiDong.Size = new System.Drawing.Size(84, 32);
-            this.btnMoiDong.TabIndex = 9;
-            this.btnMoiDong.Text = "Nhập mới";
-            this.btnMoiDong.Click += new System.EventHandler(this.btnMoiDong_Click);
             // 
             // lblSoDong
             // 
@@ -1302,8 +1286,10 @@ namespace FINAL_DotNet
             this.Controls.Add(this.pnlBoLoc);
             this.Controls.Add(this.pnlChan);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.KeyPreview = true;
             this.Name = "FrmNhapHang";
             this.Text = "Quản lý nhập hàng";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmNhapHang_KeyDown);
             this.Load += new System.EventHandler(this.FrmNhapHang_Load);
             this.pnlBoLoc.ResumeLayout(false);
             this.pnlBoLoc.PerformLayout();
@@ -1372,7 +1358,6 @@ namespace FINAL_DotNet
         private Guna.UI2.WinForms.Guna2NumericUpDown numDonGiaNhap;
         private Guna.UI2.WinForms.Guna2Button btnThemDong;
         private Guna.UI2.WinForms.Guna2Button btnXoaDong;
-        private Guna.UI2.WinForms.Guna2Button btnMoiDong;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblSoDong;
         private Guna.UI2.WinForms.Guna2HtmlLabel lblTongTienLapPhieu;
         private Guna.UI2.WinForms.Guna2Panel pnlDauPhieu;

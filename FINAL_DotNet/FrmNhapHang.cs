@@ -336,12 +336,36 @@ namespace FINAL_DotNet
         private void dgvGioNhap_SelectionChanged(object sender, EventArgs e)
         {
             if (dangLamMoi) return;
-            var dong = dgvGioNhap.CurrentRow?.DataBoundItem as DongNhapHang;
+            var dong = DongNhapDangChon();
             if (dong == null) return;
             ChonSanPham(dong.SanPhamId);
             numSoLuong.Value = Math.Min(numSoLuong.Maximum, dong.SoLuong);
             numDonGiaNhap.Value = Math.Min(numDonGiaNhap.Maximum, dong.DonGiaNhap);
             btnThemDong.Text = "Cập nhật dòng";
+        }
+
+        private DongNhapHang DongNhapDangChon()
+        {
+            var hang = dgvGioNhap.SelectedRows.Count > 0
+                ? dgvGioNhap.SelectedRows[0]
+                : dgvGioNhap.SelectedCells.Count > 0 ? dgvGioNhap.SelectedCells[0].OwningRow : null;
+            return hang?.DataBoundItem as DongNhapHang;
+        }
+
+        private void dgvGioNhap_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left &&
+                dgvGioNhap.HitTest(e.X, e.Y).Type == DataGridViewHitTestType.None)
+                LamMoiDongNhap();
+        }
+
+        private void FrmNhapHang_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Escape || tabNhapHang.SelectedTab != tabLapPhieu ||
+                !tabLapPhieu.ContainsFocus || DongNhapDangChon() == null) return;
+            LamMoiDongNhap();
+            e.Handled = true;
+            e.SuppressKeyPress = true;
         }
 
         private void ChonSanPham(int sanPhamId)
@@ -356,7 +380,7 @@ namespace FINAL_DotNet
 
         private void btnXoaDong_Click(object sender, EventArgs e)
         {
-            var dong = dgvGioNhap.CurrentRow?.DataBoundItem as DongNhapHang;
+            var dong = DongNhapDangChon();
             if (dong == null)
             {
                 HienThiLoi("Vui lòng chọn dòng sản phẩm cần xóa.");
@@ -366,8 +390,6 @@ namespace FINAL_DotNet
             TaiGioNhapHang();
             LamMoiDongNhap();
         }
-
-        private void btnMoiDong_Click(object sender, EventArgs e) => LamMoiDongNhap();
 
         private bool TaiGioNhapHang()
         {
@@ -393,13 +415,19 @@ namespace FINAL_DotNet
 
         private void LamMoiDongNhap()
         {
-            dgvGioNhap.ClearSelection();
-            if (cboSanPham.Items.Count > 0) cboSanPham.SelectedIndex = 0;
-            var sanPham = cboSanPham.SelectedItem as LuaChonSanPham;
-            numSoLuong.Value = 1;
-            numDonGiaNhap.Value = sanPham == null ? 0 : Math.Min(numDonGiaNhap.Maximum, sanPham.GiaVon);
-            lblTonKhoHienTai.Text = sanPham == null ? "Tồn hiện tại: --" : "Tồn hiện tại: " + sanPham.SoLuongTon;
-            btnThemDong.Text = "Thêm sản phẩm";
+            bool dangLamMoiTruocDo = dangLamMoi;
+            dangLamMoi = true;
+            try
+            {
+                dgvGioNhap.ClearSelection();
+                if (cboSanPham.Items.Count > 0) cboSanPham.SelectedIndex = 0;
+                var sanPham = cboSanPham.SelectedItem as LuaChonSanPham;
+                numSoLuong.Value = 1;
+                numDonGiaNhap.Value = sanPham == null ? 0 : Math.Min(numDonGiaNhap.Maximum, sanPham.GiaVon);
+                lblTonKhoHienTai.Text = sanPham == null ? "Tồn hiện tại: --" : "Tồn hiện tại: " + sanPham.SoLuongTon;
+                btnThemDong.Text = "Thêm sản phẩm";
+            }
+            finally { dangLamMoi = dangLamMoiTruocDo; }
         }
 
         private void btnLuuPhieu_Click(object sender, EventArgs e)

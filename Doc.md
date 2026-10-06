@@ -120,7 +120,7 @@ Hệ thống gồm 17 bảng phân theo 5 nhóm nghiệp vụ rõ ràng:
 #### Quyết định 1: Tại sao tách riêng `NhanVien` và `TaiKhoan`?
 - `NhanVien` đại diện cho con người ngoài đời thực (Họ tên, ngày sinh, số điện thoại, trạng thái đang làm việc hay đã nghỉ).
 - `TaiKhoan` đại diện cho quyền truy cập phần mềm (Tên đăng nhập, mật khẩu băm, vai trò ADMIN/NHANVIEN, cờ khóa tài khoản).
-- **Lý do kỹ thuật:** Khi một nhân viên nghỉ việc, ta chỉ cần vô hiệu hóa tài khoản (`DangHoatDong = false`) hoặc xóa tài khoản. Tất cả hóa đơn, phiếu nhập kho, phiếu bảo hành mà nhân viên này từng lập trong quá khứ vẫn giữ nguyên vẹn khóa ngoại tham chiếu đến `NhanVienId`. Nếu gộp hai bảng làm một, việc xóa nhân viên sẽ làm hỏng lịch sử kế toán.
+- **Lý do kỹ thuật:** Khi một nhân viên nghỉ việc, ta có thể ngừng làm việc và khóa tài khoản để giữ nguyên lịch sử giao dịch. Chỉ xóa vĩnh viễn nhân viên khi họ chưa có tài khoản hoặc giao dịch liên quan; chỉ xóa tài khoản khi chưa được mẫu hay nhật ký email tham chiếu. Nhờ tách hai bảng, thao tác khóa tài khoản không làm mất các hóa đơn, phiếu nhập và phiếu thu mua đã lập.
 
 #### Quyết định 2: Bảng trung gian `ChiTietChatLieu` giải quyết bài toán gì?
 - Đây là mối quan hệ Nhiều - Nhiều (N - N) giữa `SanPham` và `ChatLieu`.

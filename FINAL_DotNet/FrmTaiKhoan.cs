@@ -93,11 +93,17 @@ namespace FINAL_DotNet
                         truyVan = truyVan.Where(tk => tk.PhaiDoiMatKhau);
                     }
 
+                    var taiKhoanCoThamChieu = new HashSet<int>(db.MauEmails
+                        .Where(mau => mau.TaiKhoanCapNhatId.HasValue)
+                        .Select(mau => mau.TaiKhoanCapNhatId.Value)
+                        .Union(db.NhatKyGuiEmails.Select(nhatKy => nhatKy.TaiKhoanId))
+                        .ToList());
+
                     List<TaiKhoanHienThi> danhSach = truyVan
                         .OrderByDescending(tk => tk.DangHoatDong)
                         .ThenBy(tk => tk.TaiKhoanId)
                         .ToList()
-                        .Select(tk => new TaiKhoanHienThi(tk))
+                        .Select(tk => new TaiKhoanHienThi(tk, taiKhoanCoThamChieu.Contains(tk.TaiKhoanId)))
                         .ToList();
 
                     dgvTaiKhoan.DataSource = danhSach;
@@ -167,6 +173,7 @@ namespace FINAL_DotNet
             var item = dgvTaiKhoan.CurrentRow?.DataBoundItem as TaiKhoanHienThi;
             if (item == null)
             {
+                btnXoa.Enabled = false;
                 return;
             }
 
@@ -182,7 +189,13 @@ namespace FINAL_DotNet
             txtMatKhauTam.Clear();
             txtXacNhanMatKhau.Clear();
             btnDoiTrangThai.Text = item.DangHoatDong ? "Khóa tài khoản" : "Mở tài khoản";
-            lblThongBao.Text = string.Empty;
+            btnXoa.Enabled = !item.CoThamChieu &&
+                             item.TaiKhoanId != CurrentUserSession.HienTai.TaiKhoanId;
+            lblThongBao.Text = item.CoThamChieu
+                ? "Chỉ xóa tài khoản chưa được mẫu hay nhật ký email tham chiếu; có thể dùng Khóa tài khoản."
+                : item.TaiKhoanId == CurrentUserSession.HienTai.TaiKhoanId
+                    ? "Không thể xóa tài khoản đang đăng nhập."
+                    : string.Empty;
         }
 
         private void btnTimKiem_Click(object sender, EventArgs e)
@@ -459,6 +472,74 @@ namespace FINAL_DotNet
             }
         }
 
+        private void btnXoa_Click(object sender, EventArgs e)
+        {
+            if (!KiemTraQuyenQuanTri(true) || !taiKhoanDangChonId.HasValue)
+            {
+                HienThiLoi("Vui lòng chọn tài khoản cần xóa.");
+                return;
+            }
+
+            int taiKhoanId = taiKhoanDangChonId.Value;
+            if (taiKhoanId == CurrentUserSession.HienTai.TaiKhoanId)
+            {
+                HienThiLoi("Bạn không thể xóa tài khoản đang đăng nhập.");
+                return;
+            }
+
+            if (MessageBox.Show(
+                    $"Xóa vĩnh viễn tài khoản {txtTenDangNhap.Text.Trim()}?",
+                    "Xác nhận xóa tài khoản",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning) != DialogResult.Yes) return;
+
+            try
+            {
+                using (var db = DatabaseConnection.CreateContext())
+                {
+                    var taiKhoan = db.TaiKhoans.SingleOrDefault(tk => tk.TaiKhoanId == taiKhoanId);
+                    if (taiKhoan == null)
+                    {
+                        TaiDanhSach();
+                        LamMoiBieuMau();
+                        HienThiLoi("Tài khoản không còn tồn tại trong CSDL.");
+                        return;
+                    }
+
+                    if (db.MauEmails.Any(mau => mau.TaiKhoanCapNhatId == taiKhoanId) ||
+                        db.NhatKyGuiEmails.Any(nhatKy => nhatKy.TaiKhoanId == taiKhoanId))
+                    {
+                        TaiDanhSach(taiKhoanId);
+                        HienThiLoi("Tài khoản đã có mẫu hoặc nhật ký email; hãy dùng Khóa tài khoản.");
+                        return;
+                    }
+
+                    if (taiKhoan.VaiTro == "ADMIN" && taiKhoan.DangHoatDong &&
+                        !ConQuanTriVienHoatDongKhac(db, taiKhoanId))
+                    {
+                        HienThiLoi("Không thể xóa quản trị viên đang hoạt động cuối cùng.");
+                        return;
+                    }
+
+                    db.TaiKhoans.Remove(taiKhoan);
+                    db.SaveChanges();
+                }
+
+                TaiDanhSach();
+                LamMoiBieuMau();
+                MessageBox.Show("Đã xóa tài khoản.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (DbUpdateException)
+            {
+                TaiDanhSach(taiKhoanId);
+                HienThiLoi("Tài khoản vừa phát sinh dữ liệu liên quan; không thể xóa.");
+            }
+            catch (Exception)
+            {
+                HienThiLoi("Không thể xóa tài khoản. Hãy kiểm tra kết nối CSDL.");
+            }
+        }
+
         private void btnLamMoiBieuMau_Click(object sender, EventArgs e)
         {
             LamMoiBieuMau();
@@ -478,6 +559,7 @@ namespace FINAL_DotNet
                 chkDangHoatDong.Checked = true;
                 chkPhaiDoiMatKhau.Checked = true;
                 btnDoiTrangThai.Text = "Khóa tài khoản";
+                btnXoa.Enabled = false;
                 cboNhanVien.Enabled = true;
                 lblThongBao.Text = string.Empty;
                 dgvTaiKhoan.ClearSelection();
@@ -617,9 +699,10 @@ namespace FINAL_DotNet
 
         private sealed class TaiKhoanHienThi
         {
-            public TaiKhoanHienThi(TaiKhoan taiKhoan)
+            public TaiKhoanHienThi(TaiKhoan taiKhoan, bool coThamChieu)
             {
                 TaiKhoanId = taiKhoan.TaiKhoanId;
+                CoThamChieu = coThamChieu;
                 NhanVienId = taiKhoan.NhanVienId;
                 MaTaiKhoan = $"TK{taiKhoan.TaiKhoanId:000000}";
                 MaNhanVien = $"NV{taiKhoan.NhanVienId:000000}";
@@ -635,6 +718,7 @@ namespace FINAL_DotNet
             }
 
             public int TaiKhoanId { get; }
+            internal bool CoThamChieu { get; }
             public int NhanVienId { get; }
             public string MaTaiKhoan { get; }
             public string MaNhanVien { get; }
