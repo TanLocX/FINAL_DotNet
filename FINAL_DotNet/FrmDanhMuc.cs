@@ -133,9 +133,16 @@ namespace FINAL_DotNet
                 return;
             }
 
+            if (dgvDanhMuc.SelectedCells.Count == 0 && dgvDanhMuc.SelectedRows.Count == 0)
+            {
+                btnXoaDanhMuc.Enabled = false;
+                return;
+            }
+
             var item = dgvDanhMuc.CurrentRow?.DataBoundItem as DanhMucHienThi;
             if (item == null)
             {
+                btnXoaDanhMuc.Enabled = false;
                 return;
             }
 
@@ -144,10 +151,11 @@ namespace FINAL_DotNet
             txtTenDanhMuc.Text = item.TenDanhMuc;
             txtMoTa.Text = item.MoTa ?? string.Empty;
             chkDangHoatDong.Checked = item.DangHoatDong;
-            btnXoaHoacTrangThai.Text = item.DangHoatDong
-                ? (item.SoSanPham > 0 ? "Ngừng hoạt động" : "Xóa danh mục")
-                : "Khôi phục";
-            lblThongBao.Text = string.Empty;
+            btnXoaHoacTrangThai.Text = item.DangHoatDong ? "Ngừng hoạt động" : "Khôi phục";
+            btnXoaDanhMuc.Enabled = item.SoSanPham == 0;
+            lblThongBao.Text = item.SoSanPham > 0
+                ? "Chỉ xóa danh mục chưa có sản phẩm; có thể dùng Ngừng hoạt động."
+                : string.Empty;
         }
 
         private void btnTimKiem_Click(object sender, EventArgs e)
@@ -283,7 +291,7 @@ namespace FINAL_DotNet
         {
             if (!KiemTraQuyenQuanTri(true) || !danhMucDangChonId.HasValue)
             {
-                HienThiLoi("Vui lòng chọn danh mục cần xử lý.");
+                HienThiLoi("Vui lòng chọn danh mục cần thay đổi trạng thái.");
                 return;
             }
 
@@ -292,9 +300,7 @@ namespace FINAL_DotNet
             {
                 using (var db = DatabaseConnection.CreateContext())
                 {
-                    var danhMuc = db.DanhMucs
-                        .Include(dm => dm.SanPhams)
-                        .SingleOrDefault(dm => dm.DanhMucId == danhMucId);
+                    var danhMuc = db.DanhMucs.SingleOrDefault(dm => dm.DanhMucId == danhMucId);
                     if (danhMuc == null)
                     {
                         HienThiLoi("Danh mục không còn tồn tại trong CSDL.");
@@ -302,10 +308,7 @@ namespace FINAL_DotNet
                         return;
                     }
 
-                    bool coSanPham = danhMuc.SanPhams.Any();
-                    string hanhDong = !danhMuc.DangHoatDong
-                        ? "khôi phục"
-                        : (coSanPham ? "ngừng hoạt động" : "xóa");
+                    string hanhDong = danhMuc.DangHoatDong ? "ngừng hoạt động" : "khôi phục";
                     if (MessageBox.Show(
                             $"Bạn có chắc muốn {hanhDong} danh mục {danhMuc.TenDanhMuc}?",
                             "Xác nhận",
@@ -315,34 +318,68 @@ namespace FINAL_DotNet
                         return;
                     }
 
-                    if (!danhMuc.DangHoatDong)
-                    {
-                        danhMuc.DangHoatDong = true;
-                        db.SaveChanges();
-                        TaiDanhSach(danhMucId);
-                    }
-                    else if (coSanPham)
-                    {
-                        danhMuc.DangHoatDong = false;
-                        db.SaveChanges();
-                        TaiDanhSach(danhMucId);
-                    }
-                    else
-                    {
-                        db.DanhMucs.Remove(danhMuc);
-                        db.SaveChanges();
-                        TaiDanhSach();
-                        LamMoiBieuMau();
-                    }
+                    danhMuc.DangHoatDong = !danhMuc.DangHoatDong;
+                    db.SaveChanges();
+                    TaiDanhSach(danhMucId);
                 }
-            }
-            catch (DbUpdateException)
-            {
-                HienThiLoi("Danh mục đã phát sinh tham chiếu và không thể xóa. Hãy tải lại rồi ngừng hoạt động.");
             }
             catch (Exception)
             {
                 HienThiLoi("Không thể thay đổi trạng thái danh mục.");
+            }
+        }
+
+        private void btnXoaDanhMuc_Click(object sender, EventArgs e)
+        {
+            if (!KiemTraQuyenQuanTri(true) || !danhMucDangChonId.HasValue)
+            {
+                HienThiLoi("Vui lòng chọn danh mục cần xóa.");
+                return;
+            }
+
+            int danhMucId = danhMucDangChonId.Value;
+            if (MessageBox.Show(
+                    $"Xóa vĩnh viễn danh mục DM{danhMucId:000000} - {txtTenDanhMuc.Text.Trim()}?",
+                    "Xác nhận xóa danh mục",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning) != DialogResult.Yes) return;
+
+            try
+            {
+                using (var db = DatabaseConnection.CreateContext())
+                {
+                    var danhMuc = db.DanhMucs.SingleOrDefault(dm => dm.DanhMucId == danhMucId);
+                    if (danhMuc == null)
+                    {
+                        TaiDanhSach();
+                        LamMoiBieuMau();
+                        HienThiLoi("Danh mục không còn tồn tại trong CSDL.");
+                        return;
+                    }
+
+                    if (db.SanPhams.Any(sp => sp.DanhMucId == danhMucId))
+                    {
+                        TaiDanhSach(danhMucId);
+                        HienThiLoi("Danh mục đã có sản phẩm; hãy dùng Ngừng hoạt động.");
+                        return;
+                    }
+
+                    db.DanhMucs.Remove(danhMuc);
+                    db.SaveChanges();
+                }
+
+                TaiDanhSach();
+                LamMoiBieuMau();
+                MessageBox.Show("Đã xóa danh mục.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (DbUpdateException)
+            {
+                TaiDanhSach(danhMucId);
+                HienThiLoi("Danh mục vừa phát sinh sản phẩm; không thể xóa.");
+            }
+            catch (Exception)
+            {
+                HienThiLoi("Không thể xóa danh mục. Hãy kiểm tra kết nối CSDL.");
             }
         }
 
@@ -361,7 +398,8 @@ namespace FINAL_DotNet
                 txtTenDanhMuc.Clear();
                 txtMoTa.Clear();
                 chkDangHoatDong.Checked = true;
-                btnXoaHoacTrangThai.Text = "Xóa danh mục";
+                btnXoaHoacTrangThai.Text = "Ngừng hoạt động";
+                btnXoaDanhMuc.Enabled = false;
                 lblThongBao.Text = string.Empty;
                 dgvDanhMuc.ClearSelection();
             }

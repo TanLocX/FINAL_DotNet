@@ -132,9 +132,16 @@ namespace FINAL_DotNet
                 return;
             }
 
+            if (dgvChatLieu.SelectedCells.Count == 0 && dgvChatLieu.SelectedRows.Count == 0)
+            {
+                btnXoaChatLieu.Enabled = false;
+                return;
+            }
+
             var item = dgvChatLieu.CurrentRow?.DataBoundItem as ChatLieuHienThi;
             if (item == null)
             {
+                btnXoaChatLieu.Enabled = false;
                 return;
             }
 
@@ -144,10 +151,11 @@ namespace FINAL_DotNet
             numGiaMuaVao.Value = GioiHanGia(item.GiaMuaVao, numGiaMuaVao.Maximum);
             numGiaBanRa.Value = GioiHanGia(item.GiaBanRa, numGiaBanRa.Maximum);
             chkDangHoatDong.Checked = item.DangHoatDong;
-            btnXoaHoacTrangThai.Text = item.DangHoatDong
-                ? (item.SoThamChieu > 0 ? "Ngừng hoạt động" : "Xóa chất liệu")
-                : "Khôi phục";
-            lblThongBao.Text = string.Empty;
+            btnXoaHoacTrangThai.Text = item.DangHoatDong ? "Ngừng hoạt động" : "Khôi phục";
+            btnXoaChatLieu.Enabled = item.SoThamChieu == 0;
+            lblThongBao.Text = item.SoThamChieu > 0
+                ? "Chỉ xóa chất liệu chưa được dùng trong sản phẩm hoặc phiếu thu mua."
+                : string.Empty;
         }
 
         private static decimal GioiHanGia(decimal giaTri, decimal giaTriToiDa)
@@ -276,7 +284,7 @@ namespace FINAL_DotNet
         {
             if (!KiemTraQuyenQuanTri(true) || !chatLieuDangChonId.HasValue)
             {
-                HienThiLoi("Vui lòng chọn chất liệu cần xử lý.");
+                HienThiLoi("Vui lòng chọn chất liệu cần thay đổi trạng thái.");
                 return;
             }
 
@@ -285,10 +293,7 @@ namespace FINAL_DotNet
             {
                 using (var db = DatabaseConnection.CreateContext())
                 {
-                    var chatLieu = db.ChatLieux
-                        .Include(cl => cl.ChiTietChatLieux)
-                        .Include(cl => cl.ChiTietPhieuThuMuas)
-                        .SingleOrDefault(cl => cl.ChatLieuId == chatLieuId);
+                    var chatLieu = db.ChatLieux.SingleOrDefault(cl => cl.ChatLieuId == chatLieuId);
                     if (chatLieu == null)
                     {
                         HienThiLoi("Chất liệu không còn tồn tại trong CSDL.");
@@ -296,10 +301,7 @@ namespace FINAL_DotNet
                         return;
                     }
 
-                    bool daDuocSuDung = chatLieu.ChiTietChatLieux.Any() || chatLieu.ChiTietPhieuThuMuas.Any();
-                    string hanhDong = !chatLieu.DangHoatDong
-                        ? "khôi phục"
-                        : (daDuocSuDung ? "ngừng hoạt động" : "xóa");
+                    string hanhDong = chatLieu.DangHoatDong ? "ngừng hoạt động" : "khôi phục";
                     if (MessageBox.Show(
                             $"Bạn có chắc muốn {hanhDong} chất liệu {chatLieu.TenChatLieu}?",
                             "Xác nhận",
@@ -309,34 +311,69 @@ namespace FINAL_DotNet
                         return;
                     }
 
-                    if (!chatLieu.DangHoatDong)
-                    {
-                        chatLieu.DangHoatDong = true;
-                        db.SaveChanges();
-                        TaiDanhSach(chatLieuId);
-                    }
-                    else if (daDuocSuDung)
-                    {
-                        chatLieu.DangHoatDong = false;
-                        db.SaveChanges();
-                        TaiDanhSach(chatLieuId);
-                    }
-                    else
-                    {
-                        db.ChatLieux.Remove(chatLieu);
-                        db.SaveChanges();
-                        TaiDanhSach();
-                        LamMoiBieuMau();
-                    }
+                    chatLieu.DangHoatDong = !chatLieu.DangHoatDong;
+                    db.SaveChanges();
+                    TaiDanhSach(chatLieuId);
                 }
-            }
-            catch (DbUpdateException)
-            {
-                HienThiLoi("Chất liệu đã phát sinh tham chiếu và không thể xóa. Hãy tải lại rồi ngừng hoạt động.");
             }
             catch (Exception)
             {
                 HienThiLoi("Không thể thay đổi trạng thái chất liệu.");
+            }
+        }
+
+        private void btnXoaChatLieu_Click(object sender, EventArgs e)
+        {
+            if (!KiemTraQuyenQuanTri(true) || !chatLieuDangChonId.HasValue)
+            {
+                HienThiLoi("Vui lòng chọn chất liệu cần xóa.");
+                return;
+            }
+
+            int chatLieuId = chatLieuDangChonId.Value;
+            if (MessageBox.Show(
+                    $"Xóa vĩnh viễn chất liệu CL{chatLieuId:000000} - {txtTenChatLieu.Text.Trim()}?",
+                    "Xác nhận xóa chất liệu",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning) != DialogResult.Yes) return;
+
+            try
+            {
+                using (var db = DatabaseConnection.CreateContext())
+                {
+                    var chatLieu = db.ChatLieux.SingleOrDefault(cl => cl.ChatLieuId == chatLieuId);
+                    if (chatLieu == null)
+                    {
+                        TaiDanhSach();
+                        LamMoiBieuMau();
+                        HienThiLoi("Chất liệu không còn tồn tại trong CSDL.");
+                        return;
+                    }
+
+                    if (db.ChiTietChatLieux.Any(ct => ct.ChatLieuId == chatLieuId) ||
+                        db.ChiTietPhieuThuMuas.Any(ct => ct.ChatLieuId == chatLieuId))
+                    {
+                        TaiDanhSach(chatLieuId);
+                        HienThiLoi("Chất liệu đã được sử dụng; hãy dùng Ngừng hoạt động.");
+                        return;
+                    }
+
+                    db.ChatLieux.Remove(chatLieu);
+                    db.SaveChanges();
+                }
+
+                TaiDanhSach();
+                LamMoiBieuMau();
+                MessageBox.Show("Đã xóa chất liệu.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (DbUpdateException)
+            {
+                TaiDanhSach(chatLieuId);
+                HienThiLoi("Chất liệu vừa phát sinh tham chiếu; không thể xóa.");
+            }
+            catch (Exception)
+            {
+                HienThiLoi("Không thể xóa chất liệu. Hãy kiểm tra kết nối CSDL.");
             }
         }
 
@@ -356,7 +393,8 @@ namespace FINAL_DotNet
                 numGiaMuaVao.Value = 0;
                 numGiaBanRa.Value = 0;
                 chkDangHoatDong.Checked = true;
-                btnXoaHoacTrangThai.Text = "Xóa chất liệu";
+                btnXoaHoacTrangThai.Text = "Ngừng hoạt động";
+                btnXoaChatLieu.Enabled = false;
                 lblThongBao.Text = string.Empty;
                 dgvChatLieu.ClearSelection();
             }

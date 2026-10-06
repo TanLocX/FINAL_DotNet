@@ -121,8 +121,8 @@ Hệ thống thiết lập 2 vai trò chuẩn:
 | Báo cáo & Thống kê | `FrmThongKe` | Tra cứu / Xuất Excel | Toàn quyền | Biểu đồ doanh thu và cơ cấu sản phẩm |
 | Hồ sơ Nhân viên | `FrmNhanVien` | Bị khóa (Ẩn) | Toàn quyền | Quản lý thông tin, trạng thái làm việc và xóa nhân viên chưa có dữ liệu liên quan |
 | Tài khoản & Quyền | `FrmTaiKhoan` | Bị khóa (Ẩn) | Toàn quyền | Phân vai trò, khóa tài khoản, reset mật khẩu và xóa tài khoản chưa có lịch sử email |
-| Danh mục & Chất liệu | `FrmDanhMuc`, `FrmChatLieu` | Bị khóa (Ẩn) | Toàn quyền | Quản lý nhóm trang sức & giá thị trường |
-| Quản lý Nhà cung cấp | `FrmNhaCungCap` | Bị khóa (Ẩn) | Toàn quyền | Quản trị đối tác cung cấp vàng/đá quý |
+| Danh mục & Chất liệu | `FrmDanhMuc`, `FrmChatLieu` | Bị khóa (Ẩn) | Toàn quyền | Quản lý nhóm trang sức & giá thị trường; nút xóa riêng chỉ bật khi chưa được tham chiếu |
+| Quản lý Nhà cung cấp | `FrmNhaCungCap` | Bị khóa (Ẩn) | Toàn quyền | Quản trị đối tác; xóa nhà cung cấp chưa có phiếu nhập hoặc ngừng hoạt động để giữ lịch sử |
 | Sao lưu & Phục hồi CSDL| `FrmSaoLuuPhucHoi`| Bị khóa (Ẩn) | Toàn quyền | Xuất .bak và khôi phục CSDL |
 
 ### 3.2. Cơ chế Bảo mật Tài khoản & Mật khẩu

@@ -21,6 +21,12 @@ Các script tạo/seed sẽ dừng nếu phát hiện bảng hoặc dữ liệu 
 
 Trong CSDL tạo mới từ dữ liệu mẫu, `SP000009` (Vòng tay bạc 925 trơn) có tồn kho bằng 0 và không được liên kết với hóa đơn, phiếu nhập hoặc phiếu thu mua. Admin có thể chọn sản phẩm này để thử nút **Xóa sản phẩm**. Việc sửa script không thay đổi CSDL đã seed trước đó.
 
+## Chuẩn bị dữ liệu để bấm nút Xóa
+
+Chạy `07_PrepareDeleteDemo.sql` trên CSDL muốn demo. Script chỉ tạo ba bản ghi độc lập có tên bắt đầu bằng `DEMO XOA`: một danh mục, một chất liệu và một nhà cung cấp. Script không thực hiện xóa. Trong ứng dụng, đăng nhập Admin, mở từng tab quản trị, tìm `DEMO XOA`, chọn bản ghi và bấm nút **Xóa** đang sáng để xác nhận xóa vĩnh viễn. Sau khi xóa, có thể chạy lại script để chuẩn bị cho lần demo tiếp theo.
+
+Các bản ghi mẫu đang có giao dịch vẫn không thể xóa; dùng **Ngừng hoạt động** nếu muốn giữ lịch sử mà không tiếp tục sử dụng.
+
 ## Quy tắc mã tự tăng trong ứng dụng
 
 Khi thêm mới, ứng dụng lấy ID lớn nhất **còn tồn tại trong bảng** + 1. Ví dụ,

@@ -137,9 +137,16 @@ namespace FINAL_DotNet
                 return;
             }
 
+            if (dgvNhaCungCap.SelectedCells.Count == 0 && dgvNhaCungCap.SelectedRows.Count == 0)
+            {
+                btnXoaNhaCungCap.Enabled = false;
+                return;
+            }
+
             var item = dgvNhaCungCap.CurrentRow?.DataBoundItem as NhaCungCapHienThi;
             if (item == null)
             {
+                btnXoaNhaCungCap.Enabled = false;
                 return;
             }
 
@@ -151,10 +158,11 @@ namespace FINAL_DotNet
             txtEmail.Text = item.Email ?? string.Empty;
             txtDiaChi.Text = item.DiaChi ?? string.Empty;
             chkDangHoatDong.Checked = item.DangHoatDong;
-            btnXoaHoacTrangThai.Text = item.DangHoatDong
-                ? (item.SoPhieuNhap > 0 ? "Ngừng hoạt động" : "Xóa nhà cung cấp")
-                : "Khôi phục";
-            lblThongBao.Text = string.Empty;
+            btnXoaHoacTrangThai.Text = item.DangHoatDong ? "Ngừng hoạt động" : "Khôi phục";
+            btnXoaNhaCungCap.Enabled = item.SoPhieuNhap == 0;
+            lblThongBao.Text = item.SoPhieuNhap > 0
+                ? "Chỉ xóa nhà cung cấp chưa có phiếu nhập; có thể dùng Ngừng hoạt động."
+                : string.Empty;
         }
 
         private void btnTimKiem_Click(object sender, EventArgs e)
@@ -293,7 +301,7 @@ namespace FINAL_DotNet
         {
             if (!KiemTraQuyenQuanTri(true) || !nhaCungCapDangChonId.HasValue)
             {
-                HienThiLoi("Vui lòng chọn nhà cung cấp cần xử lý.");
+                HienThiLoi("Vui lòng chọn nhà cung cấp cần thay đổi trạng thái.");
                 return;
             }
 
@@ -302,9 +310,7 @@ namespace FINAL_DotNet
             {
                 using (var db = DatabaseConnection.CreateContext())
                 {
-                    var nhaCungCap = db.NhaCungCaps
-                        .Include(ncc => ncc.PhieuNhaps)
-                        .SingleOrDefault(ncc => ncc.NhaCungCapId == nhaCungCapId);
+                    var nhaCungCap = db.NhaCungCaps.SingleOrDefault(ncc => ncc.NhaCungCapId == nhaCungCapId);
                     if (nhaCungCap == null)
                     {
                         HienThiLoi("Nhà cung cấp không còn tồn tại trong CSDL.");
@@ -312,10 +318,7 @@ namespace FINAL_DotNet
                         return;
                     }
 
-                    bool coPhieuNhap = nhaCungCap.PhieuNhaps.Any();
-                    string hanhDong = !nhaCungCap.DangHoatDong
-                        ? "khôi phục"
-                        : (coPhieuNhap ? "ngừng hoạt động" : "xóa");
+                    string hanhDong = nhaCungCap.DangHoatDong ? "ngừng hoạt động" : "khôi phục";
                     if (MessageBox.Show(
                             $"Bạn có chắc muốn {hanhDong} nhà cung cấp {nhaCungCap.TenNhaCungCap}?",
                             "Xác nhận",
@@ -325,34 +328,68 @@ namespace FINAL_DotNet
                         return;
                     }
 
-                    if (!nhaCungCap.DangHoatDong)
-                    {
-                        nhaCungCap.DangHoatDong = true;
-                        db.SaveChanges();
-                        TaiDanhSach(nhaCungCapId);
-                    }
-                    else if (coPhieuNhap)
-                    {
-                        nhaCungCap.DangHoatDong = false;
-                        db.SaveChanges();
-                        TaiDanhSach(nhaCungCapId);
-                    }
-                    else
-                    {
-                        db.NhaCungCaps.Remove(nhaCungCap);
-                        db.SaveChanges();
-                        TaiDanhSach();
-                        LamMoiBieuMau();
-                    }
+                    nhaCungCap.DangHoatDong = !nhaCungCap.DangHoatDong;
+                    db.SaveChanges();
+                    TaiDanhSach(nhaCungCapId);
                 }
-            }
-            catch (DbUpdateException)
-            {
-                HienThiLoi("Nhà cung cấp đã phát sinh phiếu nhập và không thể xóa. Hãy tải lại rồi ngừng hoạt động.");
             }
             catch (Exception)
             {
                 HienThiLoi("Không thể thay đổi trạng thái nhà cung cấp.");
+            }
+        }
+
+        private void btnXoaNhaCungCap_Click(object sender, EventArgs e)
+        {
+            if (!KiemTraQuyenQuanTri(true) || !nhaCungCapDangChonId.HasValue)
+            {
+                HienThiLoi("Vui lòng chọn nhà cung cấp cần xóa.");
+                return;
+            }
+
+            int nhaCungCapId = nhaCungCapDangChonId.Value;
+            if (MessageBox.Show(
+                    $"Xóa vĩnh viễn nhà cung cấp NCC{nhaCungCapId:000000} - {txtTenNhaCungCap.Text.Trim()}?",
+                    "Xác nhận xóa nhà cung cấp",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning) != DialogResult.Yes) return;
+
+            try
+            {
+                using (var db = DatabaseConnection.CreateContext())
+                {
+                    var nhaCungCap = db.NhaCungCaps.SingleOrDefault(ncc => ncc.NhaCungCapId == nhaCungCapId);
+                    if (nhaCungCap == null)
+                    {
+                        TaiDanhSach();
+                        LamMoiBieuMau();
+                        HienThiLoi("Nhà cung cấp không còn tồn tại trong CSDL.");
+                        return;
+                    }
+
+                    if (db.PhieuNhaps.Any(pn => pn.NhaCungCapId == nhaCungCapId))
+                    {
+                        TaiDanhSach(nhaCungCapId);
+                        HienThiLoi("Nhà cung cấp đã có phiếu nhập; hãy dùng Ngừng hoạt động.");
+                        return;
+                    }
+
+                    db.NhaCungCaps.Remove(nhaCungCap);
+                    db.SaveChanges();
+                }
+
+                TaiDanhSach();
+                LamMoiBieuMau();
+                MessageBox.Show("Đã xóa nhà cung cấp.", "Thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (DbUpdateException)
+            {
+                TaiDanhSach(nhaCungCapId);
+                HienThiLoi("Nhà cung cấp vừa phát sinh phiếu nhập; không thể xóa.");
+            }
+            catch (Exception)
+            {
+                HienThiLoi("Không thể xóa nhà cung cấp. Hãy kiểm tra kết nối CSDL.");
             }
         }
 
@@ -374,7 +411,8 @@ namespace FINAL_DotNet
                 txtEmail.Clear();
                 txtDiaChi.Clear();
                 chkDangHoatDong.Checked = true;
-                btnXoaHoacTrangThai.Text = "Xóa nhà cung cấp";
+                btnXoaHoacTrangThai.Text = "Ngừng hoạt động";
+                btnXoaNhaCungCap.Enabled = false;
                 lblThongBao.Text = string.Empty;
                 dgvNhaCungCap.ClearSelection();
             }

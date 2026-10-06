@@ -27,6 +27,7 @@ FINAL_DotNet/
 │   ├── 04_MigrateLegacyToV2.sql   # Script chuyển đổi dữ liệu từ phiên bản nguyên mẫu cũ lên V2
 │   ├── 05_CompleteSampleDataAfterMigration.sql # Script hoàn thiện dữ liệu mẫu phát sinh sau migration
 │   ├── 06_AddMaPhieuNguonThuMua.sql # Script bổ sung trường mã phiếu nguồn cho nghiệp vụ thu mua
+│   ├── 07_PrepareDeleteDemo.sql      # Tạo lại bản ghi độc lập để demo bấm nút Xóa
 │   └── README.md                  # Hướng dẫn quy trình cài đặt và thứ tự thực thi script SQL
 │
 ├── docs/                          # Hệ thống tài liệu kỹ thuật và bàn giao chuyên sâu
