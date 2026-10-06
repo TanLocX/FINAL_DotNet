@@ -12,6 +12,7 @@ namespace FINAL_DotNet
     {
         private ThongTinMayChuSaoLuu thongTinMayChu;
         private bool dangXuLy;
+        private BanSaoLuuHienThi banSaoPhucHoiDangChon;
 
         public FrmSaoLuuPhucHoi()
         {
@@ -22,6 +23,7 @@ namespace FINAL_DotNet
                 return;
             }
             LuxuryDarkGoldTheme.Apply(this);
+            txtDuongDanPhucHoi.TextChanged += (sender, args) => banSaoPhucHoiDangChon = null;
         }
 
         private async void FrmSaoLuuPhucHoi_Load(object sender, EventArgs e)
@@ -124,12 +126,13 @@ namespace FINAL_DotNet
 
         private void HienThiLichSu(List<BanSaoLuuHienThi> danhSach)
         {
+            banSaoPhucHoiDangChon = null;
             dgvLichSu.DataSource = danhSach;
             lblSoBanSao.Text = danhSach.Count + " bản sao gần nhất";
             if (danhSach != null && danhSach.Count > 0)
             {
                 dgvLichSu.Rows[0].Selected = true;
-                txtDuongDanPhucHoi.Text = danhSach[0].DuongDan;
+                ChonBanSaoPhucHoi(danhSach[0]);
             }
             else
             {
@@ -204,6 +207,7 @@ namespace FINAL_DotNet
                 }
                 if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
+                    banSaoPhucHoiDangChon = null;
                     txtDuongDanPhucHoi.Text = dialog.FileName;
                 }
             }
@@ -211,6 +215,7 @@ namespace FINAL_DotNet
 
         private async void btnXoaBanSao_Click(object sender, EventArgs e)
         {
+            if (!KiemTraQuyenQuanTri() || dangXuLy) return;
             var item = dgvLichSu.CurrentRow?.DataBoundItem as BanSaoLuuHienThi;
             if (item == null || string.IsNullOrWhiteSpace(item.DuongDan))
             {
@@ -260,10 +265,17 @@ namespace FINAL_DotNet
                 string duongDan = await Task.Run(() => SaoLuuPhucHoiService.TaoSaoLuu(thuMuc, tenFile, nenDuLieu, progress.Report));
                 prgTienTrinh.Value = 100;
                 lblTienTrinh.Text = "Sao lưu thành công: " + duongDan;
-                MessageBox.Show("Đã sao lưu và xác minh file:\n" + duongDan + (nenDuLieu ? "\n\n(Đã nén COMPRESSION - tiết kiệm dung lượng)" : ""),
+                MessageBox.Show("Đã sao lưu và xác minh file:\n" + duongDan,
                     "Sao lưu thành công", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 txtTenFileSaoLuu.Text = SaoLuuPhucHoiService.TaoTenFileSaoLuu();
-                HienThiLichSu(await Task.Run(() => SaoLuuPhucHoiService.LayLichSuSaoLuu()));
+                try
+                {
+                    HienThiLichSu(await Task.Run(() => SaoLuuPhucHoiService.LayLichSuSaoLuu()));
+                }
+                catch (Exception ex)
+                {
+                    lblTienTrinh.Text = "Sao lưu thành công; không tải được lịch sử msdb: " + LayThongBaoLoi(ex);
+                }
             }
             catch (Exception ex)
             {
@@ -284,6 +296,7 @@ namespace FINAL_DotNet
             string duongDan = txtDuongDanPhucHoi.Text.Trim();
             string thuMucAnToan = txtThuMucSaoLuu.Text.Trim();
             bool nenDuLieu = chkNenBanSao.Checked;
+            int? viTriBanSao = banSaoPhucHoiDangChon?.ViTriBanSao;
             if (string.IsNullOrWhiteSpace(duongDan) || string.IsNullOrWhiteSpace(thuMucAnToan))
             {
                 MessageBox.Show("Hãy chọn file .bak từ lịch sử và nhập thư mục tạo bản sao an toàn.",
@@ -297,7 +310,8 @@ namespace FINAL_DotNet
             DatTrangThaiXuLy(true, "Đang chuẩn bị phục hồi...");
             try
             {
-                string banSaoAnToan = await Task.Run(() => SaoLuuPhucHoiService.PhucHoi(duongDan, thuMucAnToan, nenDuLieu, progress.Report));
+                string banSaoAnToan = await Task.Run(() => SaoLuuPhucHoiService.PhucHoi(
+                    duongDan, thuMucAnToan, nenDuLieu, progress.Report, viTriBanSao));
                 prgTienTrinh.Value = 100;
                 MessageBox.Show("Phục hồi CSDL thành công.\n\nBản sao trước phục hồi:\n" + banSaoAnToan +
                                 "\n\nỨng dụng sẽ khởi động lại để nạp dữ liệu và phiên đăng nhập mới.",
@@ -361,7 +375,7 @@ namespace FINAL_DotNet
             var item = dgvLichSu.CurrentRow?.DataBoundItem as BanSaoLuuHienThi;
             if (item != null && !string.IsNullOrWhiteSpace(item.DuongDan))
             {
-                txtDuongDanPhucHoi.Text = item.DuongDan;
+                ChonBanSaoPhucHoi(item);
             }
         }
 
@@ -371,8 +385,15 @@ namespace FINAL_DotNet
             var item = dgvLichSu.Rows[e.RowIndex].DataBoundItem as BanSaoLuuHienThi;
             if (item != null && !string.IsNullOrWhiteSpace(item.DuongDan))
             {
-                txtDuongDanPhucHoi.Text = item.DuongDan;
+                ChonBanSaoPhucHoi(item);
             }
+        }
+
+        private void ChonBanSaoPhucHoi(BanSaoLuuHienThi banSao)
+        {
+            txtDuongDanPhucHoi.Text = banSao.DuongDan;
+            // TextChanged clears a manual path edit; assign after updating the textbox.
+            banSaoPhucHoiDangChon = banSao;
         }
 
         private async void btnTaiLai_Click(object sender, EventArgs e) => await TaiThongTinVaLichSu();

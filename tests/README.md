@@ -1,4 +1,6 @@
-# Kiểm thử mã tự tăng
+# Kiểm thử tích hợp
+
+## Mã tự tăng
 
 Chạy tại thư mục gốc repository trong Developer PowerShell của Visual Studio,
 sau khi các package NuGet của ứng dụng đã được khôi phục:
@@ -26,3 +28,33 @@ hết, `TRUNCATE`, bản ghi ngừng hoạt động, ID `BIGINT`, rollback, INSE
 ràng buộc, lưu nhiều chi tiết trong giao dịch cùng bảng khóa ghép, lưu async
 và bốn kết nối thêm đồng thời. Chương trình trả mã thoát 0 khi tất cả kiểm tra
 thành công, mã 1 khi có lỗi.
+
+## Sao lưu và phục hồi
+
+Chạy tại thư mục gốc repository trong Developer PowerShell:
+
+```powershell
+$testOutput = Join-Path (Get-Location).Path 'tests\bin\Debug\'
+MSBuild.exe tests\BackupRestoreTests.csproj /t:Build /p:Configuration=Debug "/p:OutDir=$testOutput" /v:minimal /nologo
+if ($LASTEXITCODE -ne 0) { throw 'Build kiểm thử thất bại.' }
+& (Join-Path $testOutput 'BackupRestoreTests.exe')
+if ($LASTEXITCODE -ne 0) { throw 'Kiểm thử thất bại.' }
+```
+
+Mặc định dùng `(localdb)\MSSQLLocalDB` với Windows Authentication. Có thể
+truyền instance khác làm đối số đầu tiên. Máy SQL cần truy cập được thư mục
+output trên máy chạy kiểm thử; tài khoản chạy cần quyền tạo/xóa database,
+backup/restore và dọn lịch sử backup trong `msdb`.
+
+Bộ kiểm thử chỉ đổi cấu hình kết nối trong tiến trình kiểm thử và tạo CSDL
+`PNJ_BackupRestoreTests_<GUID>` riêng. File `.bak` nằm trong thư mục GUID mới
+dưới `tests/bin/Debug/backup-output`. Khi kết thúc, dọn database, lịch sử của
+database thử và các file do bộ kiểm thử tạo; không dùng CSDL nghiệp vụ.
+
+Các trường hợp gồm thông tin máy chủ và lịch sử, sao lưu với `COPY_ONLY` và
+`CHECKSUM`, dữ liệu phục hồi và bản sao an toàn trước phục hồi, fallback khi
+không hỗ trợ nén kể cả với báo tiến trình, file cũ bị khóa ghi, file không tồn
+tại, file giả/hỏng hoặc bị cắt mất dữ liệu dù header vẫn đọc được, bản sao của
+CSDL khác, mất file sau khi xác minh, khôi phục `MULTI_USER` khi lỗi và chọn
+đúng phiên bản lịch sử trong một file chứa nhiều bản sao. Đường dẫn sai và CSDL
+hệ thống phải bị từ chối trước khi thao tác dữ liệu.

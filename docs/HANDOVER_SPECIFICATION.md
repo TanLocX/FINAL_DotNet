@@ -323,13 +323,17 @@ erDiagram
 ### 6.2. Động cơ Sao lưu & Phục hồi CSDL Tự thích ứng (Adaptive Backup/Restore)
 - **Tệp mã nguồn:** `SaoLuuPhucHoiService.cs`, `FrmSaoLuuPhucHoi.cs`.
 - **Cơ chế Sao lưu (Backup Engine):**
-  - Thực thi lệnh T-SQL `BACKUP DATABASE [QL_CuaHangDaQuy_PNJ] TO DISK = @path WITH FORMAT, COPY_ONLY, CHECKSUM, STATS = 10`.
-  - **Cơ chế Fallback Tự thích ứng:** Mặc định hệ thống sử dụng tùy chọn `COMPRESSION`. Nếu chạy trên các bản SQL Server Express hoặc LocalDB không hỗ trợ nén (mã lỗi SQL 1844), hệ thống tự động bẫy lỗi và chuyển sang chế độ `NO_COMPRESSION` mượt mà, không làm văng ứng dụng.
-  - Tự động tạo thư mục sao lưu chuẩn `C:\PNJ_Backups` nếu đường dẫn chưa tồn tại.
+  - Thực thi lệnh T-SQL `BACKUP DATABASE [...] TO DISK = @path WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5`. Tên CSDL lấy từ cấu hình kết nối; tham số đường dẫn được truyền bằng `SqlParameter`.
+  - **Cơ chế Fallback Tự thích ứng:** Khi chọn nén, hệ thống dùng `COMPRESSION`. Nếu SQL Server trả mã lỗi 1844, thử lại với `NO_COMPRESSION`. Thông báo tiến trình `InfoMessage` vẫn được nhận, còn lỗi SQL vẫn phải ném exception; không coi việc xác minh bản sao cũ là thành công của lần sao lưu mới bị lỗi.
+  - Đọc `RESTORE HEADERONLY` và chạy `RESTORE VERIFYONLY ... WITH FILE = @position, CHECKSUM` sau khi sao lưu. `NOINIT` giữ các bản sao cũ nếu dùng lại cùng tên file.
+  - Kiểm tra đường dẫn đầy đủ và tên file trước khi tạo thư mục. Đường dẫn thuộc máy chủ SQL; thư mục mặc định lấy từ SQL Server hoặc dùng `C:\PNJ_Backups` khi chưa xác định được.
 - **Cơ chế Phục hồi (Restore Engine):**
+  - Xác minh bản sao đầy đủ thuộc đúng CSDL trước khi thay đổi dữ liệu. Chọn một dòng lịch sử sẽ phục hồi đúng vị trí bản sao của dòng đó; chọn file thủ công sẽ dùng bản sao đầy đủ mới nhất của CSDL trong file.
+  - Tạo và xác minh bản sao `TruocPhucHoi_...bak` chứa dữ liệu hiện tại trước khi ngắt kết nối.
   - Chuyển CSDL sang chế độ độc quyền: `ALTER DATABASE [QL_CuaHangDaQuy_PNJ] SET SINGLE_USER WITH ROLLBACK IMMEDIATE`.
-  - Thực thi lệnh `RESTORE DATABASE [QL_CuaHangDaQuy_PNJ] FROM DISK = @path WITH REPLACE`.
-  - Khôi phục chế độ đa kết nối: `ALTER DATABASE [QL_CuaHangDaQuy_PNJ] SET MULTI_USER`.
+  - Thực thi lệnh `RESTORE DATABASE [...] FROM DISK = @path WITH FILE = @position, REPLACE, RECOVERY, CHECKSUM, STATS = 5` từ kết nối `master` ngoài transaction.
+  - Khôi phục chế độ đa kết nối: `ALTER DATABASE [...] SET MULTI_USER`; khi lỗi vẫn thử chuyển lại `MULTI_USER WITH ROLLBACK IMMEDIATE` và trả lỗi gốc cho người dùng. Thành công thì khởi động lại ứng dụng để nạp dữ liệu và phiên đăng nhập mới.
+- **Kiểm thử:** `tests/BackupRestoreTests.csproj` kiểm tra thao tác thực tế trên CSDL tạm, gồm fallback nén, dữ liệu trước/sau phục hồi, file hỏng, lỗi giữa chừng và chọn bản sao trong file có nhiều phiên bản. Xem cách chạy tại `tests/README.md`.
 
 ### 6.3. Hệ thống Nhận diện & Sinh mã QR/Barcode (QR Engine)
 - **Tệp mã nguồn:** `QrCodeService.cs`.

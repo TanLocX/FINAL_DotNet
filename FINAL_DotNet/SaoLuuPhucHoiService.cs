@@ -22,6 +22,7 @@ namespace FINAL_DotNet
     internal sealed class BanSaoLuuHienThi
     {
         public int BackupSetId { get; set; }
+        public int ViTriBanSao { get; set; }
         public DateTime BatDau { get; set; }
         public DateTime? HoanTat { get; set; }
         public decimal KichThuocMb { get; set; }
@@ -44,6 +45,7 @@ namespace FINAL_DotNet
     internal sealed class BanSaoLuuLichSuDto
     {
         public int backup_set_id { get; set; }
+        public int ViTriBanSao { get; set; }
         public DateTime backup_start_date { get; set; }
         public DateTime? backup_finish_date { get; set; }
         public decimal KichThuocMb { get; set; }
@@ -111,6 +113,7 @@ SELECT
                 const string sql = @"
 SELECT TOP (@SoLuong)
     bs.backup_set_id,
+    CONVERT(int, bs.position) AS ViTriBanSao,
     bs.backup_start_date,
     bs.backup_finish_date,
     CONVERT(decimal(18,2), COALESCE(NULLIF(bs.compressed_backup_size, 0), bs.backup_size) / 1048576.0) AS KichThuocMb,
@@ -137,6 +140,7 @@ ORDER BY bs.backup_finish_date DESC, bs.backup_set_id DESC;";
                 return dtoList.Select(item => new BanSaoLuuHienThi
                 {
                     BackupSetId = item.backup_set_id,
+                    ViTriBanSao = item.ViTriBanSao,
                     BatDau = item.backup_start_date,
                     HoanTat = item.backup_finish_date,
                     KichThuocMb = item.KichThuocMb,
@@ -156,6 +160,7 @@ ORDER BY bs.backup_finish_date DESC, bs.backup_set_id DESC;";
 
         public static string TaoSaoLuu(string thuMucTrenMayChu, string tenFile, bool nenDuLieu = true, Action<string> baoTienTrinh = null)
         {
+            string duongDan = KetHopDuongDan(thuMucTrenMayChu, tenFile);
             if (!string.IsNullOrWhiteSpace(thuMucTrenMayChu))
             {
                 try
@@ -170,19 +175,19 @@ ORDER BY bs.backup_finish_date DESC, bs.backup_set_id DESC;";
                     // Ignore if remote server or restricted
                 }
             }
-            string duongDan = KetHopDuongDan(thuMucTrenMayChu, tenFile);
             TaoSaoLuuTaiDuongDan(duongDan, nenDuLieu, baoTienTrinh);
             return duongDan;
         }
 
-        public static string PhucHoi(string duongDanBanSao, string thuMucSaoLuuAnToan, bool nenDuLieuAnToan = true, Action<string> baoTienTrinh = null)
+        public static string PhucHoi(string duongDanBanSao, string thuMucSaoLuuAnToan,
+            bool nenDuLieuAnToan = true, Action<string> baoTienTrinh = null, int? viTriBanSaoDuocChon = null)
         {
             KiemTraDuongDanDayDu(duongDanBanSao, "Đường dẫn bản sao phục hồi");
             KiemTraDuongDanDayDu(thuMucSaoLuuAnToan, "Thư mục sao lưu an toàn");
             string tenCoSoDuLieu = LayTenCoSoDuLieu();
 
             baoTienTrinh?.Invoke("Đang đọc và xác minh bản sao được chọn...");
-            int viTriBanSao = DocVaKiemTraBanSao(duongDanBanSao, tenCoSoDuLieu);
+            int viTriBanSao = DocVaKiemTraBanSao(duongDanBanSao, tenCoSoDuLieu, viTriBanSaoDuocChon);
             XacMinhBanSao(duongDanBanSao, viTriBanSao);
 
             string duongDanAnToan = TaoSaoLuu(thuMucSaoLuuAnToan,
@@ -271,7 +276,7 @@ WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5" + tuyChonNen + @", NAME = @pTenBanS
                         new SqlParameter("@pMoTa", "Bản sao copy-only được tạo bởi PNJ Manager"));
                 }
             }
-            catch (Exception ex) when (nenDuLieu && (ex.Message.IndexOf("COMPRESSION", StringComparison.OrdinalIgnoreCase) >= 0 || (ex.InnerException != null && ex.InnerException.Message.IndexOf("COMPRESSION", StringComparison.OrdinalIgnoreCase) >= 0)))
+            catch (Exception ex) when (nenDuLieu && LaLoiKhongHoTroNen(ex))
             {
                 baoTienTrinh?.Invoke("Phiên bản SQL Server không hỗ trợ COMPRESSION, tự động lưu với NO_COMPRESSION...");
                 using (var db = DatabaseConnection.CreateContext())
@@ -299,7 +304,18 @@ WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5, NO_COMPRESSION, NAME = @pTenBanSao,
             baoTienTrinh?.Invoke("Sao lưu và xác minh hoàn tất.");
         }
 
-        private static int DocVaKiemTraBanSao(string duongDan, string tenCoSoDuLieu)
+        private static bool LaLoiKhongHoTroNen(Exception exception)
+        {
+            for (Exception current = exception; current != null; current = current.InnerException)
+            {
+                var sqlException = current as SqlException;
+                if (sqlException != null && sqlException.Errors.Cast<SqlError>().Any(error => error.Number == 1844))
+                    return true;
+            }
+            return false;
+        }
+
+        private static int DocVaKiemTraBanSao(string duongDan, string tenCoSoDuLieu, int? viTriDuocChon = null)
         {
             using (var db = DatabaseConnection.CreateContext("master"))
             {
@@ -312,14 +328,18 @@ WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5, NO_COMPRESSION, NAME = @pTenBanSao,
                 int viTriHopLe = 0;
                 foreach (var row in rows)
                 {
-                    if (row.BackupType == 1 && string.Equals(row.DatabaseName, tenCoSoDuLieu, StringComparison.OrdinalIgnoreCase))
+                    if (row.BackupType == 1 &&
+                        string.Equals(row.DatabaseName, tenCoSoDuLieu, StringComparison.OrdinalIgnoreCase) &&
+                        (!viTriDuocChon.HasValue || row.Position == viTriDuocChon.Value))
                     {
-                        viTriHopLe = row.Position.GetValueOrDefault(1);
+                        viTriHopLe = Math.Max(viTriHopLe, row.Position.GetValueOrDefault(1));
                     }
                 }
 
                 if (viTriHopLe == 0)
-                    throw new InvalidOperationException("File .bak không chứa bản sao đầy đủ của CSDL " + tenCoSoDuLieu + ".");
+                    throw new InvalidOperationException(viTriDuocChon.HasValue
+                        ? "Bản sao đã chọn không còn trong file .bak hoặc không thuộc CSDL " + tenCoSoDuLieu + "."
+                        : "File .bak không chứa bản sao đầy đủ của CSDL " + tenCoSoDuLieu + ".");
                 return viTriHopLe;
             }
         }
@@ -331,7 +351,7 @@ WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5, NO_COMPRESSION, NAME = @pTenBanSao,
                 db.Database.CommandTimeout = ThoiGianChoLenhGiay;
                 db.Database.ExecuteSqlCommand(
                     TransactionalBehavior.DoNotEnsureTransaction,
-                    "RESTORE VERIFYONLY FROM DISK = @pDuongDan WITH FILE = @pViTri;",
+                    "RESTORE VERIFYONLY FROM DISK = @pDuongDan WITH FILE = @pViTri, CHECKSUM;",
                     new SqlParameter("@pDuongDan", duongDan.Trim()),
                     new SqlParameter("@pViTri", viTri));
             }
@@ -362,7 +382,9 @@ WITH COPY_ONLY, NOINIT, CHECKSUM, STATS = 5, NO_COMPRESSION, NAME = @pTenBanSao,
             var connection = db.Database.Connection as SqlConnection;
             if (connection == null) return;
 
-            connection.FireInfoMessageEventOnUserErrors = true;
+            // STATS messages still use InfoMessage. SQL errors must remain exceptions,
+            // otherwise a failed BACKUP/RESTORE can be reported as successful.
+            connection.FireInfoMessageEventOnUserErrors = false;
             connection.InfoMessage += (sender, args) =>
             {
                 string message = args.Message?.Trim();
