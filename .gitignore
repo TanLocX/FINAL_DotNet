@@ -2,6 +2,7 @@
 bin/
 obj/
 .vs/
+Database/.local-backups/
 *.user
 *.suo
 *.cache

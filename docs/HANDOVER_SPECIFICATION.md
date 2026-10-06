@@ -177,6 +177,7 @@ Hệ thống thiết lập 2 vai trò chuẩn:
 - **Dịch vụ hỗ trợ:** `ImageOptimizationHelper.cs`, `QrCodeService.cs`.
 - **Chức năng chính:**
   - Quản lý thông tin chi tiết: Tên trang sức, Danh mục, Giá vốn, Giá bán, Tồn kho, Mã vạch.
+  - Chỉ quản trị viên thấy hai nút riêng: **Xóa sản phẩm** và **Ngừng kinh doanh/Khôi phục**. Nút xóa hẳn chỉ bật khi sản phẩm chưa phát sinh giao dịch và tồn kho bằng 0; các sản phẩm khác vẫn có thể ngừng kinh doanh để giữ dữ liệu.
   - **Quản lý Định mức Chất liệu (Bill of Materials):** Mỗi món trang sức có thể bao gồm nhiều thành phần kim hoàn (Ví dụ: 1 chiếc nhẫn gồm 3.75g Vàng 18K và 0.5 carat Kim Cương). Hệ thống cho phép thêm/xóa/sửa trọng lượng từng chất liệu cấu thành.
   - **Hệ thống Nạp ảnh Đa kênh Chuẩn hóa:**
     1. Chọn tệp từ hộp thoại ("Chọn..."): Nhận mọi định dạng ảnh, tự nén Bicubic về 500x500 px.

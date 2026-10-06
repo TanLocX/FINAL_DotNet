@@ -19,6 +19,8 @@ Nếu database đang dùng schema cũ có khóa `MaNhanVien`, `MaSanPham` dạng
 
 Các script tạo/seed sẽ dừng nếu phát hiện bảng hoặc dữ liệu hiện có. Chúng không tự động xóa hay ghi đè CSDL cũ.
 
+Trong CSDL tạo mới từ dữ liệu mẫu, `SP000009` (Vòng tay bạc 925 trơn) có tồn kho bằng 0 và không được liên kết với hóa đơn, phiếu nhập hoặc phiếu thu mua. Admin có thể chọn sản phẩm này để thử nút **Xóa sản phẩm**. Việc sửa script không thay đổi CSDL đã seed trước đó.
+
 ## Tài khoản demo
 
 Khi tạo database mới bằng `01_CreateDatabase.sql` và `02_SeedData.sql`:

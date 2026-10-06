@@ -61,6 +61,9 @@ namespace FINAL_DotNet
                 return;
             }
 
+            bool laQuanTriVien = CurrentUserSession.HienTai.LaQuanTriVien;
+            btnXoaHoacTrangThai.Visible = laQuanTriVien;
+            btnXoaSanPham.Visible = laQuanTriVien;
             dangLamMoiBieuMau = true;
             try
             {
@@ -302,9 +305,11 @@ namespace FINAL_DotNet
                 numSoLuongTon.Value = GioiHan(numSoLuongTon, item.SoLuongTon);
                 txtDuongDanAnh.Text = item.DuongDanAnh ?? string.Empty;
                 chkDangKinhDoanh.Checked = item.DangKinhDoanh;
-                btnXoaHoacTrangThai.Text = item.DangKinhDoanh
-                    ? (item.CoPhatSinh ? "Ngừng kinh doanh" : "Xóa sản phẩm")
-                    : "Khôi phục";
+                bool laQuanTriVien = CurrentUserSession.DaDangNhap &&
+                    CurrentUserSession.HienTai.LaQuanTriVien;
+                btnXoaHoacTrangThai.Text = item.DangKinhDoanh ? "Ngừng kinh doanh" : "Khôi phục";
+                btnXoaHoacTrangThai.Enabled = laQuanTriVien;
+                btnXoaSanPham.Enabled = laQuanTriVien && !item.CoPhatSinh && item.SoLuongTon == 0;
 
                 thanhPhanDangNhap.Clear();
                 thanhPhanDangNhap.AddRange(item.ThanhPhan.Select(tp => tp.SaoChep()));
@@ -313,7 +318,9 @@ namespace FINAL_DotNet
                 HienThiAnh(item.DuongDanAnh);
                 HienThiMaQr(item.MaSanPham);
                 tabBieuMau.SelectedTab = tabThongTin;
-                lblThongBao.Text = string.Empty;
+                lblThongBao.Text = btnXoaSanPham.Visible && !btnXoaSanPham.Enabled
+                    ? "Chỉ xóa hẳn khi tồn kho bằng 0 và chưa có giao dịch."
+                    : string.Empty;
             }
             finally
             {
@@ -455,7 +462,23 @@ namespace FINAL_DotNet
 
         private void btnXoaHoacTrangThai_Click(object sender, EventArgs e)
         {
-            if (!KiemTraPhienDangNhap(true) || !sanPhamDangChonId.HasValue)
+            XuLySanPham(false);
+        }
+
+        private void btnXoaSanPham_Click(object sender, EventArgs e)
+        {
+            XuLySanPham(true);
+        }
+
+        private void XuLySanPham(bool xoaHan)
+        {
+            if (!KiemTraPhienDangNhap(true)) return;
+            if (!CurrentUserSession.HienTai.LaQuanTriVien)
+            {
+                HienThiLoi("Chỉ quản trị viên được xóa hoặc thay đổi trạng thái sản phẩm.");
+                return;
+            }
+            if (!sanPhamDangChonId.HasValue)
             {
                 HienThiLoi("Vui lòng chọn sản phẩm cần xử lý.");
                 return;
@@ -475,14 +498,25 @@ namespace FINAL_DotNet
                     bool coPhatSinh = db.ChiTietHoaDons.Any(ct => ct.SanPhamId == id)
                         || db.ChiTietPhieuNhaps.Any(ct => ct.SanPhamId == id)
                         || db.ChiTietPhieuThuMuas.Any(ct => ct.SanPhamId == id);
-                    string hanhDong = !sanPham.DangKinhDoanh ? "khôi phục"
-                        : coPhatSinh ? "ngừng kinh doanh" : "xóa";
+                    if (xoaHan && (coPhatSinh || sanPham.SoLuongTon != 0))
+                    {
+                        HienThiLoi("Chỉ có thể xóa hẳn sản phẩm chưa phát sinh giao dịch và có tồn kho bằng 0.");
+                        return;
+                    }
+
+                    string hanhDong = xoaHan ? "xóa hẳn"
+                        : sanPham.DangKinhDoanh ? "ngừng kinh doanh" : "khôi phục";
                     if (MessageBox.Show(
                         $"Bạn có chắc muốn {hanhDong} sản phẩm {sanPham.TenSanPham}?",
                         "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                         return;
 
-                    if (!sanPham.DangKinhDoanh)
+                    if (xoaHan)
+                    {
+                        db.ChiTietChatLieux.RemoveRange(db.ChiTietChatLieux.Where(ct => ct.SanPhamId == id));
+                        db.SanPhams.Remove(sanPham);
+                    }
+                    else if (!sanPham.DangKinhDoanh)
                     {
                         bool danhMucHoatDong = db.DanhMucs.Any(dm => dm.DanhMucId == sanPham.DanhMucId && dm.DangHoatDong);
                         if (!danhMucHoatDong)
@@ -492,14 +526,9 @@ namespace FINAL_DotNet
                         }
                         sanPham.DangKinhDoanh = true;
                     }
-                    else if (coPhatSinh)
-                    {
-                        sanPham.DangKinhDoanh = false;
-                    }
                     else
                     {
-                        db.ChiTietChatLieux.RemoveRange(db.ChiTietChatLieux.Where(ct => ct.SanPhamId == id));
-                        db.SanPhams.Remove(sanPham);
+                        sanPham.DangKinhDoanh = false;
                     }
                     db.SaveChanges();
                     transaction.Commit();
@@ -509,11 +538,11 @@ namespace FINAL_DotNet
             }
             catch (DbUpdateException)
             {
-                HienThiLoi("Sản phẩm đã phát sinh tham chiếu và không thể xóa. Hãy tải lại rồi ngừng kinh doanh.");
+                HienThiLoi("Không thể xóa hoặc thay đổi trạng thái sản phẩm vì dữ liệu đã thay đổi. Hãy tải lại danh sách.");
             }
             catch (Exception)
             {
-                HienThiLoi("Không thể thay đổi trạng thái sản phẩm.");
+                HienThiLoi("Không thể xử lý sản phẩm.");
             }
         }
 
@@ -606,7 +635,9 @@ namespace FINAL_DotNet
             numSoLuongTon.Value = 0;
             txtDuongDanAnh.Clear();
             chkDangKinhDoanh.Checked = true;
-            btnXoaHoacTrangThai.Text = "Xóa sản phẩm";
+            btnXoaHoacTrangThai.Text = "Ngừng kinh doanh";
+            btnXoaHoacTrangThai.Enabled = false;
+            btnXoaSanPham.Enabled = false;
             thanhPhanDangNhap.Clear();
             TaiLuoiThanhPhan();
             LamMoiNhapThanhPhan();

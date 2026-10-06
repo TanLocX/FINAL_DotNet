@@ -139,7 +139,7 @@ BEGIN TRY
             (N'Nhẫn', N'Nhẫn emerald vàng 18K', 22000000.00, 31500000.00, 5, N'Resources\nhan_emerald_vang_18k.png', 1),
             (N'Nhẫn', N'Nhẫn kim cương 18K', 30000000.00, 45000000.00, 4, N'Resources\nhan_kim_cuong_18k.png', 1),
             (N'Nhẫn', N'Nhẫn vàng 24K trơn', 10500000.00, 13000000.00, 10, N'Resources\nhan_vang_24k_tron.png', 1),
-            (N'Vòng tay', N'Vòng tay bạc 925 trơn', 1400000.00, 2500000.00, 12, N'Resources\vong_tay_bac_925_tron.png', 1),
+            (N'Vòng tay', N'Vòng tay bạc 925 trơn', 1400000.00, 2500000.00, 0, N'Resources\vong_tay_bac_925_tron.png', 1),
             (N'Vòng tay', N'Vòng tay vàng 24K', 25000000.00, 32500000.00, 6, N'Resources\vong_tay_vang_24k.png', 1)
     ) AS seed(TenDanhMuc, TenSanPham, GiaVon, GiaBan, SoLuongTon, DuongDanAnh, DangKinhDoanh)
     JOIN dbo.DanhMuc dm ON dm.TenDanhMuc = seed.TenDanhMuc;
@@ -193,14 +193,12 @@ BEGIN TRY
     (
         VALUES
             (CONVERT(DATETIME2, '2026-05-05T09:00:00'), N'Dây chuyền bạc 925', 1, 2200000.00, CONVERT(DATE, '2027-05-05')),
-            (CONVERT(DATETIME2, '2026-05-05T09:00:00'), N'Vòng tay bạc 925 trơn', 1, 2500000.00, CONVERT(DATE, '2027-05-05')),
             (CONVERT(DATETIME2, '2026-05-12T10:30:00'), N'Nhẫn vàng 24K trơn', 1, 13000000.00, CONVERT(DATE, '2027-05-12')),
             (CONVERT(DATETIME2, '2026-05-12T10:30:00'), N'Lắc chân vàng 14K', 1, 8500000.00, CONVERT(DATE, '2027-05-12')),
             (CONVERT(DATETIME2, '2026-05-20T14:15:00'), N'Nhẫn kim cương 18K', 1, 45000000.00, CONVERT(DATE, '2028-05-20')),
             (CONVERT(DATETIME2, '2026-05-20T14:15:00'), N'Bông tai kim cương bạch kim', 1, 49000000.00, CONVERT(DATE, '2028-05-20')),
             (CONVERT(DATETIME2, '2026-06-03T16:20:00'), N'Bông tai ruby vàng 18K', 1, 25000000.00, CONVERT(DATE, '2027-06-03')),
             (CONVERT(DATETIME2, '2026-06-03T16:20:00'), N'Dây chuyền bạc 925', 2, 2200000.00, CONVERT(DATE, '2027-06-03')),
-            (CONVERT(DATETIME2, '2026-06-15T11:10:00'), N'Vòng tay bạc 925 trơn', 2, 2500000.00, CONVERT(DATE, '2027-06-15')),
             (CONVERT(DATETIME2, '2026-06-15T11:10:00'), N'Lắc chân vàng 14K', 1, 8500000.00, CONVERT(DATE, '2027-06-15')),
             (CONVERT(DATETIME2, '2026-07-01T13:40:00'), N'Dây chuyền sapphire bạch kim', 1, 59000000.00, CONVERT(DATE, '2028-07-01')),
             (CONVERT(DATETIME2, '2026-07-01T13:40:00'), N'Nhẫn emerald vàng 18K', 1, 31500000.00, CONVERT(DATE, '2028-07-01')),
@@ -251,7 +249,6 @@ BEGIN TRY
             (CONVERT(DATETIME2, '2026-04-08T09:15:00'), N'Bông tai ruby vàng 18K', 5, 17500000.00),
             (CONVERT(DATETIME2, '2026-04-08T09:15:00'), N'Nhẫn emerald vàng 18K', 4, 21500000.00),
             (CONVERT(DATETIME2, '2026-04-16T10:00:00'), N'Dây chuyền bạc 925', 12, 1150000.00),
-            (CONVERT(DATETIME2, '2026-04-16T10:00:00'), N'Vòng tay bạc 925 trơn', 10, 1350000.00),
             (CONVERT(DATETIME2, '2026-05-02T13:20:00'), N'Nhẫn kim cương 18K', 3, 29000000.00),
             (CONVERT(DATETIME2, '2026-05-02T13:20:00'), N'Bông tai kim cương bạch kim', 3, 34000000.00),
             (CONVERT(DATETIME2, '2026-05-18T14:45:00'), N'Dây chuyền sapphire bạch kim', 2, 41000000.00),
@@ -303,7 +300,7 @@ BEGIN TRY
         VALUES
             (CONVERT(DATETIME2, '2026-05-07T09:20:00'), N'Vàng 24K', N'Nhẫn vàng 24K trơn', N'Nhẫn vàng 24K cũ', 6.200, N'gram', 2000000.00),
             (CONVERT(DATETIME2, '2026-05-07T09:20:00'), N'Vàng 18K', NULL, N'Dây chuyền vàng 18K cũ', 9.500, N'gram', 1450000.00),
-            (CONVERT(DATETIME2, '2026-05-16T14:10:00'), N'Bạc 925', N'Vòng tay bạc 925 trơn', N'Vòng tay bạc cũ', 21.000, N'gram', 17000.00),
+            (CONVERT(DATETIME2, '2026-05-16T14:10:00'), N'Bạc 925', NULL, N'Vòng tay bạc cũ', 21.000, N'gram', 17000.00),
             (CONVERT(DATETIME2, '2026-05-28T10:35:00'), N'Vàng 18K', N'Nhẫn kim cương 18K', N'Nhẫn vàng 18K cũ', 4.100, N'gram', 1460000.00),
             (CONVERT(DATETIME2, '2026-05-28T10:35:00'), N'Kim cương', NULL, N'Viên kim cương tháo rời', 0.450, N'carat', 17500000.00),
             (CONVERT(DATETIME2, '2026-06-09T15:25:00'), N'Ruby', NULL, N'Viên ruby cũ', 0.900, N'carat', 8000000.00),

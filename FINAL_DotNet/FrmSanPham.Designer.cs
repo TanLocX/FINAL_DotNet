@@ -95,6 +95,7 @@ namespace FINAL_DotNet
             this.btnThem = new Guna.UI2.WinForms.Guna2Button();
             this.btnCapNhat = new Guna.UI2.WinForms.Guna2Button();
             this.btnXoaHoacTrangThai = new Guna.UI2.WinForms.Guna2Button();
+            this.btnXoaSanPham = new Guna.UI2.WinForms.Guna2Button();
             this.btnLamMoiBieuMau = new Guna.UI2.WinForms.Guna2Button();
             this.pnlBoLoc.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitChinh)).BeginInit();
@@ -1167,13 +1168,14 @@ namespace FINAL_DotNet
             this.pnlChan.Controls.Add(this.btnThem);
             this.pnlChan.Controls.Add(this.btnCapNhat);
             this.pnlChan.Controls.Add(this.btnXoaHoacTrangThai);
+            this.pnlChan.Controls.Add(this.btnXoaSanPham);
             this.pnlChan.Controls.Add(this.btnLamMoiBieuMau);
             this.pnlChan.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlChan.FillColor = System.Drawing.Color.White;
-            this.pnlChan.Location = new System.Drawing.Point(0, 592);
+            this.pnlChan.Location = new System.Drawing.Point(0, 564);
             this.pnlChan.Name = "pnlChan";
             this.pnlChan.Padding = new System.Windows.Forms.Padding(12);
-            this.pnlChan.Size = new System.Drawing.Size(1000, 58);
+            this.pnlChan.Size = new System.Drawing.Size(1000, 86);
             this.pnlChan.TabIndex = 2;
             // 
             // lblThongBao
@@ -1182,9 +1184,10 @@ namespace FINAL_DotNet
             this.lblThongBao.BackColor = System.Drawing.Color.Transparent;
             this.lblThongBao.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.lblThongBao.ForeColor = System.Drawing.Color.Crimson;
+            this.lblThongBao.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) | System.Windows.Forms.AnchorStyles.Right)));
             this.lblThongBao.Location = new System.Drawing.Point(14, 5);
             this.lblThongBao.Name = "lblThongBao";
-            this.lblThongBao.Size = new System.Drawing.Size(430, 46);
+            this.lblThongBao.Size = new System.Drawing.Size(972, 28);
             this.lblThongBao.TabIndex = 0;
             this.lblThongBao.Text = null;
             this.lblThongBao.TextAlignment = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1198,7 +1201,7 @@ namespace FINAL_DotNet
             this.btnThem.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(137)))), ((int)(((byte)(100)))), ((int)(((byte)(28)))));
             this.btnThem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnThem.ForeColor = System.Drawing.Color.White;
-            this.btnThem.Location = new System.Drawing.Point(458, 12);
+            this.btnThem.Location = new System.Drawing.Point(398, 42);
             this.btnThem.Name = "btnThem";
             this.btnThem.Size = new System.Drawing.Size(90, 34);
             this.btnThem.TabIndex = 1;
@@ -1214,7 +1217,7 @@ namespace FINAL_DotNet
             this.btnCapNhat.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(63)))), ((int)(((byte)(111)))), ((int)(((byte)(155)))));
             this.btnCapNhat.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnCapNhat.ForeColor = System.Drawing.Color.White;
-            this.btnCapNhat.Location = new System.Drawing.Point(556, 12);
+            this.btnCapNhat.Location = new System.Drawing.Point(496, 42);
             this.btnCapNhat.Name = "btnCapNhat";
             this.btnCapNhat.Size = new System.Drawing.Size(98, 34);
             this.btnCapNhat.TabIndex = 2;
@@ -1227,16 +1230,34 @@ namespace FINAL_DotNet
             this.btnXoaHoacTrangThai.Animated = true;
             this.btnXoaHoacTrangThai.BorderRadius = 6;
             this.btnXoaHoacTrangThai.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnXoaHoacTrangThai.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(178)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.btnXoaHoacTrangThai.Enabled = false;
+            this.btnXoaHoacTrangThai.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(137)))), ((int)(((byte)(100)))), ((int)(((byte)(28)))));
             this.btnXoaHoacTrangThai.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnXoaHoacTrangThai.ForeColor = System.Drawing.Color.White;
-            this.btnXoaHoacTrangThai.Location = new System.Drawing.Point(662, 12);
+            this.btnXoaHoacTrangThai.Location = new System.Drawing.Point(602, 42);
             this.btnXoaHoacTrangThai.Name = "btnXoaHoacTrangThai";
             this.btnXoaHoacTrangThai.Size = new System.Drawing.Size(150, 34);
             this.btnXoaHoacTrangThai.TabIndex = 3;
-            this.btnXoaHoacTrangThai.Text = "Xóa sản phẩm";
+            this.btnXoaHoacTrangThai.Text = "Ngừng kinh doanh";
             this.btnXoaHoacTrangThai.Click += new System.EventHandler(this.btnXoaHoacTrangThai_Click);
-            // 
+            //
+            // btnXoaSanPham
+            //
+            this.btnXoaSanPham.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnXoaSanPham.Animated = true;
+            this.btnXoaSanPham.BorderRadius = 6;
+            this.btnXoaSanPham.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnXoaSanPham.Enabled = false;
+            this.btnXoaSanPham.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(178)))), ((int)(((byte)(34)))), ((int)(((byte)(34)))));
+            this.btnXoaSanPham.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+            this.btnXoaSanPham.ForeColor = System.Drawing.Color.White;
+            this.btnXoaSanPham.Location = new System.Drawing.Point(760, 42);
+            this.btnXoaSanPham.Name = "btnXoaSanPham";
+            this.btnXoaSanPham.Size = new System.Drawing.Size(120, 34);
+            this.btnXoaSanPham.TabIndex = 4;
+            this.btnXoaSanPham.Text = "Xóa sản phẩm";
+            this.btnXoaSanPham.Click += new System.EventHandler(this.btnXoaSanPham_Click);
+            //
             // btnLamMoiBieuMau
             // 
             this.btnLamMoiBieuMau.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -1246,10 +1267,10 @@ namespace FINAL_DotNet
             this.btnLamMoiBieuMau.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(116)))), ((int)(((byte)(139)))));
             this.btnLamMoiBieuMau.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
             this.btnLamMoiBieuMau.ForeColor = System.Drawing.Color.White;
-            this.btnLamMoiBieuMau.Location = new System.Drawing.Point(820, 12);
+            this.btnLamMoiBieuMau.Location = new System.Drawing.Point(888, 42);
             this.btnLamMoiBieuMau.Name = "btnLamMoiBieuMau";
             this.btnLamMoiBieuMau.Size = new System.Drawing.Size(100, 34);
-            this.btnLamMoiBieuMau.TabIndex = 4;
+            this.btnLamMoiBieuMau.TabIndex = 5;
             this.btnLamMoiBieuMau.Text = "Nhập mới";
             this.btnLamMoiBieuMau.Click += new System.EventHandler(this.btnLamMoiBieuMau_Click);
             // 
@@ -1365,6 +1386,7 @@ namespace FINAL_DotNet
         private Guna.UI2.WinForms.Guna2Button btnThem;
         private Guna.UI2.WinForms.Guna2Button btnCapNhat;
         private Guna.UI2.WinForms.Guna2Button btnXoaHoacTrangThai;
+        private Guna.UI2.WinForms.Guna2Button btnXoaSanPham;
         private Guna.UI2.WinForms.Guna2Button btnLamMoiBieuMau;
     }
 }

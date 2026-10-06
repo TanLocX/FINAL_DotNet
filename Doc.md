@@ -127,10 +127,10 @@ Hệ thống gồm 17 bảng phân theo 5 nhóm nghiệp vụ rõ ràng:
 - Một món trang sức có thể gồm nhiều chất liệu: Vàng 18K (3.5g) và Kim cương (0.5 ct). Ngược lại, chất liệu Vàng 18K có mặt ở hàng trăm sản phẩm khác nhau.
 - Bảng trung gian `ChiTietChatLieu` lưu thêm hai thuộc tính bổ sung quan trọng: `TrongLuong` và `DonViTinh` (gram, chỉ, carat).
 
-#### Quyết định 3: Chiến lược Soft Delete (Xóa mềm) vs Hard Delete (Xóa cứng)
-- Trong các bảng danh mục (`SanPham`, `KhachHang`, `DanhMuc`, `ChatLieu`, `NhaCungCap`), nếu người dùng nhấn nút Xóa:
-  - **Trường hợp 1 (Xóa cứng):** Nếu bản ghi đó **chưa từng phát sinh giao dịch** (chưa từng xuất hiện trong hóa đơn, phiếu nhập, phiếu thu mua), hệ thống cho phép `db.SanPhams.Remove(...)` xóa vĩnh viễn khỏi CSDL.
-  - **Trường hợp 2 (Xóa mềm):** Nếu bản ghi đó **đã phát sinh lịch sử giao dịch**, CSDL có ràng buộc khóa ngoại (Foreign Key Constraint). Việc xóa cứng sẽ văng lỗi `DbUpdateException`. Hệ thống tự động chuyển sang cơ chế Xóa mềm bằng cách cập nhật cờ `DangKinhDoanh = false` hoặc `DangHoatDong = false`. Sản phẩm sẽ ẩn khỏi danh sách bán hàng nhưng dữ liệu báo cáo kế toán quá khứ vẫn bảo toàn 100%.
+#### Quyết định 3: Xóa sản phẩm và ngừng kinh doanh
+- Trong màn hình quản lý sản phẩm, Admin có hai thao tác riêng: **Xóa sản phẩm** và **Ngừng kinh doanh/Khôi phục**.
+- Chỉ cho phép xóa vĩnh viễn khi sản phẩm có tồn kho bằng 0 và không được tham chiếu trong chi tiết hóa đơn, phiếu nhập hoặc phiếu thu mua. Nút Xóa bị vô hiệu hóa nếu không đủ điều kiện; lúc thực hiện, chương trình kiểm tra lại và ràng buộc khóa ngoại vẫn bảo vệ dữ liệu khi có thay đổi đồng thời.
+- Nếu muốn ẩn sản phẩm khỏi hoạt động bán hàng nhưng giữ thông tin và lịch sử, Admin dùng nút **Ngừng kinh doanh** để cập nhật `DangKinhDoanh = false`.
 
 ---
 
@@ -430,8 +430,8 @@ Dưới đây là 10 câu hỏi cốt lõi mà giảng viên trong hội đồng
 #### Câu 3: Mật khẩu người dùng được lưu trữ như thế nào trong CSDL? Nếu em đánh cắp file CSDL thì có xem được mật khẩu không?
 > **Trả lời:** Mật khẩu được băm một chiều bằng thuật toán **BCrypt** với Work Factor là 11. Chuỗi lưu trong CSDL là chuỗi băm 60 ký tự gồm phiên bản, số vòng lặp, muối (Salt) và kết quả mã hóa. Kẻ tấn công dù có toàn bộ file CSDL cũng không thể giải mã ngược chuỗi này ra mật khẩu gốc. Việc kiểm tra đăng nhập chỉ có thể thực hiện thông qua hàm `BCrypt.Verify()`.
 
-#### Câu 4: Làm thế nào em xử lý tình trạng xóa một danh mục hay sản phẩm mà nó đã từng được bán trong hóa đơn?
-> **Trả lời:** Em áp dụng kết hợp **Ràng buộc toàn vẹn khóa ngoại (FK)** và cơ chế **Xóa mềm (Soft Delete)**. Khi người dùng bấm xóa, code kiểm tra xem ID sản phẩm đã xuất hiện trong bảng `ChiTietHoaDon` hay `ChiTietPhieuNhap` chưa. Nếu chưa từng phát sinh, cho phép xóa cứng khỏi CSDL. Nếu đã có dữ liệu lịch sử, hệ thống từ chối xóa cứng và chỉ đổi cờ `DangKinhDoanh = false` để ẩn khỏi quầy bán hàng mà không vi phạm toàn vẹn dữ liệu.
+#### Câu 4: Làm thế nào em xử lý tình trạng xóa một sản phẩm đã từng phát sinh giao dịch?
+> **Trả lời:** Nút **Xóa sản phẩm** chỉ khả dụng khi tồn kho bằng 0 và sản phẩm không được tham chiếu trong `ChiTietHoaDon`, `ChiTietPhieuNhap` hoặc `ChiTietPhieuThuMua`. Chương trình kiểm tra lại trước khi xóa và khóa ngoại bảo vệ dữ liệu nếu có thay đổi đồng thời. Với sản phẩm cần giữ lại để bảo toàn lịch sử, Admin dùng nút **Ngừng kinh doanh** riêng để đặt `DangKinhDoanh = false`.
 
 #### Câu 5: Tại sao khi Restore CSDL lại phải có lệnh `SET SINGLE_USER WITH ROLLBACK IMMEDIATE`?
 > **Trả lời:** SQL Server không cho phép phục hồi đè lên một CSDL đang có kết nối hoạt động (Database in use). Lệnh `SET SINGLE_USER WITH ROLLBACK IMMEDIATE` sẽ cưỡng chế ngắt toàn bộ các phiên làm việc hiện tại, rollback các tác vụ dở dang và trao quyền truy cập độc quyền cho tiến trình Restore, giúp quá trình khôi phục diễn ra an toàn mà không bị lỗi lock database.
